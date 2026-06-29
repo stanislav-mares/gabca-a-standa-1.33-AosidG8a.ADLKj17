@@ -1,0 +1,17 @@
+---
+import Logo from "./Logo.astro";
+import Menu from "./Menu.astro";
+import CountDown from "./CountDown.astro";
+---
+
+<header id="main-header" class="h-full flex flex-col items-center justify-center basis-3/5">
+    <div class="flex-1 flex justify-center items-center">
+        <Logo width="160" height="160" layout="constrained" />
+    </div>
+    <div class="border-gray-600/50 w-full flex items-center justify-center">
+        <Menu />
+    </div>
+    <div class="flex-1 flex items-stretch justify-center">
+        <CountDown targetDate="2026-09-26T23:59:59" />
+    </div>
+</header>

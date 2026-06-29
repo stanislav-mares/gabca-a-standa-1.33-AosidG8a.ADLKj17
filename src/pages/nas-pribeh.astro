@@ -1,0 +1,115 @@
+---
+import Layout from "../layouts/Layout.astro";
+import BackButton from "../components/BackButton.astro";
+import TimeLine from "../components/TimeLine.astro";
+import { slideTransition } from "../utils/transitions";
+
+const heading = "Náš příběh";
+const textContent = [
+    {
+        year: "2014",
+        content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." Section 1.10.32
+        of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC "Sed ut perspiciatis unde omnis
+        iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque
+        ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam
+        est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam
+        eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad
+        minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid
+        ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit
+        esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
+        pariatur?" 1914 translation by H. Rackham "But I must explain to you how all this mistaken`
+
+    },
+
+    {
+        year: "2015",
+        content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." Section 1.10.32
+        of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC "Sed ut perspiciatis unde omnis
+        iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque
+        ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam
+        est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam`,
+    },
+
+    {
+        year: "2016",
+        content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis
+        unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam,
+        eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
+        explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.`,
+    },
+
+    {
+        year: "2017",
+        content: `Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
+        sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat
+        voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit
+        laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit
+        qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum
+        fugiat quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus
+        qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
+        excepturi sint occaecati cupiditate non provident.`,
+    },
+
+    {
+        year: "2018",
+        content: `Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis
+        est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis
+        voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis
+        debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae
+        non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis
+        voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. On the
+        other hand, we denounce with righteous indignation and dislike men who are so beguiled and
+        demoralized by the charms of pleasure of the moment.`,
+    },
+];
+---
+
+<Layout>
+    <main
+        class="h-screen w-full pt-15"
+        transition:animate={slideTransition}
+        transition:name="main-content"
+    >
+        <section class="flex flex-col items-center justify-center">
+            <h1 class="text-5xl font-light mb-8">{heading}</h1>
+            <article class="flex w-full items-stretch">
+                <aside class="flex-1 flex justify-center">
+                    <TimeLine years={textContent.map((t) => t.year)} />
+                </aside>
+                <main class="flex flex-col items-center gap-4 max-w-3xl">
+                    {
+                        textContent.map((item) => (
+                            <div id={item.year} class="scroll-mt-24">
+                                <!-- <h2 class="text-3xl font-semibold mb-4">{item.year}</h2> -->
+                                <p class="text-lg leading-relaxed text-justify">
+                                    {item.content}
+                                </p>
+                            </div>
+                        ))
+                    }
+                </main>
+                <div class="flex-1"></div>
+            </article>
+        </section>
+        <aside class="fixed top-0 right-0 flex justify-center items-center h-full">
+            <BackButton />
+        </aside>
+    </main>
+</Layout>

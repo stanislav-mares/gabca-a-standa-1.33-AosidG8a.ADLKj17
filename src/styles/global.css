@@ -1,0 +1,106 @@
+@import "tailwindcss";
+/* @plugin "daisyui"; */ /* disabled for now */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply text-gray-800;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    /* View Transition Animations */
+    @keyframes slide-out-left {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes slide-in-right {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slide-out-right {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+
+    @keyframes slide-in-left {
+        from {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Menu fade animations */
+    ::view-transition-old(menu-content) {
+        animation: fade-out-quick 0.5s ease-in-out;
+    }
+
+    ::view-transition-new(menu-content) {
+        animation: fade-in-slow 0.5s ease-in-out;
+    }
+
+    @keyframes fade-out-quick {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+
+    @keyframes fade-in-slow {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+@layer components {
+    @layer components {
+        /* Disable active and focus backgrounds on all DaisyUI menus */
+        .menu li > *:active,
+        .menu li > *:focus,
+        .menu li > .active,
+        .menu li > *:hover {
+            @apply !bg-transparent !text-current;
+        }
+        .menu li {
+            text-decoration: none;
+        }
+    }
+
+    .custom-class {
+    }
+}

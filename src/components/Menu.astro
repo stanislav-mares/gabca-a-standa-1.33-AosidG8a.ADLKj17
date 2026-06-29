@@ -1,0 +1,53 @@
+---
+
+---
+
+<nav class="menu-nav">
+    <ul class="menu menu-xl menu-vertical text-gray-800 *:p-4 font-light items-center justify-center">
+        <li class="group">
+            <a
+                class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-4xl no-underline inline-block text-center border-b-2 border-b-transparent group-hover:border-b-gray-800 transition-all duration-300"
+                href="/nas-pribeh">Náš příběh</a
+            >
+        </li>
+        <li class="group">
+            <a
+                class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-4xl no-underline inline-block text-center border-b-2 border-b-transparent group-hover:border-b-gray-800 transition-all duration-300"
+                href="/svatebni-den">Svatební den</a
+            >
+        </li>
+        <li class="group">
+            <a
+                class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-4xl no-underline inline-block text-center border-b-2 border-b-transparent group-hover:border-b-gray-800 transition-all duration-300"
+                href="/fotogalerie">Fotogalerie</a
+            >
+        </li>
+        <li class="group rounded-none">
+            <a
+                class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-4xl no-underline inline-block text-center border-b-2 border-b-transparent group-hover:border-b-gray-800 transition-all duration-300"
+                href="/dotaznik">Dotazník</a
+            >
+        </li>
+    </ul>
+</nav>
+
+<script>
+    document.addEventListener("astro:before-preparation", () => {
+        const menu = document.querySelector(".menu-nav");
+        if (menu) {
+            menu.style.transition = "opacity 1s ease-out";
+            menu.style.opacity = "0";
+        }
+    });
+
+    document.addEventListener("astro:after-swap", () => {
+        const menu = document.querySelector(".menu-nav");
+        if (menu) {
+            menu.style.opacity = "0";
+            menu.style.transition = "opacity 1s ease-in-out";
+            requestAnimationFrame(() => {
+                menu.style.opacity = "1";
+            });
+        }
+    });
+</script>

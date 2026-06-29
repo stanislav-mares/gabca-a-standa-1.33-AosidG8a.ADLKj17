@@ -1,0 +1,99 @@
+---
+// src/components/CountdownVertical.astro
+interface Props {
+    targetDate: string; // Např. "2026-12-31T23:59:59"
+}
+
+const { targetDate } = Astro.props;
+---
+
+<div
+    class="countdown-vertical-container flex text-left justify-center self-end pb-12"
+    data-target={targetDate}
+>
+    <div class="flex items-baseline gap-1 pb-2">
+        <span
+            id="v-days"
+            class="text-5xl xl:text-5xl font-extralight tracking-tighter text-gray-700 xl:text-gray-500 lining-nums min-w-[2.5ch] flex justify-center"
+            >00</span
+        >
+        <span class="text-[0.7rem] uppercase tracking-widest text-gray-600 xl:text-gray-400 font-light"
+            >Dní</span
+        >
+    </div>
+
+    <div class="flex items-baseline gap-1 pb-2">
+        <span
+            id="v-hours"
+            class="text-5xl xl:text-5xl font-extralight tracking-tighter text-gray-700 xl:text-gray-500 lining-nums min-w-[2.5ch] flex justify-center"
+            >00</span
+        >
+        <span class="text-[0.7rem] uppercase tracking-widest text-gray-600 xl:text-gray-400 font-light"
+            >Hodin</span
+        >
+    </div>
+
+    <div class="flex items-baseline gap-1 pb-2">
+        <span
+            id="v-minutes"
+            class="text-5xl xl:text-5xl font-extralight tracking-tighter text-gray-700 xl:text-gray-500 lining-nums min-w-[2.5ch] flex justify-center"
+            >00</span
+        >
+        <span class="text-[0.7rem] uppercase tracking-widest text-gray-600 xl:text-gray-400 font-light"
+            >Minut</span
+        >
+    </div>
+
+    <div class="flex items-baseline gap-1 pb-2">
+        <span
+            id="v-seconds"
+            class="text-5xl xl:text-5xl font-extralight tracking-tighter lining-nums text-gray-700/50 xl:text-gray-500/30 min-w-[2.5ch] flex justify-center"
+            >00</span
+        >
+        <span class="text-[0.7rem] uppercase tracking-widest text-gray-600 xl:text-gray-400 font-light"
+            >Vteřin</span
+        >
+    </div>
+</div>
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const container = document.querySelector(".countdown-vertical-container") as HTMLElement;
+
+        if (container) {
+            const targetDateStr = container.dataset.target;
+            const targetTime = new Date(targetDateStr!).getTime();
+
+            // ID jsme mírně poupravili (v-), aby se kód nebil, pokud bys měl na stejné stránce oba countdowny
+            const daysEl = document.getElementById("v-days");
+            const hoursEl = document.getElementById("v-hours");
+            const minutesEl = document.getElementById("v-minutes");
+            const secondsEl = document.getElementById("v-seconds");
+
+            const updateCountdown = () => {
+                const now = new Date().getTime();
+                const difference = targetTime - now;
+
+                if (difference <= 0) {
+                    container.innerHTML =
+                        "<p class='text-2xl font-bold text-red-500 tracking-tight'>Projekt byl spuštěn!</p>";
+                    clearInterval(interval);
+                    return;
+                }
+
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                if (daysEl) daysEl.innerText = String(days).padStart(2, "0");
+                if (hoursEl) hoursEl.innerText = String(hours).padStart(2, "0");
+                if (minutesEl) minutesEl.innerText = String(minutes).padStart(2, "0");
+                if (secondsEl) secondsEl.innerText = String(seconds).padStart(2, "0");
+            };
+
+            updateCountdown();
+            const interval = setInterval(updateCountdown, 1000);
+        }
+    });
+</script>
