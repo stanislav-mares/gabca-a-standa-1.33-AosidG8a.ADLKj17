@@ -2,6 +2,8 @@
 import ForwardButton from "./ForwardButton.astro";
 import CeremonyDate from "./CeremonyDate.astro";
 import Logo from "./Logo.astro";
+import { Image } from 'astro:assets';
+import introBackground from '../assets/IMG_7878-jas-upravene.JPEG';
 ---
 
 <div
@@ -17,6 +19,7 @@ import Logo from "./Logo.astro";
     <div class="absolute right-0 z-25 group w-full h-full">
         <ForwardButton />
     </div>
+    <Image class="opacity-15" src={introBackground} alt="Svatební pozadí" />
 </div>
 
 <style>
