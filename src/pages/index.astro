@@ -7,18 +7,20 @@ import mainPhoto from "../assets/IMG_1717.JPG";
 ---
 
 <Layout>
+    <!-- Fotka mimo <main>, aby se s ním neposouvala (zůstává stát) -->
+    <div class="fixed flex -z-10 overflow-hidden inset-0 w-full h-full">
+        <div class="basis-0 xl:basis-[15.0%] 2xl:basis-[17.5%] grow-0"></div>
+        <div class="flex-1">
+            <img src={mainPhoto.src} alt="main photo" class="w-full h-full object-cover" />
+        </div>
+    </div>
+
     <main
         class="flex h-screen w-full overflow-hidden relative"
         transition:animate={slideTransition}
-        transition:name="main-content"
+        transition:name="main-panel"
     >
         <Intro />
-        <div class="absolute flex -z-10 overflow-hidden inset-0 w-full h-full">
-            <div class="basis-0 xl:basis-[15.0%] 2xl:basis-[17.5%] grow-0"></div>
-            <div class="flex-1">
-                <img src={mainPhoto.src} alt="main photo" class="w-full h-full object-cover" />
-            </div>
-        </div>
         <!-- Menu container with gradient overlay -->
         <div
             class="flex items-center justify-center basis-[100%] xl:basis-[30%] 2xl:basis-[35%] grow-0 relative z-10 bg-gray-50/70 xl:bg-gray-50/90"
@@ -26,31 +28,4 @@ import mainPhoto from "../assets/IMG_1717.JPG";
             <Header />
         </div>
     </main>
-
-    <!-- 3. Globální CSS pravidla pro pohyb -->
-    <style is:global>
-        /* Stará stránka odjíždí doprava a mizí */
-        @keyframes slide-out-right {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-
-        /* Nová stránka přijíždí zleva a objevuje se */
-        @keyframes slide-in-left {
-            from {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-    </style>
 </Layout>

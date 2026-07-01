@@ -18,43 +18,62 @@
     @keyframes slide-out-left {
         from {
             transform: translateX(0);
-            opacity: 1;
         }
         to {
             transform: translateX(-100%);
-            opacity: 0;
         }
     }
 
     @keyframes slide-in-right {
         from {
             transform: translateX(100%);
-            opacity: 0;
         }
         to {
             transform: translateX(0);
-            opacity: 1;
         }
     }
 
     @keyframes slide-out-right {
         from {
             transform: translateX(0);
-            opacity: 1;
         }
         to {
             transform: translateX(100%);
-            opacity: 0;
         }
     }
 
     @keyframes slide-in-left {
         from {
             transform: translateX(-100%);
-            opacity: 0;
         }
         to {
             transform: translateX(0);
+        }
+    }
+
+    /* Background (root) – plynulé prolínání místo skokového naskočení */
+    ::view-transition-old(root) {
+        animation: bg-fade-out 0.8s ease-in-out both;
+    }
+
+    ::view-transition-new(root) {
+        animation: bg-fade-in 0.8s ease-in-out both;
+    }
+
+    @keyframes bg-fade-out {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+        }
+    }
+
+    @keyframes bg-fade-in {
+        from {
+            opacity: 0;
+        }
+        to {
             opacity: 1;
         }
     }

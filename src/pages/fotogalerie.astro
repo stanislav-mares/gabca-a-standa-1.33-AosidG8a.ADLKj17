@@ -8,14 +8,14 @@ const heading = "Fotogalerie";
 
 <Layout>
     <main
-        class="h-screen w-full pt-15"
+        class="h-screen w-full pt-15 bg-gray-50"
         transition:animate={slideTransition}
-        transition:name="main-content"
+        transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center">
             <h1 class="text-5xl font-light mb-8">{heading}</h1>
         </section>
-        <aside class="fixed top-0 right-0 flex justify-center items-center h-full">
+        <aside class="fixed top-0 left-0 flex justify-center items-center h-full">
             <BackButton />
         </aside>
     </main>

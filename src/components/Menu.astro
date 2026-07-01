@@ -30,24 +30,3 @@
         </li>
     </ul>
 </nav>
-
-<script>
-    document.addEventListener("astro:before-preparation", () => {
-        const menu = document.querySelector(".menu-nav");
-        if (menu) {
-            menu.style.transition = "opacity 1s ease-out";
-            menu.style.opacity = "0";
-        }
-    });
-
-    document.addEventListener("astro:after-swap", () => {
-        const menu = document.querySelector(".menu-nav");
-        if (menu) {
-            menu.style.opacity = "0";
-            menu.style.transition = "opacity 1s ease-in-out";
-            requestAnimationFrame(() => {
-                menu.style.opacity = "1";
-            });
-        }
-    });
-</script>
