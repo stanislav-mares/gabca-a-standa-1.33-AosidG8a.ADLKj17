@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-07-13
+
+### Dotazník – podpora HTML v textech
+- Popisky konfigurace dotazníku se nově renderují přes **`set:html`**, takže mohou obsahovat značky (`<a>`, `<strong>`, `<br>`, …). Dřív je Astro escapovalo a vypisovalo doslova.
+- Týká se pěti míst v `QuestionElement.astro` (`element.label` u textových i výběrových prvků, `element.description`, `opt.label`, `opt.followUp.heading`) a `q.heading` v `Questionnaire.astro`.
+- V `questionnaire.ts` doplněna dokumentace k typům: které popisky přijímají HTML + upozornění, že konfigurace je statická a **nesmí do ní přijít vstup od uživatele** (jinak XSS).
+
+### Nová stránka `ubytovani`
+- Založena `src/pages/ubytovani.astro` podle stejného skeletonu jako ostatní podstránky (`Layout`, `slideTransition`, `transition:name="main-panel"`, `BackButton`), zatím jen s nadpisem.
+- Přidána do `Menu.astro` **pod „Svatební den"** (pořadí: Náš příběh, Svatební den, Ubytování, Fotogalerie, Dotazník).
+- Odkaz „zde" v popisku otázky na přespání v `dotaznik.astro` míří na `/ubytovani` (nahradil placeholder).
+
+### Přechody mezi stránkami – oprava „diagonálního" slidu
+- Po odscrollování podstránky animace nejdřív ujela svisle a teprve pak do strany. Příčina: `<main>` má `transition:name="main-panel"`, takže prohlížeč **interpoluje geometrii** starého a nového elementu – a protože se scrolloval dokument, lišila se jejich pozice vůči viewportu o velikost odscrollování.
+- Řešení: na všech podstránkách má `<main>` nově **`overflow-y-auto`**, takže scroll kontejnerem je `<main>` samo, ne dokument. Jeho box je pak vždy přesně viewport a přechod nemá co morfovat – zbude čistý horizontální slide bez ohledu na pozici scrollu.
+- `TimeLine.astro` na to musel zareagovat: přidán `getScrollParent()`, progress čára čte `scrollTop`/`scrollHeight` ze **scroll kontejneru** místo z okna (s fallbackem na `window`) a `scroll` posluchač visí na něm. Jinak by po změně zamrzla na nule.
+- Kompromis: Astro obnovuje pozici scrollu jen pro okno, ne pro vnitřní kontejner – návrat zpět na stránku tedy vždy začne nahoře.
+
+### Nástroje
+- Založen projektový skill **`.claude/skills/summary/`** – shrne aktuální session a zapíše ji do tohoto changelogu ve zdejším stylu.
+
 ## 2026-06-29
 
 ### Sjednocení podstránek

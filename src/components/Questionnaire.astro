@@ -1,62 +1,145 @@
 ---
-const questions = [
-  { id: 'q1', heading: '1. Očekávání a cíle', inputLabel: 'Hlavní cíl projektu', textLabel: 'Detailně popište, čeho chcete dosáhnout' },
-  { id: 'q2', heading: '2. Cílová skupina', inputLabel: 'Kdo je váš typický zákazník?', textLabel: 'Specifikujte jejich potřeby a chování' },
-  { id: 'q3', heading: '3. Konkurence', inputLabel: 'Kdo je váš největší konkurent?', textLabel: 'V čem se od konkurence chcete odlišit?' },
-  { id: 'q4', heading: '4. Vizuální styl', inputLabel: 'Preferujete nějaké barvy?', textLabel: 'Jakou emoci má váš projekt vyvolávat?' },
-  { id: 'q5', heading: '5. Funkční požadavky', inputLabel: 'Jaká je absolutně klíčová funkce?', textLabel: 'Vypište všechny další potřebné funkce' },
-  { id: 'q6', heading: '6. Harmonogram', inputLabel: 'Kdy má být projekt hotový?', textLabel: 'Jsou v průběhu nějaké fixní milníky?' },
-  { id: 'q7', heading: '7. Další informace', inputLabel: 'Máte vyhrazený rozpočet?', textLabel: 'Jaké podklady (texty, fotky) už máte k dispozici?' },
-];
+import type { Question } from "../utils/questionnaire";
+import QuestionElement from "./QuestionElement.astro";
+
+interface Props {
+  questions: Question[];
+  /** DOČASNÉ: zobrazí všechny otázky naráz (pro konfiguraci). */
+  showAll?: boolean;
+}
+
+const { questions, showAll = false } = Astro.props;
+
+const buttonClass =
+  "sm:w-auto px-8 py-3 bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 text-white dark:text-gray-900 font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-gray-100 dark:focus:ring-offset-gray-900";
 ---
 
-<div class="max-w-3xl mx-auto p-6 md:p-10">
-  <form action="#" method="POST" class="space-y-12">
-
-    {questions.map((q) => (
-      <fieldset class="pb-12 border-b border-gray-200 dark:border-gray-800 last:border-0 last:pb-0">
-        <legend class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6">
-          {q.heading}
-        </legend>
+<form action="#" method="POST" id="questionnaire-form" class="space-y-12">
+  {
+    questions.map((q, i) => (
+      <fieldset
+        data-step={i}
+        class:list={[
+          "form-step transition-all duration-1000 ease-out pb-12 border-b border-gray-200 dark:border-gray-800 last:border-0 last:pb-0",
+          i === 0 || showAll
+            ? "opacity-100 translate-y-0"
+            : "hidden opacity-0 -translate-y-8",
+        ]}
+      >
+        <legend
+          class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6"
+          set:html={q.heading}
+        />
 
         <div class="flex flex-col gap-6">
-          <div>
-            <label for={`input-${q.id}`} class="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">
-              {q.inputLabel}
-            </label>
-            <input
-              type="text"
-              id={`input-${q.id}`}
-              name={`input-${q.id}`}
-              class="w-full px-4 py-3 bg-transparent border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
-              placeholder="Zde napište krátkou odpověď..."
-            />
-          </div>
-
-          <div>
-            <label for={`textarea-${q.id}`} class="block text-sm font-medium text-gray-700 dark:text-gray-400 mb-2">
-              {q.textLabel}
-            </label>
-            <textarea
-              id={`textarea-${q.id}`}
-              name={`textarea-${q.id}`}
-              rows="4"
-              class="w-full px-4 py-3 bg-transparent border border-gray-300 dark:border-gray-700 rounded-md text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors resize-y"
-              placeholder="Prostor pro detailnější rozvedení myšlenky..."
-            ></textarea>
-          </div>
+          {q.elements.map((el, j) => (
+            <QuestionElement element={el} name={`${q.id}-e${j}`} />
+          ))}
         </div>
       </fieldset>
-    ))}
+    ))
+  }
 
-    <div class="pt-6">
-      <button
-        type="submit"
-        class="w-full sm:w-auto px-8 py-3 bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 text-white dark:text-gray-900 font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-gray-100 dark:focus:ring-offset-gray-900"
-      >
-        Odeslat dotazník
-      </button>
-    </div>
+  <div class="pt-6 flex justify-center">
+    <button
+      type="button"
+      id="next-btn"
+      class:list={[showAll && "hidden", buttonClass]}
+    >
+      Pokračovat
+    </button>
+    <button
+      type="submit"
+      id="submit-btn"
+      class:list={[!showAll && "hidden", buttonClass]}
+    >
+      Odeslat dotazník
+    </button>
+  </div>
+</form>
 
-  </form>
-</div>
+<script>
+  function initQuestionnaire() {
+    const form = document.getElementById(
+      "questionnaire-form",
+    ) as HTMLFormElement | null;
+    const nextBtn = document.getElementById("next-btn");
+    const submitBtn = document.getElementById("submit-btn");
+    if (!form || !nextBtn || !submitBtn) return;
+
+    const steps = Array.from(
+      form.querySelectorAll<HTMLFieldSetElement>(".form-step"),
+    );
+    if (steps.length === 0) return;
+
+    let current = 0;
+
+    const setDisabled = (container: HTMLElement, disabled: boolean) => {
+      container
+        .querySelectorAll<
+          HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+        >("input, textarea, select")
+        .forEach((control) => {
+          control.disabled = disabled;
+        });
+    };
+
+    // Rozbalí/skryje podotázky podle aktuálně vybraných odpovědí. Skryté
+    // podotázky se zároveň `disable`nou, aby je nativní validace i odeslání
+    // formuláře přeskočily.
+    const syncFollowUps = () => {
+      form
+        .querySelectorAll<HTMLInputElement>("input[data-followup]")
+        .forEach((trigger) => {
+          const target = document.getElementById(trigger.dataset.followup!);
+          if (!target) return;
+          const visible = trigger.checked;
+          target.classList.toggle("hidden", !visible);
+          target.classList.toggle("flex", visible);
+          setDisabled(target, !visible);
+        });
+    };
+
+    const showStep = (step: HTMLElement) => {
+      step.classList.remove("hidden");
+      void step.offsetWidth; // force reflow so the transition runs
+      step.classList.remove("opacity-0", "-translate-y-8");
+      step.classList.add("opacity-100", "translate-y-0");
+      step.scrollIntoView({ behavior: "smooth", block: "center" });
+    };
+
+    // Ověří jen viditelná pole – `disable`nuté (skryté) podotázky projdou.
+    const validateStep = (step: HTMLElement) => {
+      const controls = step.querySelectorAll<
+        HTMLInputElement | HTMLTextAreaElement
+      >("input, textarea");
+      for (const control of controls) {
+        if (!control.checkValidity()) {
+          control.reportValidity();
+          return false;
+        }
+      }
+      return true;
+    };
+
+    const updateButtons = () => {
+      const isLast = current === steps.length - 1;
+      nextBtn.classList.toggle("hidden", isLast);
+      submitBtn.classList.toggle("hidden", !isLast);
+    };
+
+    form.addEventListener("change", syncFollowUps);
+
+    nextBtn.addEventListener("click", () => {
+      if (!validateStep(steps[current])) return;
+      if (current >= steps.length - 1) return;
+      current += 1;
+      showStep(steps[current]);
+      updateButtons();
+    });
+
+    syncFollowUps(); // výchozí stav – skryté podotázky se rovnou disablují
+  }
+
+  document.addEventListener("astro:page-load", initQuestionnaire);
+</script>

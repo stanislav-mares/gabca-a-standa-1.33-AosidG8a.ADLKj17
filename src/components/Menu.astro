@@ -1,32 +1,29 @@
 ---
-
+const links = [
+    { href: "/nas-pribeh", label: "Náš příběh" },
+    { href: "/svatebni-den", label: "Svatební den" },
+    { href: "/ubytovani", label: "Ubytování" },
+    { href: "/fotogalerie", label: "Fotogalerie" },
+    { href: "/dotaznik", label: "Dotazník" },
+];
 ---
 
 <nav class="menu-nav">
-    <ul class="menu menu-xl menu-vertical text-gray-800 *:p-4 font-light items-center justify-center">
-        <li class="group">
-            <a
-                class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-4xl no-underline inline-block text-center border-b-2 border-b-transparent group-hover:border-b-gray-800 transition-all duration-300"
-                href="/nas-pribeh">Náš příběh</a
-            >
-        </li>
-        <li class="group">
-            <a
-                class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-4xl no-underline inline-block text-center border-b-2 border-b-transparent group-hover:border-b-gray-800 transition-all duration-300"
-                href="/svatebni-den">Svatební den</a
-            >
-        </li>
-        <li class="group">
-            <a
-                class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-4xl no-underline inline-block text-center border-b-2 border-b-transparent group-hover:border-b-gray-800 transition-all duration-300"
-                href="/fotogalerie">Fotogalerie</a
-            >
-        </li>
-        <li class="group rounded-none">
-            <a
-                class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-4xl no-underline inline-block text-center border-b-2 border-b-transparent group-hover:border-b-gray-800 transition-all duration-300"
-                href="/dotaznik">Dotazník</a
-            >
-        </li>
+    <ul
+        class="menu menu-xl menu-vertical text-muted *:p-4 items-center justify-center font-body font-extralight"
+    >
+        {
+            links.map(({ href, label }) => (
+                <li class="group flex justify-center">
+                    <a
+                        class="rounded-none nav-btn text-4xl xl:text-3xl 2xl:text-[2.5rem] inline-flex flex-col items-center text-center transition-all duration-300 group-hover:text-hover after:content-[attr(data-text)] after:h-0 after:overflow-hidden after:invisible after:font-light after:pointer-events-none"
+                        href={href}
+                        data-text={label}
+                    >
+                        {label}
+                    </a>
+                </li>
+            ))
+        }
     </ul>
 </nav>

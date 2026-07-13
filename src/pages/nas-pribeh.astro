@@ -83,12 +83,12 @@ const textContent = [
 
 <Layout>
     <main
-        class="h-screen w-full pt-15 bg-gray-50"
+        class="h-screen w-full pt-15 bg-gray-50 overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center">
-            <h1 class="text-5xl font-light mb-8">{heading}</h1>
+            <h1 class="text-title font-light mb-8">{heading}</h1>
             <article class="flex w-full items-stretch">
                 <aside class="flex-1 flex justify-center">
                     <TimeLine years={textContent.map((t) => t.year)} />
