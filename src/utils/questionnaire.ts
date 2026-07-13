@@ -4,7 +4,8 @@
  * Otázka (`Question`) se skládá z libovolné kombinace prvků (`Element`).
  * Výběrové prvky (yes-no / single-choice / multi-choice) mohou mít u konkrétní
  * možnosti navázanou podotázku (`followUp`), která se rozbalí po jejím vybrání.
- * Zanoření je omezené na 1 úroveň – `SubQuestion` už další `followUp` nemá.
+ * Podotázka obsahuje stejné prvky jako otázka, takže se dá zanořit i další
+ * follow-up – v konfiguraci se držíme maximálně 2 úrovní zanoření.
  *
  * Všechny textové popisky (`heading`, `label`, `description`) se renderují jako
  * HTML, takže mohou obsahovat značky (`<a>`, `<strong>`, `<br>`, …). Konfigurace
@@ -21,35 +22,9 @@ export type ElementType =
 /** Typy prvků, které nabízejí diskrétní možnosti (a tedy i follow-upy). */
 export type ChoiceElementType = "yes-no" | "single-choice" | "multi-choice";
 
-/** Možnost výběrového prvku bez navázané podotázky (použito uvnitř podotázky). */
-export interface SubOption {
-  value: string;
-  /** Může obsahovat HTML. */
-  label: string;
-}
-
-/** Prvek uvnitř podotázky – nesmí obsahovat další follow-up. */
-export interface SubElement {
-  type: ElementType;
-  /** Může obsahovat HTML. */
-  label: string;
-  /** Volitelné dovysvětlení zobrazené pod labelem. Může obsahovat HTML. */
-  description?: string;
-  placeholder?: string;
-  required?: boolean;
-  /** Vyžadováno pro výběrové typy. */
-  options?: SubOption[];
-}
-
-/** Podotázka – stejná konfigurace jako otázka, ale bez dalšího zanoření. */
-export interface SubQuestion {
-  /** Může obsahovat HTML. */
-  heading?: string;
-  elements: SubElement[];
-}
-
 /** Možnost výběrového prvku, volitelně s navázanou podotázkou. */
 export interface Option {
+  /** Musí být unikátní v rámci prvku – tvoří `id`/`name` inputu. */
   value: string;
   /** Může obsahovat HTML. */
   label: string;
@@ -68,6 +43,13 @@ export interface Element {
   required?: boolean;
   /** Vyžadováno pro výběrové typy (yes-no / single-choice / multi-choice). */
   options?: Option[];
+}
+
+/** Podotázka rozbalená po vybrání možnosti – stejná stavba jako otázka. */
+export interface SubQuestion {
+  /** Může obsahovat HTML. */
+  heading?: string;
+  elements: Element[];
 }
 
 /** Jedna otázka dotazníku. */

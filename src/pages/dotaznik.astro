@@ -6,6 +6,7 @@ import type { Question } from "../utils/questionnaire";
 import { slideTransition } from "../utils/transitions";
 
 const heading = "Dotazník";
+const intro = "Poprosíme vás o vyplnění krátkého dotazníku. Moc nám to pomůže s další organizací a přípravami, abychom tak mohli strávit příjemný čas spolu ke spokojenosti všech. Pokud vás napadne něco dalšího, co není v otázkách, napište nám to prosím do posledního formuláře níže. Děkujeme :)";
 
 // Ukázková konfigurace – uprav si otázky i prvky přímo tady.
 const questions: Question[] = [
@@ -36,7 +37,40 @@ const questions: Question[] = [
                         value: "ano",
                         label: "Ano",
                     },
-                    { value: "ne", label: "Bohužel nemohu" },
+                    { value: "ne", label: "Bohužel nemohu", followUp: {
+                        heading: "Nevadí, děkujeme za vyplnění.",
+                        elements: [],
+                    },},
+                ],
+            },
+        ],
+    },
+
+    {
+        id: "prijezd",
+        heading: "",
+        elements: [
+            {
+                type: "single-choice",
+                label: "Kdy přijedeš?",
+                required: true,
+                options: [
+                    {
+                        value: "svatba",
+                        label: "V den svatby",
+                        followUp: {
+                            heading: `Příjezd cca mezi 10:30 - 11:00. Více informací naleznete zde: <a href="/svatebni-den" class="underline text-black">zde</a>`,
+                            elements: [],
+                        },
+                    },
+                    {
+                        value: "patek",
+                        label: "V pátek",
+                        followUp: {
+                            heading: "Budeme rádi za pomoc s přípravami. Jídlo, pití a spaní zajištěno.",
+                            elements: [],
+                        },
+                    },
                 ],
             },
         ],
@@ -66,15 +100,15 @@ const questions: Question[] = [
                                     required: true,
                                     options: [
                                         {
-                                            value: "",
+                                            value: "misto",
                                             label: "Preferuji přespat přímo v místě.",
                                         },
                                         {
-                                            value: "",
+                                            value: "okoli",
                                             label: "Preferuji přespat v blízkém okolí (do 10km, odvoz zajištěn)",
                                         },
                                         {
-                                            value: "",
+                                            value: "vlastni",
                                             label: "Vezmu si vlastní stan, obytňák, ...",
                                         },
                                     ],
@@ -86,19 +120,214 @@ const questions: Question[] = [
                         value: "ne",
                         label: "Ne",
                         followUp: {
-                            heading: "",
+                            heading: "Pojedu vlastním autem domů.",
+                            elements: [],
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: "strava",
+        heading: "",
+        elements: [
+            {
+                type: "multi-choice",
+                label: "Stravovací omezení",
+                description:
+                    "Zaškrtni vše, co se vás týká. U každé možnosti prosím napiš, koho konkrétně.",
+                options: [
+                    {
+                        value: "vegan",
+                        label: "Vegan",
+                        followUp: {
                             elements: [
                                 {
-                                    type: "multi-choice",
+                                    type: "short-text",
                                     label: "",
-                                    description: "Pojedu vlastním autem domů.",
-                                    required: true,
-                                    options: [],
+                                    placeholder: "Koho se týká?",
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        value: "vegetarian",
+                        label: "Vegetarián",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "short-text",
+                                    label: "",
+                                    placeholder: "Koho se týká?",
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        value: "bezlepkova",
+                        label: "Bezlepková dieta",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "short-text",
+                                    label: "",
+                                    placeholder: "Koho se týká?",
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        value: "alergie",
+                        label: "Alergie",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "short-text",
+                                    label: "",
+                                    placeholder: "Jaké alergie (ořechy, laktóza, …) a koho se týká?",
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        value: "jine",
+                        label: "Jiné",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "textarea",
+                                    label: "",
+                                    placeholder:
+                                        "Jaké omezení a koho se týká?",
                                 },
                             ],
                         },
                     },
                 ],
+            },
+        ],
+    },
+    {
+        id: "piti-nealko",
+        heading: "",
+        elements: [
+            {
+                type: "multi-choice",
+                label: "Co by sis dal k pití: nealko?",
+                options: [
+                    { value: "perliva-voda", label: "Perlivá voda" },
+                    { value: "dzus", label: "Džus" },
+                    { value: "kofola", label: "Kofola" },
+                    { value: "coca-cola", label: "Coca-Cola" },
+                    { value: "tonic", label: "Tonic" },
+                    {
+                        value: "birell",
+                        label: "Birell",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "single-choice",
+                                    label: "",
+                                    options: [
+                                        { value: "ochuceny", label: "Ochucený" },
+                                        {
+                                            value: "neochuceny",
+                                            label: "Neochucený",
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                    },
+                    { value: "limonada", label: "Domácí limonáda" },
+                    {
+                        value: "jine",
+                        label: "Jiné",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "short-text",
+                                    label: "",
+                                    placeholder: "Co jiného?",
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: "piti-alko",
+        heading: "",
+        elements: [
+            {
+                type: "multi-choice",
+                label: "Co by sis dal k pití: alko?",
+                options: [
+                    { value: "pivo", label: "Pivo" },
+                    { value: "vino", label: "Víno" },
+                    { value: "sampus", label: "Šampus" },
+                    { value: "gin-tonic", label: "Gin-tonic" },
+                    { value: "aperol", label: "Aperol" },
+                    { value: "rum-cola", label: "Rum s colou" },
+                    {
+                        value: "jine",
+                        label: "Jiné",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "short-text",
+                                    label: "",
+                                    placeholder: "Co jiného?",
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: "piti-alko-plus",
+        heading: "",
+        elements: [
+            {
+                type: "multi-choice",
+                label: "Co by sis dal k pití: alko+?",
+                options: [
+                    { value: "slivovice", label: "Slivovice" },
+                    { value: "mandlovice", label: "Mandlovice" },
+                    { value: "rum", label: "Rum" },
+                    { value: "whiskey", label: "Whiskey" },
+                    { value: "becherovka", label: "Becherovka" },
+                    { value: "jagermeister", label: "Jägermeister" },
+                    {
+                        value: "jine",
+                        label: "Jiné",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "short-text",
+                                    label: "",
+                                    placeholder: "Co jiného?",
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: "poznamka",
+        heading: "",
+        elements: [
+            {
+                type: "textarea",
+                label: "Napadá tě ještě něco dalšího?",
+                placeholder: "Cokoli, co bychom měli vědět…",
             },
         ],
     },
@@ -111,11 +340,13 @@ const questions: Question[] = [
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
-        <section class="flex flex-col items-center justify-center">
+        <section class="flex flex-col items-center px-6 sm:px-10">
             <h1 class="text-title font-light mb-8">{heading}</h1>
-            <p>sadfaasdfasdfssadfasdfasdfasdfssadfasdfasdfasdfs</p>
-            <div class="w-full max-w-3xl pt-10 pb-[50vh]">
-                <Questionnaire questions={questions} showAll />
+            <div class="w-full max-w-3xl">
+                <p class="text-lg leading-relaxed text-justify">{intro}</p>
+                <div class="pt-10 pb-[50vh]">
+                    <Questionnaire questions={questions} showAll />
+                </div>
             </div>
         </section>
 

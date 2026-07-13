@@ -2,6 +2,22 @@
 
 ## 2026-07-13
 
+### Dotazník – zanoření podotázek do 2. úrovně
+- `SubQuestion` v `questionnaire.ts` nově obsahuje běžné `Element[]`, takže **follow-up může mít vlastní follow-up** (v konfiguraci se držíme max. 2 úrovní). Typy `SubElement` / `SubOption` zrušeny – byly strukturálně totožné s `Element` / `Option`, takže je rekurze nahradila bez ztráty typové kontroly.
+- `QuestionElement.astro` ani `Questionnaire.astro` nebylo třeba měnit: komponenta se už volala rekurzivně přes `Self` a `syncFollowUps()` hledá `input[data-followup]` napříč celým formulářem, takže hlubší zanoření funguje samo.
+- Skryté follow-upy se stále `disable`nují, takže nespadnou do validace ani do odeslání – u vnořené úrovně to platí tranzitivně (skrytá úroveň 1 vypne i úroveň 2 pod sebou).
+
+### Dotazník – nové otázky
+- Doplněny otázky **Kdy přijedeš** (v den svatby / v pátek – u obou informační poznámka přes `followUp.heading` bez vstupních polí), **Stravovací omezení** (multi-choice; každá možnost rozbalí pole na jména, „Jiné" má `textarea`), tři nápojové (**nealko / alko / alko+**, u všech možnost „Jiné" s krátkým textem) a závěrečná volná **poznámka** (`textarea`).
+- Birell v nealko otázce využívá **druhou úroveň zanoření** – po zaškrtnutí nabídne `single-choice` ochucený / neochucený.
+- Opraveny prázdné `value` u vnořených možností otázky na přespání: všem se generovalo shodné `id`/`name` (`sleep-e0-ano-s0-`) a checkboxy se chovaly nepředvídatelně. Nově `misto` / `okoli` / `vlastni`.
+- Informační poznámka u odpovědi „Ne" přesunuta do `followUp.heading` – dřív to byl `multi-choice` s prázdným `label` a prázdným polem `options`, tedy prvek, který nevykreslil nic kromě vlastního popisku.
+
+### Layout & rozestupy
+- `dotaznik` má obsah v jednom sloupci **`max-w-3xl`** stejně jako `nas-pribeh` – dřív byl omezený jen formulář a úvodní odstavec se roztahoval přes celé okno.
+- Rozestup mezi otázkami zmenšen z `12` na **`8`** (`space-y-8` na formuláři, `pb-8` pod každou otázkou).
+- Všechny podstránky (`dotaznik`, `nas-pribeh`, `svatebni-den`, `fotogalerie`, `ubytovani`) mají na `<section>` **`px-6 sm:px-10`**, aby obsah na mobilu nelepil na okraje displeje.
+
 ### Dotazník – podpora HTML v textech
 - Popisky konfigurace dotazníku se nově renderují přes **`set:html`**, takže mohou obsahovat značky (`<a>`, `<strong>`, `<br>`, …). Dřív je Astro escapovalo a vypisovalo doslova.
 - Týká se pěti míst v `QuestionElement.astro` (`element.label` u textových i výběrových prvků, `element.description`, `opt.label`, `opt.followUp.heading`) a `q.heading` v `Questionnaire.astro`.
