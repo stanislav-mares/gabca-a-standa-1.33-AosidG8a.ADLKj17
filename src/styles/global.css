@@ -1,13 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=WindSong:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
-/* @plugin "daisyui"; */ /* disabled for now */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+
+@font-face {
+	font-family: 'Family';
+	src: url('../assets/fonts/Family-mL6Kv.otf') format('opentype');
+		font-weight: normal;
+		font-style: normal;
+		font-display: swap;
+}
+
+@font-face {
+    font-family: 'John';
+    src: url('../assets/fonts/Johnfoster-qZjj6.ttf') format('truetype');
+        font-weight: bold;
+        font-style: normal;
+        font-display: swap;
+}
+
+@font-face {
+    font-family: 'Marny';
+    src: url('../assets/fonts/MarnyRegular-lg3GX.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Palisade';
+    src: url('../assets/fonts/Palisade-9MPa2.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Wedding';
+    src: url('../assets/fonts/WeddingMaulidah-1j4P0.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Recorda';
+    src: url('../assets/fonts/RecordaScriptPersonalUseOnly-q8nl.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ============================================================
+   THEME CONFIGURATION — single source of truth
+   Change fonts, colors and sizes here; components follow.
+   ============================================================ */
+@theme {
+    /* ---------- FONT ROLES ---------- */
+    /* Swap the family on the right — every component follows. */
+    --font-heading: 'WindSong', cursive;   /* couple names, ceremony date */
+    --font-display: 'Wedding', serif;      /* decorative one-offs         */
+    --font-body:    'Poppins', sans-serif; /* menu, UI, paragraphs        */
+
+    /* Raw families kept available if a component needs a specific one */
+    --font-john:     'John', sans-serif;
+    --font-family:   'Family', sans-serif;
+    --font-marny:    'Marny', sans-serif;
+    --font-palisade: 'Palisade', sans-serif;
+    --font-recorda:  'Recorda', sans-serif;
+    --font-windsong: 'WindSong', sans-serif;
+    --font-opensans: 'Open Sans', sans-serif;
+
+    /* ---------- BRAND COLORS ---------- */
+    --color-surface: #ffffff;  /* beige panel background   → bg-surface  */
+    --color-accent:  #ffffff;  /* highlight / brand accent → text-accent */
+    --color-hover:   #4e4637;  /* interactive hover state  → text-hover  */
+    --color-ink:     #4b402d;  /* primary text (gray-700)  → text-ink    */
+    --color-muted:   #4b402d;  /* secondary text (gray-500) → text-muted */
+
+    /* ---------- TYPE SCALE ---------- */
+    /* Semantic sizes — tune once here.  → text-hero, text-title, … */
+    --text-label:   0.7rem;   /* countdown labels          */
+    --text-body:    1rem;
+    --text-heading: 1.875rem; /* was text-3xl              */
+    --text-title:   3rem;     /* was text-5xl (page heads) */
+    --text-display: 4.5rem;   /* was text-7xl              */
+    --text-hero:    6rem;     /* was text-8xl (names)      */
+}
 
 @layer base {
     body {
-        @apply text-gray-800;
+        /*@apply text-gray-800;*/
     }
 
     a {
@@ -60,7 +144,7 @@
         animation: bg-fade-in 0.8s ease-in-out both;
     }
 
-    @keyframes bg-fade-out {
+    @keyframes bg-fade-outh {
         from {
             opacity: 1;
         }
@@ -103,23 +187,5 @@
         to {
             opacity: 1;
         }
-    }
-}
-
-@layer components {
-    @layer components {
-        /* Disable active and focus backgrounds on all DaisyUI menus */
-        .menu li > *:active,
-        .menu li > *:focus,
-        .menu li > .active,
-        .menu li > *:hover {
-            @apply !bg-transparent !text-current;
-        }
-        .menu li {
-            text-decoration: none;
-        }
-    }
-
-    .custom-class {
     }
 }

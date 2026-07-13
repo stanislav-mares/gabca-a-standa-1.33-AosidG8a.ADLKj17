@@ -22,9 +22,13 @@ pnpm-debug.log*
 
 # editors
 .idea/
+.zed/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/launch.json
+
+# raw photo archives (stovky MB, nepatří do historie)
+media/*.zip
 
 # OS files
 .DS_Store
