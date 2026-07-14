@@ -1,5 +1,25 @@
 # Changelog
 
+## 2026-07-14
+
+### Dotazník – odesílání odpovědí do Google Sheetu (web)
+- Nový `src/utils/submit-questionnaire.ts`: v build čase se z konfigurace otázek staví **mapa polí** (`buildFieldMeta`) – klíč = `name` atribut inputu, hodnota = lidský popisek sloupce + druh pole. Musí kopírovat pojmenovací schéma z `QuestionElement.astro` (`${q.id}-e${j}`, možnost `${name}-${opt.value}`, podotázka `…-s${k}`).
+- Odpovědi se sbírají přes `FormData` – disablovaná (skrytá) follow-up pole a nezaškrtnuté možnosti vypadnou samy. Hodnoty radio skupin se překládají na popisky možností („V den svatby" místo `svatba`), checkbox se posílá jako „ano".
+- Odesílá se `fetch` POSTem s řetězcovým tělem (JSON) – tedy `text/plain`, **simple request bez CORS preflightu**, který by Apps Script neuměl obsloužit.
+- `Questionnaire.astro`: submit handler – tlačítko přepne na „Odesílám…", po úspěchu se formulář schová a ukáže poděkování, při chybě červená hláška a vyplněná data zůstávají. Mapa polí jde do klienta přes `<script type="application/json">` (`<` escapované, aby JSON nemohl rozbít `</script>`).
+- URL endpointu v **`PUBLIC_QUESTIONNAIRE_ENDPOINT`** (`.env`; v gitu jen `.env.example`), typ deklarován v novém `src/env.d.ts`.
+
+### Apps Script – zápis a vyhodnocení (Google Sheet)
+- Nový `apps-script/questionnaire-endpoint.gs` – verzovaný zdroj; nasazuje se ručně přepastováním do editoru tabulky (změny `doPost` navíc vyžadují „Nasadit → Nová verze").
+- `doPost` zapisuje odeslání jako řádek do listu **Odpovědi**: řádek 1 = technické klíče (podle nich se párují sloupce), řádek 2 = lidské popisky, data od řádku 3. Neznámý klíč si přidá sloupec sám, takže **změna otázek na webu zápis nerozbije**. Souběžná odeslání hlídá `LockService`.
+- Sloupce jednorázově naseedované kompletním testovacím submitem, aby držely pořadí dotazníku; řádek s klíči se nesmí mazat.
+- `vytvorVyhodnoceni()` (spouští se ručně z editoru) přegeneruje list **Vyhodnocení**: účast, příjezd, přespání, stravovací omezení a pití vč. jmenných seznamů (`FILTER` + `TEXTJOIN`). Vzorce jsou **šité na aktuální otázky** – při změně konfigurace je nutné funkci upravit a spustit znovu.
+- Vzorce se generují **se středníky**: tabulka s českým locale parsuje vzorce vložené přes `setFormula` lokalizovaně a s čárkami padaly na „chyba analýzy vzorce".
+- Vedle počtu odpovědí je i sloupec **„osob"** – heuristika (`SUMPRODUCT` + `SUBSTITUTE`/`LEN`) počítá jména oddělená čárkou, středníkem, novým řádkem nebo spojkou „ a "; u stravovacích omezení se osoby počítají z pole „koho se týká".
+
+### Dotazník – texty
+- Popisek u jména a placeholdery „Koho se týká?" nově žádají **jména oddělená čárkou**, aby počty osob ve Vyhodnocení seděly.
+
 ## 2026-07-13
 
 ### Dotazník – zanoření podotázek do 2. úrovně
