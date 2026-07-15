@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
+import mainPhoto from "../assets/dkr-1795.jpg";
 ---
 
 <!doctype html>
@@ -16,6 +17,17 @@ import { ClientRouter } from "astro:transitions";
         <ClientRouter />
     </head>
     <body class="text-black text">
+        <!-- Fotka pozadí mimo <main>: neúčastní se slide přechodu a prosvítá
+             skrz průhledné panely podstránek -->
+        <div class="fixed flex -z-10 overflow-hidden inset-0 w-full h-full">
+            <div class="flex-1">
+                <img
+                    src={mainPhoto.src}
+                    alt=""
+                    class="w-full h-full object-cover scale-130 origin-[0%_50%]"
+                />
+            </div>
+        </div>
         <slot />
     </body>
 </html>

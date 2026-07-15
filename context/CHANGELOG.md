@@ -18,6 +18,17 @@
 - Galerie roztažena na celou šířku mezi okraji: `<section>` má od md **`px-40`** (= šířka `BackButton`, symetricky na obou stranách), grid ztratil `max-w-6xl`. Na mobilu zůstává `px-6`/`sm:px-10`.
 - Na `2xl` přidán **pátý sloupec** a dorovnány `sizes` (běžná fotka 20vw, hero 40vw), aby mozaika na širokých monitorech nepůsobila nafoukle.
 
+### Průhledné podstránky nad fotkou pozadí
+- Fixní fotka pozadí (`dkr-1795.jpg`) přesunuta z `index.astro` do **`Layout.astro`** (`<body>`, `-z-10`) — je teď pod všemi stránkami. Protože žije mimo `<main>`, neúčastní se slide přechodů; překrývá ji root cross-fade, který už v `global.css` byl.
+- Všech 5 podstránek má na `<main>` místo `bg-gray-50` **`bg-surface/95`** — panel používá custom barvu z `@theme` a fotka pozadí skrz něj z 5 % prosvítá.
+
+### Fotogalerie – hover efekt
+- Fotky v mřížce mají klidovou **`opacity-85`** a na hover se prosvítí na 100 % (`transition-opacity duration-300`) — skrz průhlednost jemně prosvítá surface panel, najetí fotku „rozsvítí".
+
+### Hlavní foto – výřez
+- Posun POV přes `object-position` nefungoval: fotka na běžných poměrech okna **nemá horizontální přesah** (ořez jen svislý), takže nebylo co posouvat.
+- Místo toho **`scale-130`** + **`origin-[0%_50%]`** — zvětšení vytvoří přesah a transform-origin určuje, která část záběru zůstane vidět. Hodnoty laděné od oka.
+
 ## 2026-07-14
 
 ### Dotazník – odesílání odpovědí do Google Sheetu (web)

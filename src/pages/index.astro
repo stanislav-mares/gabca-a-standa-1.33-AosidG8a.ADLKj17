@@ -3,18 +3,9 @@ import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Intro from "../components/Intro.astro";
 import { slideTransition } from "../utils/transitions";
-import mainPhoto from "../assets/dkr-1795.jpg";
 ---
 
 <Layout>
-    <!-- Fotka mimo <main>, aby se s ním neposouvala (zůstává stát) -->
-    <div class="fixed flex -z-10 overflow-hidden inset-0 w-full h-full">
-        <div class="basis-0 xl:basis-[15.0%] 2xl:basis-[17.5%] grow-0"></div>
-        <div class="flex-1">
-            <img src={mainPhoto.src} alt="main photo" class="w-full h-full object-cover object-left" />
-        </div>
-    </div>
-
     <main
         class="flex h-screen w-full overflow-hidden relative"
         transition:animate={slideTransition}

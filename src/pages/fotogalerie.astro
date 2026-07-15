@@ -11,7 +11,7 @@ const photos = await getGalleryPhotosWithLightbox();
 
 <Layout>
     <main
-        class="h-screen w-full pt-15 bg-gray-50 overflow-y-auto"
+        class="h-screen w-full pt-15 bg-surface/95 overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
@@ -46,7 +46,7 @@ const photos = await getGalleryPhotosWithLightbox();
                                             ? "(min-width: 1536px) 40vw, (min-width: 1280px) 50vw, (min-width: 768px) 66vw, 100vw"
                                             : "(min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
                                     }
-                                    class="h-full w-full object-cover"
+                                    class="h-full w-full object-cover opacity-85 transition-opacity duration-300 hover:opacity-100"
                                     loading="lazy"
                                 />
                             </a>
