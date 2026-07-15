@@ -14,7 +14,7 @@ const { questions, showAll = false } = Astro.props;
 const fieldMeta = buildFieldMeta(questions);
 
 const buttonClass =
-  "sm:w-auto px-8 py-3 bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 text-white dark:text-gray-900 font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 dark:focus:ring-gray-100 dark:focus:ring-offset-gray-900";
+  "sm:w-auto px-8 py-3 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900";
 ---
 
 <form action="#" method="POST" id="questionnaire-form" class="space-y-8">
@@ -23,14 +23,14 @@ const buttonClass =
       <fieldset
         data-step={i}
         class:list={[
-          "form-step transition-all duration-1000 ease-out pb-8 border-b border-gray-200 dark:border-gray-800 last:border-0 last:pb-0",
+          "form-step transition-all duration-1000 ease-out pb-8 border-b border-gray-200 last:border-0 last:pb-0",
           i === 0 || showAll
             ? "opacity-100 translate-y-0"
             : "hidden opacity-0 -translate-y-8",
         ]}
       >
         <legend
-          class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6"
+          class="text-xl font-semibold text-gray-900 mb-6"
           set:html={q.heading}
         />
 
@@ -45,7 +45,7 @@ const buttonClass =
 
   <p
     id="form-error"
-    class="hidden text-center text-red-600 dark:text-red-400"
+    class="hidden text-center text-red-600"
   >
     Odeslání se nepovedlo. Zkuste to prosím za chvíli znovu – odpovědi zůstaly
     vyplněné.
@@ -70,10 +70,10 @@ const buttonClass =
 </form>
 
 <div id="form-success" class="hidden text-center py-12">
-  <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
+  <p class="text-2xl font-semibold text-gray-900 mb-3">
     Děkujeme!
   </p>
-  <p class="text-gray-700 dark:text-gray-300">
+  <p class="text-gray-700">
     Dotazník se odeslal a odpovědi máme uložené.
   </p>
 </div>

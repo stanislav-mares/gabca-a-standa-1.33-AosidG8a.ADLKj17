@@ -19,11 +19,11 @@ const { element, name, forceRequired = false } = Astro.props;
 const required = forceRequired || element.required;
 
 const inputClass =
-  "w-full px-4 py-3 bg-transparent border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700 transition-colors";
+  "w-full px-4 py-3 bg-transparent border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700 transition-colors";
 const labelClass =
-  "block text-lg font-bold text-gray-900 dark:text-gray-100 mb-1";
+  "block text-lg font-bold text-gray-900 mb-1";
 const descriptionClass =
-  "block text-sm text-gray-500 dark:text-gray-500 mb-2";
+  "block text-sm text-gray-500 mb-2";
 
 const isMulti = element.type === "multi-choice";
 const isChoice =
@@ -85,13 +85,13 @@ const choiceRequired = required && !isMulti ? true : undefined;
       <div class="flex flex-col gap-3">
         {options.map((opt) => (
           <div>
-            <label class="flex items-center gap-2 cursor-pointer text-gray-900 dark:text-gray-100">
+            <label class="flex items-center gap-2 cursor-pointer text-gray-900">
               <input
                 type={isMulti ? "checkbox" : "radio"}
                 id={`${name}-${opt.value}`}
                 name={isMulti ? `${name}-${opt.value}` : name}
                 value={opt.value}
-                class="size-4 accent-gray-900 dark:accent-gray-100"
+                class="size-4 accent-gray-900"
                 required={choiceRequired}
                 data-followup={
                   opt.followUp ? `${name}-${opt.value}-followup` : undefined
@@ -103,11 +103,11 @@ const choiceRequired = required && !isMulti ? true : undefined;
             {opt.followUp && (
               <div
                 id={`${name}-${opt.value}-followup`}
-                class="follow-up hidden mt-4 ml-6 pl-4 border-l-2 border-gray-200 dark:border-gray-800 flex-col gap-4"
+                class="follow-up hidden mt-4 ml-6 pl-4 border-l-2 border-gray-200 flex-col gap-4"
               >
                 {opt.followUp.heading && (
                   <p
-                    class="text-sm font-medium text-gray-800 dark:text-gray-300"
+                    class="text-sm font-medium text-gray-800"
                     set:html={opt.followUp.heading}
                   />
                 )}
