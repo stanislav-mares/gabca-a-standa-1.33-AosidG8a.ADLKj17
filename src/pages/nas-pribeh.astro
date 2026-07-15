@@ -1,7 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
-import TimeLine from "../components/TimeLine.astro";
 import { slideTransition } from "../utils/transitions";
 
 const heading = "Náš příběh";
@@ -83,38 +82,40 @@ const textContent = [
 
 <Layout>
     <main
-        class="h-screen w-full pt-15 bg-surface/95 overflow-y-auto"
+        class="h-screen w-full pt-32 bg-surface/95 overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10">
-            <h1 class="text-title font-light mb-8" data-reveal>{heading}</h1>
-            <article class="flex w-full items-stretch">
-                <aside
-                    class="flex-1 flex justify-center"
-                    data-reveal
-                    style="--reveal-delay: 0.3s"
-                >
-                    <TimeLine years={textContent.map((t) => t.year)} />
-                </aside>
-                <main class="flex flex-col items-center gap-4 max-w-3xl">
-                    {
-                        textContent.map((item, i) => (
-                            <div
-                                id={item.year}
-                                class="scroll-mt-24"
-                                data-reveal
-                                style={`--reveal-delay: ${0.3 + i * 0.12}s`}
+            <h1 class="font-windsong text-7xl font-light tracking-wider mb-8" data-reveal>{heading}</h1>
+            <article class="flex flex-col gap-10 w-full pt-16 pb-[50vh]">
+                {
+                    textContent.map((item, i) => (
+                        <div
+                            id={item.year}
+                            data-story-section
+                            class="scroll-mt-24 md:grid md:grid-cols-[1fr_minmax(0,48rem)_1fr] md:gap-x-8"
+                            data-reveal
+                            style={`--reveal-delay: ${0.3 + i * 0.12}s`}
+                        >
+                            <h2
+                                class:list={[
+                                    "story-year text-7xl md:text-8xl font-bold mb-3 md:mb-0",
+                                    "text-ink/25 transition-colors duration-500",
+                                    "md:row-start-1 md:self-center",
+                                    i % 2 === 0
+                                        ? "md:col-start-1 md:text-right"
+                                        : "md:col-start-3 md:text-left",
+                                ]}
                             >
-                                <!-- <h2 class="text-3xl font-semibold mb-4">{item.year}</h2> -->
-                                <p class="text-lg leading-relaxed text-justify">
-                                    {item.content}
-                                </p>
-                            </div>
-                        ))
-                    }
-                </main>
-                <div class="flex-1"></div>
+                                {item.year}
+                            </h2>
+                            <p class="text-lg leading-relaxed text-justify md:col-start-2 md:row-start-1">
+                                {item.content}
+                            </p>
+                        </div>
+                    ))
+                }
             </article>
         </section>
         <aside class="fixed top-0 left-0 flex justify-center items-center h-full">
@@ -122,3 +123,52 @@ const textContent = [
         </aside>
     </main>
 </Layout>
+
+<script>
+    let cleanup: (() => void) | undefined;
+
+    function initStoryYears() {
+        cleanup?.();
+        cleanup = undefined;
+
+        const main = document.querySelector("main");
+        const sections = Array.from(
+            document.querySelectorAll<HTMLElement>("[data-story-section]"),
+        );
+        if (!main || sections.length === 0) return;
+
+        const setActive = (active: HTMLElement) => {
+            for (const section of sections) {
+                const year = section.querySelector(".story-year");
+                year?.classList.toggle("text-ink", section === active);
+                year?.classList.toggle("text-ink/25", section !== active);
+            }
+        };
+
+        // Rok sekce se rozsvítí, jakmile se její horní hrana dotkne
+        // poloviny obrazovky; do té doby svítí rok předchozí sekce.
+        let ticking = false;
+        const update = () => {
+            ticking = false;
+            const line = window.innerHeight / 2;
+            let active = sections[0];
+            for (let i = 1; i < sections.length; i++) {
+                if (sections[i].getBoundingClientRect().top <= line)
+                    active = sections[i];
+            }
+            setActive(active);
+        };
+        const onScroll = () => {
+            if (!ticking) {
+                ticking = true;
+                requestAnimationFrame(update);
+            }
+        };
+
+        main.addEventListener("scroll", onScroll, { passive: true });
+        update();
+        cleanup = () => main.removeEventListener("scroll", onScroll);
+    }
+
+    document.addEventListener("astro:page-load", initStoryYears);
+</script>

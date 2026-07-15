@@ -2,6 +2,18 @@
 
 ## 2026-07-15
 
+### Náš příběh – roky reagující na scroll
+- Roky zvětšeny a ztučněny (`text-7xl md:text-8xl font-bold`); na md+ jsou vertikálně **vycentrované vedle svého odstavce** (`md:self-center` v gridu).
+- Nový skript ve stránce: **aktivní rok se rozsvítí, jakmile se horní hrana jeho sekce dotkne poloviny obrazovky** — aktivní má `text-ink`, ostatní zašedlé `text-ink/25`, přepnutí plynulé přes `transition-colors`. Na startu vždy svítí první rok; řeší se prostým scroll handlerem (rAF throttle) na scrollujícím `<main>`, s re-inicializací přes `astro:page-load` a úklidem listeneru kvůli View Transitions.
+- `<article>` dostal **`pb-[50vh]`** (stejný trik jako dotazník), aby i poslední sekce mohla vyjet nad aktivační linii a šel „hitnout" každý rok.
+
+### Layout podstránek – odsazení a nadpisy
+- Horní padding `<main>` na všech 5 podstránkách zvětšen **`pt-15` → `pt-32`**, obsah pod nadpisem má navíc jednotné odsazení 4 rem (`pt-16` u článku v nas-pribeh a wrapperu dotazníku, `mt-16` u mřížky galerie).
+- Nadpisy `<h1>` sjednoceny na **`font-windsong text-7xl font-light tracking-wider`** (dřív `text-title` ~3 rem v Poppins). Proměnná `--text-title` v theme záměrně nezměněna — sdílí ji Countdown, BackButton a CeremonyDate.
+
+### Menu
+- Položky hlavního menu nově **kurzívou** (`italic`, pravé kurzívní řezy Poppins).
+
 ### Přechody stránek – postupné vynořování obsahu
 - Nové keyframes `reveal-fade-up` + pravidlo `[data-reveal]` v `global.css`: 1 s `ease-out`, fill `both`, zpoždění přes CSS proměnnou `--reveal-delay` (výchozí 0,2 s). Funguje díky tomu, že **snapshot nové stránky je při View Transition živý** – animace prvků startují vložením do DOM (= swap) a běží souběžně se slidem, takže se obsah poskládá během příjezdu panelu a doběhne krátce po něm. Vědomě běží i při úplně prvním načtení webu (bez JS guardu); `prefers-reduced-motion` animace vypíná.
 - Rozmístění po stránkách: `nas-pribeh` – nadpis (0,2 s), časová osa (0,3 s) a bloky textu odstupňované `0,3 + i × 0,12 s`; `dotaznik` – nadpis → úvodní odstavec (0,35 s) → formulář jako celek (0,5 s; jednotlivé otázky se nestupňují, většina je pod foldem); `svatebni-den` – zatím jen nadpis.

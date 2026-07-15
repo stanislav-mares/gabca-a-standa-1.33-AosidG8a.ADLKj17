@@ -11,15 +11,15 @@ const photos = await getGalleryPhotosWithLightbox();
 
 <Layout>
     <main
-        class="h-screen w-full pt-15 bg-surface/95 overflow-y-auto"
+        class="h-screen w-full pt-32 bg-surface/95 overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10 md:px-40 pb-16">
-            <h1 class="text-title font-light mb-8" data-reveal>{heading}</h1>
+            <h1 class="font-windsong text-7xl font-light tracking-wider mb-8" data-reveal>{heading}</h1>
             <div
                 id="galerie"
-                class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 grid-flow-dense auto-rows-[9rem] md:auto-rows-[11rem] gap-3 w-full"
+                class="mt-16 grid grid-cols md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 grid-flow-dense auto-rows-[9rem] md:auto-rows-[11rem] gap-3 2xl:w-3/4"
             >
                 {
                     photos.map((photo, index) => {
@@ -48,7 +48,7 @@ const photos = await getGalleryPhotosWithLightbox();
                                             ? "(min-width: 1536px) 40vw, (min-width: 1280px) 50vw, (min-width: 768px) 66vw, 100vw"
                                             : "(min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
                                     }
-                                    class="h-full w-full object-cover opacity-85 transition-opacity duration-300 hover:opacity-100"
+                                    class="h-full w-full object-cover opacity-90 transition-opacity duration-300 hover:opacity-100"
                                     loading="lazy"
                                 />
                             </a>
