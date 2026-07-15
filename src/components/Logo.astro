@@ -1,1 +1,24 @@
+---
+import { Image } from "astro:assets";
+import mainLogo from "../assets/logo.png";
 
+// 1. (Optional) Define the TypeScript interface for your props
+interface Props {
+    width: number;
+    height: number; // The '?' makes this prop optional
+}
+
+// 2. Destructure the properties from Astro.props
+const { width = 128, height = 128 } = Astro.props;
+---
+
+<div class="flex justify-center">
+    <Image
+        src={mainLogo}
+        alt="Logo"
+        width={width}
+        ,
+        height={height}
+        class="w-full h-auto xl:w-3/4 2xl:w-full"
+    />
+</div>
