@@ -72,9 +72,10 @@
     --font-windsong: 'WindSong', sans-serif;
     --font-opensans: 'Open Sans', sans-serif;
 
+
     /* ---------- BRAND COLORS ---------- */
-    --color-surface: #ffffff;  /* beige panel background   → bg-surface  */
-    --color-accent:  #ffffff;  /* highlight / brand accent → text-accent */
+    --color-surface: #f0f1f5;  /* beige panel background   → bg-surface  */
+    --color-accent:  #ddbeb5;  /* highlight / brand accent → text-accent */
     --color-hover:   #4e4637;  /* interactive hover state  → text-hover  */
     --color-ink:     #4b402d;  /* primary text (gray-700)  → text-ink    */
     --color-muted:   #4b402d;  /* secondary text (gray-500) → text-muted */
