@@ -1,9 +1,12 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
 import { slideTransition } from "../utils/transitions";
+import { getGalleryPhotosWithLightbox, isHeroPhoto } from "../utils/gallery";
 
 const heading = "Fotogalerie";
+const photos = await getGalleryPhotosWithLightbox();
 ---
 
 <Layout>
@@ -12,11 +15,71 @@ const heading = "Fotogalerie";
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
-        <section class="flex flex-col items-center justify-center px-6 sm:px-10">
+        <section class="flex flex-col items-center justify-center px-6 sm:px-10 md:px-40 pb-16">
             <h1 class="text-title font-light mb-8">{heading}</h1>
+            <div
+                id="galerie"
+                class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 grid-flow-dense auto-rows-[9rem] md:auto-rows-[11rem] gap-3 w-full"
+            >
+                {
+                    photos.map((photo, index) => {
+                        const hero = isHeroPhoto(index);
+                        return (
+                            <a
+                                href={photo.lightbox.src}
+                                data-pswp-width={photo.lightbox.width}
+                                data-pswp-height={photo.lightbox.height}
+                                data-cropped="true"
+                                target="_blank"
+                                rel="noreferrer"
+                                class:list={[
+                                    "block overflow-hidden rounded-lg",
+                                    hero && "col-span-2 row-span-2",
+                                ]}
+                            >
+                                <Image
+                                    src={photo.image}
+                                    alt=""
+                                    widths={hero ? [800, 1600] : [400, 800]}
+                                    sizes={
+                                        hero
+                                            ? "(min-width: 1536px) 40vw, (min-width: 1280px) 50vw, (min-width: 768px) 66vw, 100vw"
+                                            : "(min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+                                    }
+                                    class="h-full w-full object-cover"
+                                    loading="lazy"
+                                />
+                            </a>
+                        );
+                    })
+                }
+            </div>
         </section>
         <aside class="fixed top-0 left-0 flex justify-center items-center h-full">
             <BackButton />
         </aside>
     </main>
 </Layout>
+
+<script>
+    import PhotoSwipeLightbox from "photoswipe/lightbox";
+    import "photoswipe/style.css";
+
+    let lightbox: PhotoSwipeLightbox | undefined;
+
+    // Modulový skript přežívá View Transitions, proto init/destroy přes eventy
+    document.addEventListener("astro:page-load", () => {
+        if (!document.getElementById("galerie")) return;
+        lightbox = new PhotoSwipeLightbox({
+            gallery: "#galerie",
+            children: "a",
+            pswpModule: () => import("photoswipe"),
+        });
+        lightbox.init();
+    });
+
+    document.addEventListener("astro:before-swap", () => {
+        lightbox?.destroy();
+        lightbox = undefined;
+    });
+</script>

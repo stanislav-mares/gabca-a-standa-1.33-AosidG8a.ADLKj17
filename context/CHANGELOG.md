@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-07-15
+
+### Fotogalerie – mozaikový layout s hero fotkami
+- Masonry přes CSS `columns-*` nahrazeno **CSS gridem s `grid-flow-dense`** (`grid-cols-2/3/4/5` podle breakpointu, fixní výška řádků `auto-rows-[9rem]`, na md+ `11rem`) – sloupcová masonry dávala všem fotkám stejnou váhu, grid umožňuje rytmus velká–malá.
+- Každá **7. fotka je „hero"** (`col-span-2 row-span-2`), první fotkou galerie počínaje; `grid-flow-dense` doplní díry kolem hero menšími snímky. Vzor určuje `isHeroPhoto()` v `src/utils/gallery.ts` (laditelná konstanta `HERO_INTERVAL`).
+- Fotky vyplňují buňky přes **`object-cover`** – v mřížce se ořezávají, celé se ukážou až v lightboxu. Hero dostává větší varianty obrázku (`widths` `[800, 1600]` místo `[400, 800]`) a vlastní `sizes`, protože se kreslí přes dva sloupce.
+
+### Fotogalerie – lightbox s gesty (PhotoSwipe)
+- Přidán **`photoswipe`** (v5) – vanilla JS bez frameworku, gesta kompletní (swipe mezi fotkami, pinch-zoom, double-tap, swipe dolů pro zavření; na desktopu šipky a Esc). Jádro se **lazy-loaduje až při prvním otevření** (`pswpModule: () => import("photoswipe")`).
+- Nová `getGalleryPhotosWithLightbox()` v `gallery.ts`: pro každou fotku vygeneruje přes `getImage()` **webp variantu do 2000 px** a vrátí ji i s rozměry – PhotoSwipe potřebuje `data-pswp-width/height` znát dopředu.
+- Každá fotka je v `<a href={velká varianta}>` – bez JS funguje jako fallback (otevře fotku v novém tabu).
+- Init přes `astro:page-load` (s guardem na přítomnost `#galerie` – modulový skript přežívá View Transitions), `destroy()` na `astro:before-swap`.
+- **`data-cropped="true"`** na odkazech: bez něj otevírací animace „poskočila" – PhotoSwipe předpokládal, že náhled ukazuje celou fotku, ale náhledy jsou ořezy (`object-cover`).
+
+### Fotogalerie – šířka kontejneru
+- Galerie roztažena na celou šířku mezi okraji: `<section>` má od md **`px-40`** (= šířka `BackButton`, symetricky na obou stranách), grid ztratil `max-w-6xl`. Na mobilu zůstává `px-6`/`sm:px-10`.
+- Na `2xl` přidán **pátý sloupec** a dorovnány `sizes` (běžná fotka 20vw, hero 40vw), aby mozaika na širokých monitorech nepůsobila nafoukle.
+
 ## 2026-07-14
 
 ### Dotazník – odesílání odpovědí do Google Sheetu (web)
