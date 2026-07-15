@@ -88,15 +88,24 @@ const textContent = [
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10">
-            <h1 class="text-title font-light mb-8">{heading}</h1>
+            <h1 class="text-title font-light mb-8" data-reveal>{heading}</h1>
             <article class="flex w-full items-stretch">
-                <aside class="flex-1 flex justify-center">
+                <aside
+                    class="flex-1 flex justify-center"
+                    data-reveal
+                    style="--reveal-delay: 0.3s"
+                >
                     <TimeLine years={textContent.map((t) => t.year)} />
                 </aside>
                 <main class="flex flex-col items-center gap-4 max-w-3xl">
                     {
-                        textContent.map((item) => (
-                            <div id={item.year} class="scroll-mt-24">
+                        textContent.map((item, i) => (
+                            <div
+                                id={item.year}
+                                class="scroll-mt-24"
+                                data-reveal
+                                style={`--reveal-delay: ${0.3 + i * 0.12}s`}
+                            >
                                 <!-- <h2 class="text-3xl font-semibold mb-4">{item.year}</h2> -->
                                 <p class="text-lg leading-relaxed text-justify">
                                     {item.content}

@@ -341,10 +341,16 @@ const questions: Question[] = [
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center px-6 sm:px-10">
-            <h1 class="text-title font-light mb-8">{heading}</h1>
+            <h1 class="text-title font-light mb-8" data-reveal>{heading}</h1>
             <div class="w-full max-w-3xl">
-                <p class="text-lg leading-relaxed text-justify">{intro}</p>
-                <div class="pt-10 pb-[50vh]">
+                <p
+                    class="text-lg leading-relaxed text-justify"
+                    data-reveal
+                    style="--reveal-delay: 0.35s"
+                >
+                    {intro}
+                </p>
+                <div class="pt-10 pb-[50vh]" data-reveal style="--reveal-delay: 0.5s">
                     <Questionnaire questions={questions} showAll />
                 </div>
             </div>

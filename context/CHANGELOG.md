@@ -2,6 +2,12 @@
 
 ## 2026-07-15
 
+### Přechody stránek – postupné vynořování obsahu
+- Nové keyframes `reveal-fade-up` + pravidlo `[data-reveal]` v `global.css`: 1 s `ease-out`, fill `both`, zpoždění přes CSS proměnnou `--reveal-delay` (výchozí 0,2 s). Funguje díky tomu, že **snapshot nové stránky je při View Transition živý** – animace prvků startují vložením do DOM (= swap) a běží souběžně se slidem, takže se obsah poskládá během příjezdu panelu a doběhne krátce po něm. Vědomě běží i při úplně prvním načtení webu (bez JS guardu); `prefers-reduced-motion` animace vypíná.
+- Rozmístění po stránkách: `nas-pribeh` – nadpis (0,2 s), časová osa (0,3 s) a bloky textu odstupňované `0,3 + i × 0,12 s`; `dotaznik` – nadpis → úvodní odstavec (0,35 s) → formulář jako celek (0,5 s; jednotlivé otázky se nestupňují, většina je pod foldem); `svatebni-den` – zatím jen nadpis.
+- `fotogalerie`: dlaždice mozaiky odstupňované po 0,06 s se **stropem 0,8 s** – prvních ~8 fotek se skládá postupně, zbytek (pod foldem) už nečeká déle.
+- **Odchozí stránka fade nemá**: stará stránka je při přechodu statický screenshot, opacity na něm bledne i s pozadím panelu, což vypadalo špatně (vyzkoušeno a vráceno). Content-only fade-out by vyžadoval JS zdržení navigace přes `astro:before-preparation` – zatím nerealizováno.
+
 ### Fotogalerie – mozaikový layout s hero fotkami
 - Masonry přes CSS `columns-*` nahrazeno **CSS gridem s `grid-flow-dense`** (`grid-cols-2/3/4/5` podle breakpointu, fixní výška řádků `auto-rows-[9rem]`, na md+ `11rem`) – sloupcová masonry dávala všem fotkám stejnou váhu, grid umožňuje rytmus velká–malá.
 - Každá **7. fotka je „hero"** (`col-span-2 row-span-2`), první fotkou galerie počínaje; `grid-flow-dense` doplní díry kolem hero menšími snímky. Vzor určuje `isHeroPhoto()` v `src/utils/gallery.ts` (laditelná konstanta `HERO_INTERVAL`).

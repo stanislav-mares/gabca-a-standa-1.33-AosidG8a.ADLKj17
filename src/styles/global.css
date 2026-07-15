@@ -188,4 +188,29 @@
             opacity: 1;
         }
     }
+
+    /* Postupné vynořování obsahu během slide přechodu.
+       Animace startuje vložením prvku do DOM (= swap stránky),
+       takže běží souběžně s 0.8s slidem panelu. */
+    @keyframes reveal-fade-up {
+        from {
+            opacity: 0;
+            transform: translateY(1rem);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    [data-reveal] {
+        animation: reveal-fade-up 1s ease-out both;
+        animation-delay: var(--reveal-delay, 0.2s);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        [data-reveal] {
+            animation: none;
+        }
+    }
 }
