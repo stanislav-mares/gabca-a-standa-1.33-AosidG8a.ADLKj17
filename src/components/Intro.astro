@@ -1,25 +1,30 @@
 ---
 import ForwardButton from "./ForwardButton.astro";
-import CeremonyDate from "./CeremonyDate.astro";
 import Logo from "./Logo.astro";
-import { Image } from 'astro:assets';
-import introBackground from '../assets/IMG_7878-jas-upravene.JPEG';
+import { Image } from "astro:assets";
+import introBackground from "../assets/dkr-1795-bw.jpg";
 ---
 
 <div
     id="intro-overlay"
-    class="fixed w-screen h-screen inset-0 z-20 cursor-pointer flex items-center justify-center bg-gradient-to-r"
+    class="fixed inset-0 z-20 flex items-center bg-surface overflow-hidden"
 >
-    <div class="intro-content text-center absolute">
-        <Logo width={240} height={240} />
+    <!-- Stejný scale/origin jako fotka pozadí v Layout.astro, aby na sebe navazovaly -->
+    <Image
+        src={introBackground}
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover scale-130 origin-[0%_50%]"
+    />
+    <!-- Jemný přechod pro čitelnost loga nad fotkou -->
+    <div
+        class="absolute inset-0 bg-gradient-to-r from-surface/90 via-surface/40 to-transparent"
+    >
     </div>
-    <div class="absolute ml-90 text-center">
-        <CeremonyDate />
+    <!-- Logo vlevo — zarovnané nad panelem Headeru kvůli plynulému přesunu -->
+    <div class="relative w-full xl:w-[30%] 2xl:w-[35%] flex justify-center">
+        <Logo width={480} height={480} />
     </div>
-    <div class="absolute right-0 z-25 group w-full h-full">
-        <ForwardButton />
-    </div>
-    <Image class="opacity-15" src={introBackground} alt="Svatební pozadí" />
+    <ForwardButton />
 </div>
 
 <style>
@@ -54,24 +59,17 @@ import introBackground from '../assets/IMG_7878-jas-upravene.JPEG';
 <script>
     function setupIntro() {
         const introOverlay = document.getElementById("intro-overlay");
-        const hasSeenIntro = localStorage.getItem("hasSeenIntro");
 
         if (!introOverlay) {
             console.error("Intro overlay element not found.");
             return;
         }
 
-        if (hasSeenIntro) {
-            introOverlay.remove();
-            return;
-        }
-
-        // Vždy zobrazuj intro - čekej na kliknutí
         introOverlay.addEventListener("click", () => {
-            // Použij View Transition API pokud je dostupné
             if (!document.startViewTransition) {
                 // Fallback pro starší prohlížeče
-                introOverlay.style.transition = "transform 2s ease-in-out, opacity 0.7s ease-out";
+                introOverlay.style.transition =
+                    "transform 2s ease-in-out, opacity 0.7s ease-out";
                 introOverlay.style.transform = "translateX(-100%)";
                 introOverlay.style.opacity = "0";
 
@@ -81,17 +79,11 @@ import introBackground from '../assets/IMG_7878-jas-upravene.JPEG';
                 return;
             }
 
-            // View Transition API implementace
-            const transition = document.startViewTransition(() => {
+            document.startViewTransition(() => {
                 introOverlay.remove();
             });
-
-            localStorage.setItem("hasSeenIntro", "true");
         });
     }
-
-    // // Spusť při načtení
-    // setupIntro();
 
     // Spusť znovu po každé Astro navigaci
     document.addEventListener("astro:page-load", setupIntro);
