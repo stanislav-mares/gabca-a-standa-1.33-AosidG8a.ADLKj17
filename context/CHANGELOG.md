@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-07-17
+
+### Intro – logo a šipka vedle sebe
+- Layout přestavěn: logo a šipka jsou spolu ve **flex kontejneru přes levou polovinu obrazovky** (`xl:w-1/2`, na menších `w-full`), vycentrované s `gap-8`. Předchozí ladění polohy paddingem (`pl-*`) tím padlo.
+- `ForwardButton.astro` zjednodušen na samotný znak `>` se stylováním — už není absolutně roztažený přes pravou třetinu obrazovky. Klikací plocha se nezmenšila: **klik odchytává celý overlay**, tlačítko je jen vizuální vodítko.
+- Animovaný wrapper `.intro-logo` nově obaluje **jen logo**, takže při odchodu letí do headeru pouze logo a šipka zůstává na místě (zmizí s overlayem).
+
+### Intro → Header – příjezd panelu zleva
+- Header startuje vysunutý o svou šířku vlevo (`translateX(-100%)`) a klik na intro mu přidá `.header-entered` — **přijíždí souběžně s crossfadem** (shodných `1.5s ease-in-out`). Horizontální scrollbar nevzniká, `<main>` má `overflow-hidden`.
+- Cíl letícího loga se měří v okamžiku, kdy je panel ještě mimo obrazovku, proto se k naměřené pozici **přičítá šířka panelu** — logo přistane na finální pozici headerového loga, ne mimo obrazovku.
+- Přidán guard proti dvojkliku během animace (`intro-leaving`): druhý klik by přeměřil pozice uprostřed přejezdu a rozhodil cíl transformace.
+
 ## 2026-07-15
 
 ### Náš příběh – roky reagující na scroll

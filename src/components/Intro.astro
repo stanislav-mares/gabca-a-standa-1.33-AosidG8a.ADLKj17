@@ -21,38 +21,28 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
     >
     </div>
     <!-- Logo vlevo — zarovnané nad panelem Headeru kvůli plynulému přesunu -->
-    <div class="relative w-full xl:w-[30%] 2xl:w-[35%] flex justify-center">
-        <Logo width={480} height={480} />
+    <div
+        class="relative w-full xl:w-1/2 flex items-center justify-center gap-8"
+    >
+        <div class="intro-logo">
+            <Logo width={480} height={480} />
+        </div>
+        <ForwardButton />
     </div>
-    <ForwardButton />
 </div>
 
 <style>
-    /* View Transition animace */
-    ::view-transition-old(root) {
-        animation: intro-fade-out 0.7s ease-out;
+    #intro-overlay {
+        transition: opacity 1.5s ease-in-out;
     }
 
-    ::view-transition-new(root) {
-        animation: content-fade-in 1.5s ease-in-out;
+    #intro-overlay.intro-leaving {
+        opacity: 0;
+        pointer-events: none;
     }
 
-    @keyframes intro-fade-out {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
-    }
-
-    @keyframes content-fade-in {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+    .intro-logo {
+        transition: transform 1.5s ease-in-out;
     }
 </style>
 
@@ -66,21 +56,40 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
         }
 
         introOverlay.addEventListener("click", () => {
-            if (!document.startViewTransition) {
-                // Fallback pro starší prohlížeče
-                introOverlay.style.transition =
-                    "transform 2s ease-in-out, opacity 0.7s ease-out";
-                introOverlay.style.transform = "translateX(-100%)";
-                introOverlay.style.opacity = "0";
+            if (introOverlay.classList.contains("intro-leaving")) return;
 
-                setTimeout(() => {
-                    introOverlay.remove();
-                }, 2000);
-                return;
+            // Změř obě loga a posuň/zmenši intročkové přesně na to v Headeru
+            const logoWrap =
+                introOverlay.querySelector<HTMLElement>(".intro-logo");
+            const introLogo = logoWrap?.querySelector("img");
+            const headerPanel = document.getElementById("main-header");
+            const headerLogo = headerPanel?.querySelector("img");
+
+            if (logoWrap && introLogo && headerPanel && headerLogo) {
+                const from = introLogo.getBoundingClientRect();
+                const to = headerLogo.getBoundingClientRect();
+                // Header je teď ještě vysunutý o svou šířku vlevo — cílíme na finální pozici
+                const panelOffset = headerPanel.getBoundingClientRect().width;
+                const dx =
+                    to.left +
+                    panelOffset +
+                    to.width / 2 -
+                    (from.left + from.width / 2);
+                const dy =
+                    to.top + to.height / 2 - (from.top + from.height / 2);
+                const scale = to.width / from.width;
+                logoWrap.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
             }
 
-            document.startViewTransition(() => {
-                introOverlay.remove();
+            headerPanel?.classList.add("header-entered");
+
+            introOverlay.classList.add("intro-leaving");
+            // transitionend bublá i z dětí (např. barevný přechod tlačítka),
+            // reagujeme jen na opacity samotného overlaye
+            introOverlay.addEventListener("transitionend", (e) => {
+                if (e.target === introOverlay && e.propertyName === "opacity") {
+                    introOverlay.remove();
+                }
             });
         });
     }
