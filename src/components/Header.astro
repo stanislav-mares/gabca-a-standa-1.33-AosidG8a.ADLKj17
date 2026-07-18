@@ -9,8 +9,15 @@ import CeremonyDate from "./CeremonyDate.astro";
     id="main-header"
     class="h-full flex flex-col items-center justify-evenly content-center w-full bg-surface opacity-95"
 >
-    <div class="h-1/3 flex items-center"><h1 class="font-heading text-hero leading-20 text-center font-stretch-50% font-light">
-        <Logo width={320} height={320} />
+    <div class="h-1/3 flex items-center">
+        <button
+            id="header-logo-btn"
+            type="button"
+            class="cursor-pointer"
+            aria-label="Zpět na úvod"
+        >
+            <Logo width={440} height={440} />
+        </button>
     </div>
     <div class="h-1/3 border-gray-600/50 w-full flex justify-center">
         <Menu />
@@ -27,10 +34,23 @@ import CeremonyDate from "./CeremonyDate.astro";
     /* Schovaný vlevo, dokud ho Intro při odchodu nepustí dovnitř (.header-entered) */
     #main-header {
         transform: translateX(-100%);
-        transition: transform 1.5s ease-in-out;
+        transition: transform 1.2s ease-in-out;
     }
 
     #main-header.header-entered {
         transform: none;
+    }
+
+    /* Letící logo zůstává viditelné (80 %) i po dosednutí; headerové
+       se pod ním objeví až po konci letu (1.2s) a jen ho „doostří"
+       na 100 %. Při odletu naopak zhasne hned (bez delay). */
+    #header-logo-btn {
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+    }
+
+    #main-header.header-entered #header-logo-btn {
+        opacity: 1;
+        transition: opacity 0.3s ease-in 1.2s;
     }
 </style>

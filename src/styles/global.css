@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=WindSong:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Alex+Brush&display=swap");
 @import "tailwindcss";
 
 
@@ -59,7 +60,7 @@
 @theme {
     /* ---------- FONT ROLES ---------- */
     /* Swap the family on the right — every component follows. */
-    --font-heading: 'WindSong', cursive;   /* couple names, ceremony date */
+    --font-heading: 'Alex Brush', cursive; /* page headings               */
     --font-display: 'Wedding', serif;      /* decorative one-offs         */
     --font-body:    'Poppins', sans-serif; /* menu, UI, paragraphs        */
 
@@ -71,6 +72,7 @@
     --font-recorda:  'Recorda', sans-serif;
     --font-windsong: 'WindSong', sans-serif;
     --font-opensans: 'Open Sans', sans-serif;
+    --font-alexbrush: 'Alex Brush', cursive;
 
 
     /* ---------- BRAND COLORS ---------- */
@@ -84,7 +86,7 @@
     /* Semantic sizes — tune once here.  → text-hero, text-title, … */
     --text-label:   0.7rem;   /* countdown labels          */
     --text-body:    1rem;
-    --text-heading: 1.875rem; /* was text-3xl              */
+    --text-heading: 4.5rem;   /* page headings (h1)        */
     --text-title:   3rem;     /* was text-5xl (page heads) */
     --text-display: 4.5rem;   /* was text-7xl              */
     --text-hero:    6rem;     /* was text-8xl (names)      */

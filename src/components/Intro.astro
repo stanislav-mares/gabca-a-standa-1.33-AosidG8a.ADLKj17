@@ -1,5 +1,4 @@
 ---
-import ForwardButton from "./ForwardButton.astro";
 import Logo from "./Logo.astro";
 import { Image } from "astro:assets";
 import introBackground from "../assets/dkr-1795-bw.jpg";
@@ -7,91 +6,175 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
 
 <div
     id="intro-overlay"
-    class="fixed inset-0 z-20 flex items-center bg-surface overflow-hidden"
+    class="fixed inset-0 z-20 flex items-center overflow-hidden"
 >
+    <!-- Podklad pod fotkou — musí se prolínat s ostatními vrstvami,
+         kořen overlaye zůstává průhledný -->
+    <div class="intro-bg absolute inset-0 bg-surface"></div>
     <!-- Stejný scale/origin jako fotka pozadí v Layout.astro, aby na sebe navazovaly -->
     <Image
         src={introBackground}
         alt=""
-        class="absolute inset-0 w-full h-full object-cover scale-130 origin-[0%_50%]"
+        class="intro-bg absolute inset-0 w-full h-full object-cover scale-130 origin-[0%_50%]"
     />
     <!-- Jemný přechod pro čitelnost loga nad fotkou -->
     <div
-        class="absolute inset-0 bg-gradient-to-r from-surface/90 via-surface/40 to-transparent"
+        class="intro-bg absolute inset-0 bg-gradient-to-r from-surface/90 via-surface/40 to-transparent"
     >
     </div>
     <!-- Logo vlevo — zarovnané nad panelem Headeru kvůli plynulému přesunu -->
-    <div
-        class="relative w-full xl:w-1/2 flex items-center justify-center gap-8"
-    >
+    <div class="relative w-full xl:w-1/2 flex items-center justify-center">
         <div class="intro-logo">
-            <Logo width={480} height={480} />
+            <Logo width={600} height={600} />
         </div>
-        <ForwardButton />
     </div>
+    <button
+        class="intro-enter absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-alexbrush text-hero text-ink hover:text-gray-500 cursor-pointer"
+        aria-label="Vstoupit na web">Vstoupit</button
+    >
 </div>
 
 <style>
-    #intro-overlay {
-        transition: opacity 1.5s ease-in-out;
-    }
-
     #intro-overlay.intro-leaving {
-        opacity: 0;
         pointer-events: none;
     }
 
+    /* Prolíná se jen pozadí (fotka + gradient), ne celý overlay —
+       letící logo tak může zůstat viditelné i po crossfadu */
+    .intro-bg {
+        transition: opacity 1.2s ease-in-out;
+    }
+
+    #intro-overlay.intro-leaving .intro-bg {
+        opacity: 0;
+    }
+
     .intro-logo {
-        transition: transform 1.5s ease-in-out;
+        transition:
+            transform 1.2s ease-in-out,
+            opacity 1.2s ease-in-out;
+    }
+
+    /* Odlétající logo nemizí, jen lehce zprůhlední a „usadí se" na panelu */
+    #intro-overlay.intro-leaving .intro-logo {
+        opacity: 0.8;
+    }
+
+    /* Text mizí rychleji než zbytek overlaye (1.2s crossfade);
+       při návratu do intra se naopak objeví až ke konci prolnutí */
+    .intro-enter {
+        transition:
+            opacity 0.4s ease-in-out 0.8s,
+            color 0.3s ease-in-out;
+    }
+
+    #intro-overlay.intro-leaving .intro-enter {
+        opacity: 0;
+        transition:
+            opacity 0.4s ease-in-out,
+            color 0.3s ease-in-out;
     }
 </style>
 
 <script>
     function setupIntro() {
         const introOverlay = document.getElementById("intro-overlay");
+        if (!introOverlay) return; // podstránky intro nemají
 
-        if (!introOverlay) {
-            console.error("Intro overlay element not found.");
-            return;
-        }
+        const logoWrap = introOverlay.querySelector<HTMLElement>(".intro-logo");
+        const headerPanel = document.getElementById("main-header");
+        let animating = false;
 
-        introOverlay.addEventListener("click", () => {
-            if (introOverlay.classList.contains("intro-leaving")) return;
-
-            // Změř obě loga a posuň/zmenši intročkové přesně na to v Headeru
-            const logoWrap =
-                introOverlay.querySelector<HTMLElement>(".intro-logo");
+        // Transform, který posadí intročkové logo přesně na logo v Headeru.
+        // headerAtFinal: header už stojí na finální pozici (návrat z hl. strany),
+        // jinak je ještě vysunutý o svou šířku vlevo (vstup).
+        const flightTransform = (headerAtFinal: boolean): string => {
             const introLogo = logoWrap?.querySelector("img");
-            const headerPanel = document.getElementById("main-header");
             const headerLogo = headerPanel?.querySelector("img");
+            if (!logoWrap || !introLogo || !headerPanel || !headerLogo)
+                return "";
 
-            if (logoWrap && introLogo && headerPanel && headerLogo) {
-                const from = introLogo.getBoundingClientRect();
-                const to = headerLogo.getBoundingClientRect();
-                // Header je teď ještě vysunutý o svou šířku vlevo — cílíme na finální pozici
-                const panelOffset = headerPanel.getBoundingClientRect().width;
-                const dx =
-                    to.left +
-                    panelOffset +
-                    to.width / 2 -
-                    (from.left + from.width / 2);
-                const dy =
-                    to.top + to.height / 2 - (from.top + from.height / 2);
-                const scale = to.width / from.width;
-                logoWrap.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
-            }
+            // Přirozenou pozici loga měříme bez případného transformu,
+            // aby přepočet fungoval i po resize okna
+            const prevTransition = logoWrap.style.transition;
+            const prevTransform = logoWrap.style.transform;
+            logoWrap.style.transition = "none";
+            logoWrap.style.transform = "none";
+            const from = introLogo.getBoundingClientRect();
+            logoWrap.style.transform = prevTransform;
+            void logoWrap.offsetHeight;
+            logoWrap.style.transition = prevTransition;
 
+            const to = headerLogo.getBoundingClientRect();
+            const panelOffset = headerAtFinal
+                ? 0
+                : headerPanel.getBoundingClientRect().width;
+            const dx =
+                to.left +
+                panelOffset +
+                to.width / 2 -
+                (from.left + from.width / 2);
+            const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+            const scale = to.width / from.width;
+            return `translate(${dx}px, ${dy}px) scale(${scale})`;
+        };
+
+        const enterMain = () => {
+            if (animating || introOverlay.classList.contains("intro-leaving"))
+                return;
+            animating = true;
+            document.removeEventListener("keydown", onKeydown);
+
+            if (logoWrap) logoWrap.style.transform = flightTransform(false);
             headerPanel?.classList.add("header-entered");
-
             introOverlay.classList.add("intro-leaving");
-            // transitionend bublá i z dětí (např. barevný přechod tlačítka),
-            // reagujeme jen na opacity samotného overlaye
-            introOverlay.addEventListener("transitionend", (e) => {
-                if (e.target === introOverlay && e.propertyName === "opacity") {
-                    introOverlay.remove();
-                }
-            });
+        };
+
+        const backToIntro = () => {
+            if (animating || !introOverlay.classList.contains("intro-leaving"))
+                return;
+            animating = true;
+
+            if (logoWrap) {
+                // Posaď logo bez animace na aktuální pozici headerového
+                // (uložený transform může být po resize zastaralý)…
+                logoWrap.style.transition = "none";
+                logoWrap.style.transform = flightTransform(true);
+                void logoWrap.offsetHeight;
+                logoWrap.style.transition = "";
+                // …a nech ho odletět zpátky doprostřed
+                logoWrap.style.transform = "";
+            }
+            headerPanel?.classList.remove("header-entered");
+            introOverlay.classList.remove("intro-leaving");
+        };
+
+        // Mezerník/Enter na dokumentu — preventDefault zabrání scrollu
+        // i syntetickému kliku na fokusované tlačítko (dvojí spuštění)
+        const onKeydown = (e: KeyboardEvent) => {
+            if (e.key === " " || e.key === "Enter") {
+                e.preventDefault();
+                enterMain();
+            }
+        };
+
+        // Konec crossfadu (kterýmkoli směrem) poznáme podle opacity
+        // pozadí — overlay sám už se neprolíná
+        introOverlay.addEventListener("transitionend", (e) => {
+            if (
+                e.target instanceof Element &&
+                e.target.classList.contains("intro-bg") &&
+                e.propertyName === "opacity"
+            ) {
+                animating = false;
+            }
         });
+
+        introOverlay.addEventListener("click", enterMain);
+        document
+            .getElementById("header-logo-btn")
+            ?.addEventListener("click", backToIntro);
+        document.addEventListener("keydown", onKeydown);
     }
 
     // Spusť znovu po každé Astro navigaci
