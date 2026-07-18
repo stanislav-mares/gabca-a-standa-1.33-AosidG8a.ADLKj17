@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-07-18
+
+### Intro – text „Vstoupit" místo šipky
+- `ForwardButton.astro` smazán. Nahrazuje ho text **„Vstoupit"** vycentrovaný na střed obrazovky (`absolute left-1/2 top-1/2`), písmo **Alex Brush** ve velikosti `text-hero`, barva `text-ink`, hover šedá s 300ms přechodem. Klik dál odchytává celý overlay, tlačítko je vizuální vodítko.
+- Z intra se dá projít i **mezerníkem/Enterem** — `keydown` listener na dokumentu, `preventDefault` řeší scroll mezerníkem i dvojité spuštění přes fokusované tlačítko. Platí jen pro první zobrazení intra; po návratu z hlavní strany se pokračuje výhradně klikem (listener se znovu nenavěšuje).
+- Text má **vlastní rychlejší fade** (0,4 s) než zbytek prolnutí; při návratu do intra se naopak objeví až ke konci (delay 0,8 s), aby nenaskočil do ještě běžícího crossfadu.
+
+### Intro ↔ hlavní strana – obousměrný přechod
+- Klik na **logo v Headeru vrací zpět do intra** — reverz vstupní animace (header odjede vlevo, logo odletí doprostřed, černobílá fotka se prolne zpět). Logo je proto obalené tlačítkem `#header-logo-btn`.
+- Skript v `Intro.astro` refaktorován na symetrickou dvojici `enterMain()` / `backToIntro()`; overlay se po vstupu **už nemaže z DOM**, jen zůstává skrytý s `pointer-events: none` — jinak by nebylo kam se vracet.
+- Výpočet přeletu sjednocen do `flightTransform(headerAtFinal)`: při vstupu kompenzuje vysunutý header přičtením šířky panelu, při návratu měří finální pozici. Před zpátečním letem se pozice **přeměřuje z aktuálního DOM** (FLIP — logo se bez animace přisadí na headerové), takže resize okna mezi tam a zpět nerozhodí cíl.
+- Guard `animating` proti klikům uprostřed animace; resetuje se přes `transitionend` na pozadí intra. Chybějící overlay na podstránkách už neloguje error — je to očekávaný stav.
+
+### Intro – logo „odlétá a usadí se" (opacity handoff)
+- Neprolíná se celý overlay, ale jen **vrstvy pozadí** (`.intro-bg`: podklad `bg-surface`, černobílá fotka, gradient). Kořen overlaye musí zůstat průhledný — jeho `bg-surface` jinak po vstupu trvale překrýval celou stránku béžovou (vypadalo to jako header roztažený přes celou stranu).
+- Letící logo při odchodu **nemizí, jen zprůhlední na 80 %** a v této podobě zůstává sedět na panelu. Headerové logo se pod ním objeví až po dosednutí (0,3 s fade s delay = délka letu) a jen ho „doostří" na 100 % — crossfade dvou identických log uprostřed letu problikával, tohle předání nemá co probliknout. Při odletu headerové logo naopak zhasne hned.
+- Délka celé animace zrychlena z 1,5 s na **1,2 s** (jednotně: prolnutí, přelet, nájezd headeru, delay doostření).
+
+### Písmo Alex Brush – menu, nadpisy, config
+- Přidán Google Fonts import **Alex Brush** a `--font-alexbrush` do `@theme`.
+- **Menu** přepnuto na Alex Brush; zrušeny `italic` a `font-extralight` (font má jediný řez, kurzíva by byla jen umělý sklon). Položky zvětšeny na `text-6xl xl:text-5xl 2xl:text-[3.75rem]`.
+- **Nadpisy podstránek** (všech 5 h1) přepnuty z WindSongu na sémantické tokeny `font-heading text-heading`: v configu `--font-heading` nově `'Alex Brush'` a `--text-heading` 4,5 rem (dřív 1,875 rem, nikde nepoužito). Styl nadpisů se teď ladí na jednom místě; z h1 padl neúčinný `font-light`.
+
+### Header
+- Logo zvětšeno **320 → 440 px** (cíl přeletu se měří za běhu, animaci to nerozhodilo).
+- Odstraněn neuzavřený pozůstatkový tag `<h1>` kolem loga.
+
 ## 2026-07-17
 
 ### Intro – logo a šipka vedle sebe
