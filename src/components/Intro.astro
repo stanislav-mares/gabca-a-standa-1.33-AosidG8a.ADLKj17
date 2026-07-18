@@ -123,6 +123,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             if (animating || introOverlay.classList.contains("intro-leaving"))
                 return;
             animating = true;
+            sessionStorage.setItem("intro-seen", "1");
             document.removeEventListener("keydown", onKeydown);
 
             if (logoWrap) logoWrap.style.transform = flightTransform(false);
@@ -158,6 +159,30 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             }
         };
 
+        // Uživatel intrem už prošel — přeskoč rovnou do usazeného stavu
+        // (vše bez animací: přechody se na okamžik vypnou a stav se
+        // commitne vynuceným reflow)
+        const skipIntro = () => {
+            const animated = [
+                headerPanel,
+                document.getElementById("header-logo-btn"),
+                logoWrap,
+                ...introOverlay.querySelectorAll<HTMLElement>(
+                    ".intro-bg, .intro-enter",
+                ),
+            ];
+            for (const el of animated) if (el) el.style.transition = "none";
+
+            // Header musí stát na finální pozici, než se změří cíl letu
+            headerPanel?.classList.add("header-entered");
+            void headerPanel?.offsetHeight;
+            if (logoWrap) logoWrap.style.transform = flightTransform(true);
+            introOverlay.classList.add("intro-leaving");
+            void introOverlay.offsetHeight;
+
+            for (const el of animated) if (el) el.style.transition = "";
+        };
+
         // Konec crossfadu (kterýmkoli směrem) poznáme podle opacity
         // pozadí — overlay sám už se neprolíná
         introOverlay.addEventListener("transitionend", (e) => {
@@ -174,7 +199,12 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
         document
             .getElementById("header-logo-btn")
             ?.addEventListener("click", backToIntro);
-        document.addEventListener("keydown", onKeydown);
+
+        if (sessionStorage.getItem("intro-seen")) {
+            skipIntro();
+        } else {
+            document.addEventListener("keydown", onKeydown);
+        }
     }
 
     // Spusť znovu po každé Astro navigaci
