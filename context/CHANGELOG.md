@@ -2,6 +2,19 @@
 
 ## 2026-07-18
 
+### Intro – zobrazení jen jednou za návštěvu
+- Vstup na hlavní stranu zapíše příznak **`intro-seen` do `sessionStorage`**; při dalších návratech na hlavní stranu se intro přeskočí — `skipIntro()` nastaví rovnou usazený stav (header na místě, logo usazené, pozadí intra skryté). Přechody se při tom na okamžik vypnou a stav se commitne vynuceným reflow, takže nic neanimuje.
+- Klik na logo v Headeru intro **vrátí kdykoli** — skip nastavuje identický stav, v jakém stránka končí po normálním vstupu. Mezerník/Enter se navěšují jen při skutečném zobrazení intra.
+- `sessionStorage` = příznak žije po dobu prohlížečové session; po zavření prohlížeče se intro ukáže znovu.
+
+### Intro – bez probliku po refreshi
+- Skip běžel až na `astro:page-load` (po prvním paintu), takže refresh krátce ukázal intro. Řešení: **blokující inline skript v `<head>`** (`Layout.astro`) nastaví na `<html>` třídu `intro-seen` ještě před vykreslením a **CSS pojistky** okamžitě schovají overlay (`visibility: hidden`) a ukážou header s logem na finální pozici.
+- Pojistky jsou vázané na `:not(.intro-leaving)` / `:not(.header-entered)`, takže po usazení stavu přestanou platit samy; `skipIntro()` navíc třídu z `<html>` sundá, aby po návratu do intra klikem na logo overlay neschovávaly.
+- Inline skript v head se při View Transitions znovu nespouští — třída se proto nasazuje i v **`astro:before-swap`** (kryje jednosnímkový blik při klientské navigaci zpět na hlavní stranu).
+
+### Styly
+- Z `global.css` odstraněn zbloudilý text `Te` mezi `@font-face` bloky — syntaktická chyba tiše zahazovala celý následující blok, takže se nenačítal font **Palisade**.
+
 ### Intro – text „Vstoupit" místo šipky
 - `ForwardButton.astro` smazán. Nahrazuje ho text **„Vstoupit"** vycentrovaný na střed obrazovky (`absolute left-1/2 top-1/2`), písmo **Alex Brush** ve velikosti `text-hero`, barva `text-ink`, hover šedá s 300ms přechodem. Klik dál odchytává celý overlay, tlačítko je vizuální vodítko.
 - Z intra se dá projít i **mezerníkem/Enterem** — `keydown` listener na dokumentu, `preventDefault` řeší scroll mezerníkem i dvojité spuštění přes fokusované tlačítko. Platí jen pro první zobrazení intra; po návratu z hlavní strany se pokračuje výhradně klikem (listener se znovu nenavěšuje).
