@@ -35,6 +35,14 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
 </div>
 
 <style>
+    /* Uživatel už intrem prošel (html třídu nastavuje blokující skript
+       v Layoutu): schovej overlay hned, než ho skipIntro() usadí —
+       jinak intro po refreshi bliklo. Po usazení (.intro-leaving)
+       pravidlo přestává platit. */
+    :global(html.intro-seen) #intro-overlay:not(.intro-leaving) {
+        visibility: hidden;
+    }
+
     #intro-overlay.intro-leaving {
         pointer-events: none;
     }
@@ -181,6 +189,10 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             void introOverlay.offsetHeight;
 
             for (const el of animated) if (el) el.style.transition = "";
+
+            // Stav je usazený — pomocnou třídu sundej, aby CSS pojistka
+            // proti probliku neschovávala overlay po návratu do intra
+            document.documentElement.classList.remove("intro-seen");
         };
 
         // Konec crossfadu (kterýmkoli směrem) poznáme podle opacity
@@ -209,4 +221,12 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
 
     // Spusť znovu po každé Astro navigaci
     document.addEventListener("astro:page-load", setupIntro);
+
+    // Klientská navigace nejde přes blokující skript v <head> — třídu
+    // proti probliku nasaď znovu před výměnou DOM
+    document.addEventListener("astro:before-swap", () => {
+        if (sessionStorage.getItem("intro-seen")) {
+            document.documentElement.classList.add("intro-seen");
+        }
+    });
 </script>

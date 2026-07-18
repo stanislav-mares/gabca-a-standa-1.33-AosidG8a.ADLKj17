@@ -14,6 +14,14 @@ import mainPhoto from "../assets/dkr-1795.jpg";
         <meta name="generator" content={Astro.generator} />
         <title>S & G</title>
 
+        <!-- Blokující skript: označ html třídou ještě před prvním paintem,
+             aby po refreshi neprobliklo intro (CSS pak rovnou ukáže header) -->
+        <script is:inline>
+            if (sessionStorage.getItem("intro-seen")) {
+                document.documentElement.classList.add("intro-seen");
+            }
+        </script>
+
         <ClientRouter />
     </head>
     <body class="text-black text">

@@ -41,6 +41,20 @@ import CeremonyDate from "./CeremonyDate.astro";
         transform: none;
     }
 
+    /* Protějšek skrytí intra po refreshi (viz Intro.astro): header i logo
+       jsou vidět hned, než skipIntro() přidá stavové třídy */
+    :global(html.intro-seen) #main-header:not(.header-entered) {
+        transform: none;
+        transition: none;
+    }
+
+    :global(html.intro-seen)
+        #main-header:not(.header-entered)
+        #header-logo-btn {
+        opacity: 1;
+        transition: none;
+    }
+
     /* Letící logo zůstává viditelné (80 %) i po dosednutí; headerové
        se pod ním objeví až po konci letu (1.2s) a jen ho „doostří"
        na 100 %. Při odletu naopak zhasne hned (bez delay). */
