@@ -2,6 +2,12 @@
 
 ## 2026-07-19
 
+### Tlačítko zpět – responsivní pás a SVG šipka
+- **`<aside>` obal přesunut z podstránek dovnitř `BackButton.astro`** — všech 5 stránek renderuje jen `<BackButton />`, pozicování se ladí na jednom místě.
+- **Responsivní layout**: od `lg` (PC) původní svislý pruh `w-40` přes celou výšku se šipkou uprostřed; pod `lg` (mobil + tablet) vodorovný pás `h-16` fixně u horního okraje přes celou šířku, šipka vlevo. Výška pásu odpovídá nejmenšímu hornímu odsazení stránek (`pt-16`), aby nepřekrýval obsah.
+- **Hover**: `hover:bg-gray-100` → `hover:bg-ink/5` — světle šedý podklad na béžovém `bg-surface` působil spíš jako zesvětlení, poloprůhledná `ink` pás jemně ztmaví.
+- **Šipka je inline SVG chevron** místo textového znaku `<` — znak se centroval podle fontových metrik (řádkový box 3rem písma přetékal pás a špatně seděl i s `leading-none`), SVG bez baseline vycentruje `items-center` přesně. Velikost `h-10`, tenký tah `stroke-width="1.4"` v duchu původního `font-extralight`, barva přes `currentColor`; tlačítko bez textu dostalo `aria-label="Zpět"`.
+
 ### Ubytování – tři domy s live filtrem hostů
 - Stránka přestavěna z prázdného nadpisu na **tři sloupce ve tvaru siluety domu** (Farní dvůr, Chata Liebich, Továrníkova vila) — nová komponenta `HouseColumn.astro`. Střecha je **inline SVG polyline** s `preserveAspectRatio="none"` + `vector-effect="non-scaling-stroke"`: roztáhne se na šířku sloupce, ale tah zůstane stejně tlustý jako `border-x`/`border-b` těla domu. Celý obrys se barví z jednoho místa přes `currentColor` (`text-ink/40` na wrapperu).
 - **Seznam hostů je konfigurovatelný** v poli `houses` ve frontmatteru `ubytovani.astro` (zatím placeholder jména); tělo domu má `min-h-96`, aby dům s málo hosty nevypadal zploštěle.

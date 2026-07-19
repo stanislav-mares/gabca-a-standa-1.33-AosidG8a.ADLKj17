@@ -1,11 +1,23 @@
 ---
 ---
 
-<button
-    id="back-btn"
-    class="flex w-40 justify-center items-center h-full p-2 text-title font-extralight min-h-screen hover:bg-gray-100 transition-colors cursor-pointer"
-    >&lt;</button
->
+<aside class="fixed top-0 left-0 w-full lg:w-auto lg:flex lg:h-full lg:items-center">
+    <button
+        id="back-btn"
+        aria-label="Zpět"
+        class="flex w-full h-16 justify-start items-center px-8 hover:bg-ink/5 transition-colors cursor-pointer lg:w-40 lg:h-auto lg:min-h-screen lg:justify-center lg:p-2"
+    >
+        <svg viewBox="0 0 12 24" class="h-10 w-5" fill="none" aria-hidden="true">
+            <path
+                d="M10.5 2 L1.5 12 L10.5 22"
+                stroke="currentColor"
+                stroke-width="1.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+    </button>
+</aside>
 
 <script>
     document.addEventListener("astro:page-load", () => {
