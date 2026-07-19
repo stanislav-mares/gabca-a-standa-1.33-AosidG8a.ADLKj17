@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-07-19
+
+### Svatební den – zhuštění a rozsvěcení celých sekcí
+- **Vertikální rytmus timeline výrazně zhuštěn** (cca na třetinu): gap článku `gap-16` → `gap-6`, oddělovací linka `h-24` → `h-12`, padding podnadpisů `py-16 md:py-24` → `py-4 md:py-6`.
+- Spolu s časem se nyní **rozsvěcí i podnadpis programu** — `<h3>` dostal třídu `story-title`, výchozí ztlumení `text-ink/25` a stejný barevný přechod; scroll skript přepíná `.story-year` i `.story-title` najednou.
+- **Logika aktivní sekce přepsána**: místo „poslední sekce, jejíž horní hrana překročila polovinu obrazovky" svítí sekce, **jejíž střed je nejblíž polovině obrazovky**. Po zhuštění řádků totiž původní pravidlo dávalo sekcím nerovnoměrné úseky scrollu — druhá sekce se aktivovala hned prvním pixelem a vzápětí ji přebila třetí (probliknutí). Pojistka: při `scrollTop === 0` svítí vždy první sekce.
+
+### Styly a odsazení napříč stránkami
+- **Nadpisy h1 zvětšeny** — `--text-heading` v `global.css` `4.5rem` → `5.25rem` (jediné místo, platí pro všech 5 podstránek).
+- **Obsah všech podstránek posunut o 2 rem níž** od nadpisu: `svatebni-den` a `nas-pribeh` `pt-12` → `pt-20`, `fotogalerie` `mt-16` → `mt-24`, `ubytovani` `mb-8` → `mb-16`, `dotaznik` `pt-16` → `pt-24`.
+
+### Svatební den – harmonogram ve stylu Náš příběh
+- Stránka přestavěna z prázdného nadpisu na **timeline harmonogramu dne** — záměrně **copy-paste kopie** struktury `nas-pribeh.astro` (bez sdíleného komponentu): pole položek ve frontmatteru, střídavé umístění velkého času vlevo/vpravo od obsahu na md+ gridu, `data-reveal` se stupňovaným zpožděním a stejný scroll skript (**aktivní čas se rozsvítí**, když se horní hrana sekce dotkne poloviny obrazovky).
+- Místo odstavců jsou obsahem **krátké podnadpisy programu** (Snídaně, Příjezd hostů, Obřad, …, 8 placeholder položek) — `<h3>` ve `font-heading text-5xl md:text-7xl`, vycentrovaný, s výrazným paddingem `py-16 md:py-24`; časy zůstávají o stupeň větší (`text-7xl md:text-8xl`).
+- Mezi sekcemi je **svislá dekorativní linka** (`w-px h-24 bg-ink/20`, `aria-hidden`) vykreslovaná v mapě mezi položkami; gap článku zvětšen na `gap-16`.
+- V `id` sekcí je čas s pomlčkou místo dvojtečky (`10-30`), protože dvojtečka dělá problémy v URL kotvách a CSS selektorech.
+
 ## 2026-07-18
 
 ### Intro – zobrazení jen jednou za návštěvu
