@@ -82,25 +82,25 @@ const textContent = [
 
 <Layout>
     <main
-        class="h-screen w-full pt-32 bg-surface/95 overflow-y-auto"
+        class="h-screen w-full pt-16 bg-surface/95 overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10">
-            <h1 class="font-heading text-heading tracking-wider mb-8" data-reveal>{heading}</h1>
-            <article class="flex flex-col gap-10 w-full pt-16 pb-[50vh]">
+            <h1 class="font-heading text-heading tracking-wider" data-reveal>{heading}</h1>
+            <article class="flex flex-col gap-10 w-full pt-12 pb-[50vh]">
                 {
                     textContent.map((item, i) => (
                         <div
                             id={item.year}
                             data-story-section
-                            class="scroll-mt-24 md:grid md:grid-cols-[1fr_minmax(0,48rem)_1fr] md:gap-x-8"
+                            class="scroll-mt-24 md:grid md:grid-cols-[1fr_minmax(0,48rem)_1fr] md:gap-x-24"
                             data-reveal
                             style={`--reveal-delay: ${0.3 + i * 0.12}s`}
                         >
                             <h2
                                 class:list={[
-                                    "story-year text-7xl md:text-8xl font-bold mb-3 md:mb-0",
+                                    "story-year font-heading text-7xl md:text-8xl mb-5 md:mb-0",
                                     "text-ink/25 transition-colors duration-500",
                                     "md:row-start-1 md:self-center",
                                     i % 2 === 0
