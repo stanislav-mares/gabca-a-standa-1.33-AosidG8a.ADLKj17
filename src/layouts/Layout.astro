@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
+import { Image } from "astro:assets";
 import mainPhoto from "../assets/dkr-1795.jpg";
 ---
 
@@ -29,9 +30,13 @@ import mainPhoto from "../assets/dkr-1795.jpg";
              skrz průhledné panely podstránek -->
         <div class="fixed flex -z-10 overflow-hidden inset-0 w-full h-full">
             <div class="flex-1">
-                <img
-                    src={mainPhoto.src}
+                <Image
+                    src={mainPhoto}
                     alt=""
+                    widths={[768, 1280, 1920, 2799]}
+                    sizes="100vw"
+                    format="webp"
+                    loading="eager"
                     class="w-full h-full object-cover scale-130 origin-[0%_50%]"
                 />
             </div>
