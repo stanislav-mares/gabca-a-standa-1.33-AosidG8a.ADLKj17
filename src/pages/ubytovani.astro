@@ -1,9 +1,26 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
+import HouseColumn from "../components/HouseColumn.astro";
 import { slideTransition } from "../utils/transitions";
 
 const heading = "Ubytování";
+
+// Konfigurace ubytování — hosty stačí doplnit/upravit tady.
+const houses = [
+    {
+        name: "Farní dvůr",
+        guests: ["Jan Novák", "Marie Nováková", "Petr Svoboda"],
+    },
+    {
+        name: "Chata Liebich",
+        guests: ["Lucie Dvořáková", "Tomáš Černý"],
+    },
+    {
+        name: "Továrníkova vila",
+        guests: ["Anna Šťastná", "Jakub Procházka"],
+    },
+];
 ---
 
 <Layout>
@@ -12,11 +29,73 @@ const heading = "Ubytování";
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
-        <section class="flex flex-col items-center justify-center px-6 sm:px-10">
-            <h1 class="font-heading text-heading tracking-wider mb-16">{heading}</h1>
+        <section class="flex flex-col items-center px-6 sm:px-10 pb-24">
+            <h1 class="font-heading text-heading tracking-wider mb-16" data-reveal>
+                {heading}
+            </h1>
+            <input
+                type="text"
+                id="guest-search"
+                placeholder="Jméno hosta"
+                autocomplete="off"
+                class="w-full max-w-xs mb-16 bg-transparent border-0 border-b border-ink/40 pb-2 text-center font-body text-ink placeholder:text-ink/40 focus:outline-none focus:border-ink transition-colors"
+                data-reveal
+                style="--reveal-delay: 0.35s"
+            />
+            <div
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-16 w-full max-w-[104rem] items-start [&>:last-child]:md:max-lg:col-span-2 [&>:last-child]:md:max-lg:w-[calc(50%-2rem)] [&>:last-child]:md:max-lg:justify-self-center"
+                data-reveal
+                style="--reveal-delay: 0.5s"
+            >
+                {houses.map((house) => <HouseColumn {...house} />)}
+            </div>
         </section>
         <aside class="fixed top-0 left-0 flex justify-center items-center h-full">
             <BackButton />
         </aside>
     </main>
 </Layout>
+
+<script>
+    // Porovnávání bez ohledu na velikost písmen a diakritiku ("stastna" najde "Šťastná")
+    function normalize(value: string): string {
+        return value
+            .toLocaleLowerCase("cs")
+            .normalize("NFD")
+            .replace(/\p{Diacritic}/gu, "");
+    }
+
+    function initGuestFilter() {
+        const input = document.getElementById("guest-search");
+        if (!(input instanceof HTMLInputElement)) return;
+
+        const houses = Array.from(
+            document.querySelectorAll<HTMLElement>("[data-house]"),
+        ).map((house) => ({
+            house,
+            guests: Array.from(
+                house.querySelectorAll<HTMLElement>("[data-guest]"),
+            ).map((item) => ({ item, search: normalize(item.textContent ?? "") })),
+        }));
+
+        const applyFilter = () => {
+            const query = normalize(input.value.trim());
+            for (const { house, guests } of houses) {
+                let visibleCount = 0;
+                for (const { item, search } of guests) {
+                    const match = search.includes(query);
+                    item.classList.toggle("hidden", !match);
+                    if (match) visibleCount++;
+                }
+                const empty = visibleCount === 0;
+                house.classList.toggle("max-md:hidden", empty);
+                house.classList.toggle("md:opacity-30", empty);
+            }
+        };
+
+        input.addEventListener("input", applyFilter);
+        applyFilter();
+    }
+
+    document.addEventListener("astro:page-load", initGuestFilter);
+</script>

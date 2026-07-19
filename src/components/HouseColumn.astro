@@ -1,0 +1,31 @@
+---
+interface Props {
+    name: string;
+    guests: string[];
+}
+
+const { name, guests } = Astro.props;
+---
+
+<div data-house class="flex flex-col text-ink/40 transition-opacity duration-300">
+    <svg
+        viewBox="0 0 100 30"
+        preserveAspectRatio="none"
+        class="w-full h-24 overflow-visible"
+        aria-hidden="true"
+    >
+        <polyline
+            points="0,30 50,1 100,30"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            vector-effect="non-scaling-stroke"
+        />
+    </svg>
+    <div class="flex-1 min-h-96 border-x border-b border-current px-8 pt-8 pb-12 text-center">
+        <h2 class="font-heading text-6xl text-ink mb-10">{name}</h2>
+        <ul class="flex flex-col gap-2.5 font-body text-lg text-ink">
+            {guests.map((guest) => <li data-guest>{guest}</li>)}
+        </ul>
+    </div>
+</div>

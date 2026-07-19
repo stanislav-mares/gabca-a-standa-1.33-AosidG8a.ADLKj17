@@ -2,6 +2,13 @@
 
 ## 2026-07-19
 
+### Ubytování – tři domy s live filtrem hostů
+- Stránka přestavěna z prázdného nadpisu na **tři sloupce ve tvaru siluety domu** (Farní dvůr, Chata Liebich, Továrníkova vila) — nová komponenta `HouseColumn.astro`. Střecha je **inline SVG polyline** s `preserveAspectRatio="none"` + `vector-effect="non-scaling-stroke"`: roztáhne se na šířku sloupce, ale tah zůstane stejně tlustý jako `border-x`/`border-b` těla domu. Celý obrys se barví z jednoho místa přes `currentColor` (`text-ink/40` na wrapperu).
+- **Seznam hostů je konfigurovatelný** v poli `houses` ve frontmatteru `ubytovani.astro` (zatím placeholder jména); tělo domu má `min-h-96`, aby dům s málo hosty nevypadal zploštěle.
+- Nad domy **bezrámečkový input** jen s dolní linkou (placeholder „Jméno hosta", `autocomplete="off"`), který **filtruje živě při psaní**: skript si při initu jednou znormalizuje jména z DOMu a pak jen přepíná `hidden`. Hledá substring **bez ohledu na diakritiku a velikost písmen** (`normalize("NFD")` + odstranění `\p{Diacritic}` — „stastna" najde „Šťastnou"). Inicializace visí na `astro:page-load` kvůli View Transitions.
+- **Prázdný dům** (žádný host nevyhovuje filtru): na mobilu zmizí (`max-md:hidden`), na desktopu zůstane stát zašedlý (`md:opacity-30`) s plynulým přechodem, aby layout neposkakoval.
+- Responzivita: mobil 1 sloupec, **tablet (md–lg) 2 sloupce** — třetí dům by trčel vlevo dole, proto je na druhém řádku vycentrovaný se šířkou přesně jednoho sloupce (`col-span-2` + `w-[calc(50%-2rem)]` přes `[&>:last-child]` variantu). Od `lg` 3 sloupce, grid roztažen do `max-w-[104rem]`.
+
 ### Svatební den – zhuštění a rozsvěcení celých sekcí
 - **Vertikální rytmus timeline výrazně zhuštěn** (cca na třetinu): gap článku `gap-16` → `gap-6`, oddělovací linka `h-24` → `h-12`, padding podnadpisů `py-16 md:py-24` → `py-4 md:py-6`.
 - Spolu s časem se nyní **rozsvěcí i podnadpis programu** — `<h3>` dostal třídu `story-title`, výchozí ztlumení `text-ink/25` a stejný barevný přechod; scroll skript přepíná `.story-year` i `.story-title` najednou.
