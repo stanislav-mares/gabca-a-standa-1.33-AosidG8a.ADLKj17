@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://stanislav-mares.github.io',
+  base: '/gabca-a-standa-svatba/',
   vite: {
     plugins: [tailwindcss()]
   }

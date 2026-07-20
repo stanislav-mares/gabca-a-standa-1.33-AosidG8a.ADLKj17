@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-07-20
+
+### Nasazení na GitHub Pages přes GitHub Actions
+- GitHub Pages dosud běžel na výchozím **Jekyll buildu** ("Deploy from a branch"), který se snažil parsovat `---` v `Layout.astro` jako YAML front matter a build padal.
+- Přidán **`.github/workflows/deploy.yml`** — při push na `main` (i ručně přes `workflow_dispatch`) nainstaluje závislosti, spustí `npm run build` a nasadí `dist/` na GitHub Pages přes `actions/upload-pages-artifact` + `actions/deploy-pages`. Jekyll se tím obchází úplně.
+- Přidán **`public/.nojekyll`** jako pojistka, kdyby se zdroj GitHub Pages někdy omylem přepnul zpět na branch-based deploy.
+
+### Astro base path pro subdoménu GitHub Pages
+- Repo se jmenuje `gabca-a-standa-svatba` a bez vlastní domény poběží na `stanislav-mares.github.io/gabca-a-standa-svatba/` — do `astro.config.mjs` doplněno **`site`** a **`base: '/gabca-a-standa-svatba/'`** (s koncovým lomítkem, jinak `import.meta.env.BASE_URL` chybí oddělovač a cesty se slepí, např. `/gabca-a-standa-svatbadotaznik`).
+- Všechny pevné absolutní odkazy přepsané na `${import.meta.env.BASE_URL}...`, aby fungovaly i pod podcestou: navigace v **`Menu.astro`**, favicony v **`Layout.astro`**, a dva vnořené odkazy v textech otázek **`dotaznik.astro`** (`/svatebni-den`, `/ubytovani`).
+- Ověřeno lokálním `npm run build` — všechny odkazy a assety v `dist/` mají správně předsazenou `/gabca-a-standa-svatba/`.
+
+### Spolupráce — CLAUDE.md
+- Doplněno pravidlo: po úvodním schválení vícekrokového plánu se už u dalších kroků neptat "mám pokračovat?" — jen předložit plán daného kroku a po schválení hned implementovat a pokračovat dalším krokem v témže odpověď-cyklu, bez mezitímní žádosti o potvrzení.
+
 ## 2026-07-19
 
 ### Tlačítko zpět – responsivní pás a SVG šipka

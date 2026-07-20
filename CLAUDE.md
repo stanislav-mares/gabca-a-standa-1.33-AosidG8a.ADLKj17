@@ -71,6 +71,7 @@ The `slideTransition` object is defined in `src/utils/transitions.ts` and refere
 ## Communication & Collaboration
 1) When i'll ask you to modify code, give me a brief plan of your approach before and i must to approve it.
 2) When i approve the approach, don't give me all code at once, break it into smaller parts and wait for my approval before continuing to the next step.
+   - Exception: if I've already given a blanket approval to proceed through all steps of a multi-step plan, don't stop to ask "should I continue?" before each step. Instead, just present the planned changes for that step (no need to phrase it as a question). Don't add any "waiting for your confirmation" remark either — that's just the permission question in prose form. Once I approve a step's plan, implement it, then immediately present the next step's plan in that same reply — no separate check-in in between.
 3) If you encounter a problem or bug, describe it clearly and provide steps to reproduce it.
 4) Don't ask after every step whether to start the dev server. Assume I'll run it myself; only mention it if it's genuinely relevant.
 ---

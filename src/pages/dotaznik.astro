@@ -59,7 +59,7 @@ const questions: Question[] = [
                         value: "svatba",
                         label: "V den svatby",
                         followUp: {
-                            heading: `Příjezd cca mezi 10:30 - 11:00. Více informací naleznete zde: <a href="/svatebni-den" class="underline text-black">zde</a>`,
+                            heading: `Příjezd cca mezi 10:30 - 11:00. Více informací naleznete zde: <a href="${import.meta.env.BASE_URL}svatebni-den" class="underline text-black">zde</a>`,
                             elements: [],
                         },
                     },
@@ -84,7 +84,7 @@ const questions: Question[] = [
                 type: "yes-no",
                 label: "Budeš chtít přespat přímo na místě nebo v blízkém okolí?",
                 description: `Ubytování jsme schopni zajistit pro všechny hosty. Bližší informace k ubytování budou zavčasu zveřejněny
-                <a href="/ubytovani" class="underline text-black">zde</a>`,
+                <a href="${import.meta.env.BASE_URL}ubytovani" class="underline text-black">zde</a>`,
                 required: true,
                 options: [
                     {
