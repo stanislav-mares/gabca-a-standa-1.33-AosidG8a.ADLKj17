@@ -89,7 +89,12 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
 </style>
 
 <script>
+    let cleanup: (() => void) | undefined;
+
     function setupIntro() {
+        cleanup?.();
+        cleanup = undefined;
+
         const introOverlay = document.getElementById("intro-overlay");
         if (!introOverlay) return; // podstránky intro nemají
 
@@ -216,11 +221,31 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             .getElementById("header-logo-btn")
             ?.addEventListener("click", backToIntro);
 
+        // Po resize okna se posune header i jeho logo — usazené intro
+        // logo drží svou starou (px) pozici, takže by se od headerového
+        // odtrhlo a vypadalo jako druhé, duplicitní logo. Přilepíme ho
+        // zpátky bez animace.
+        const onResize = () => {
+            if (!logoWrap || !introOverlay.classList.contains("intro-leaving"))
+                return;
+            const prevTransition = logoWrap.style.transition;
+            logoWrap.style.transition = "none";
+            logoWrap.style.transform = flightTransform(true);
+            void logoWrap.offsetHeight;
+            logoWrap.style.transition = prevTransition;
+        };
+        window.addEventListener("resize", onResize);
+
         if (sessionStorage.getItem("intro-seen")) {
             skipIntro();
         } else {
             document.addEventListener("keydown", onKeydown);
         }
+
+        cleanup = () => {
+            window.removeEventListener("resize", onResize);
+            document.removeEventListener("keydown", onKeydown);
+        };
     }
 
     // Spusť znovu po každé Astro navigaci

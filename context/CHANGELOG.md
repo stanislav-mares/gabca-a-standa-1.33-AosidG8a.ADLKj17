@@ -15,6 +15,15 @@
 ### Spolupráce — CLAUDE.md
 - Doplněno pravidlo: po úvodním schválení vícekrokového plánu se už u dalších kroků neptat "mám pokračovat?" — jen předložit plán daného kroku a po schválení hned implementovat a pokračovat dalším krokem v témže odpověď-cyklu, bez mezitímní žádosti o potvrzení.
 
+### Nová stránka „Úvodní informace" a přeuspořádané menu
+- Přidána **`src/pages/uvodni-informace.astro`** — stejný vzor jako `nas-pribeh.astro` (`Layout`, `BackButton`, `slideTransition`), ale zjednodušená na prostý text: nadpis + odstavce bez let a bez scroll-highlight scriptu (placeholder text k doplnění).
+- Pořadí odkazů v **`Menu.astro`** změněno na: Úvodní informace → Svatební den → Ubytování → Náš příběh → Fotogalerie → Dotazník.
+
+### Oprava zdvojeného loga po resize okna
+- **`Intro.astro`**: intro logo se na header logo lepí přes jednorázově vypočtený pixelový `transform` (`flightTransform`). Po resize okna se ale header (a jeho logo) posunul, zatímco intro logo drželo starou pozici — vypadalo to jako dvě loga.
+- Přidán **`resize` listener**, který — pokud je overlay v usazeném stavu (`intro-leaving`) — okamžitě přepočítá a znovu aplikuje `flightTransform(true)` bez tranzice, takže logo zůstává nalepené na headeru i po změně velikosti okna.
+- Listener i `keydown` handler se teď při každém `astro:page-load` nejdřív odregistrují (nový `cleanup` mechanismus) a pak znovu zaregistrují, aby se při opakované navigaci nehromadily.
+
 ## 2026-07-19
 
 ### Tlačítko zpět – responsivní pás a SVG šipka
