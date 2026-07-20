@@ -19,6 +19,12 @@
 - Přidána **`src/pages/uvodni-informace.astro`** — stejný vzor jako `nas-pribeh.astro` (`Layout`, `BackButton`, `slideTransition`), ale zjednodušená na prostý text: nadpis + odstavce bez let a bez scroll-highlight scriptu (placeholder text k doplnění).
 - Pořadí odkazů v **`Menu.astro`** změněno na: Úvodní informace → Svatební den → Ubytování → Náš příběh → Fotogalerie → Dotazník.
 
+### Timeline podstránek — mobilní layout a CSS proměnná pro odstavce
+- **`nas-pribeh.astro`** a **`svatebni-den.astro`**: dvousloupcový timeline layout (rok/čas vlevo nebo vpravo, text uprostřed) se dřív zlomil už na `md`, na tabletu tak působil roztrhaně — breakpoint posunut na **`2xl`**, do té doby je vše jeden svislý sloupec (`max-w-3xl mx-auto`).
+- **`svatebni-den.astro`**: každá položka programu dostala **`description`** (krátký popisek pod časem/nadpisem, např. „Řekneme si své ANO před rodinou a přáteli."). Na mobilu teď čas a nadpis stojí vedle sebe na jednom řádku (`flex items-baseline`) místo pod sebou, popisek je pod nimi zarovnaný doleva; oddělovací čárky mezi položkami padly ve prospěch většího `gap-14`.
+- **`global.css`**: nová sémantická proměnná **`--text-paragraph: 1.125rem`** (dřív natvrdo `text-lg`) pro tělový text podstránek — používají ji teď odstavce v `nas-pribeh.astro` a popisky v `svatebni-den.astro`.
+- **`Logo.astro`**: zdroj loga přepnut z `logo-test.png` na `logo-new.webp` (soubor zatím není v gitu, viz níže).
+
 ### Oprava zdvojeného loga po resize okna
 - **`Intro.astro`**: intro logo se na header logo lepí přes jednorázově vypočtený pixelový `transform` (`flightTransform`). Po resize okna se ale header (a jeho logo) posunul, zatímco intro logo drželo starou pozici — vypadalo to jako dvě loga.
 - Přidán **`resize` listener**, který — pokud je overlay v usazeném stavu (`intro-leaving`) — okamžitě přepočítá a znovu aplikuje `flightTransform(true)` bez tranzice, takže logo zůstává nalepené na headeru i po změně velikosti okna.

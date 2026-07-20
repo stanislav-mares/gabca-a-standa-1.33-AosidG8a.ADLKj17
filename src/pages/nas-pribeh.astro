@@ -94,23 +94,23 @@ const textContent = [
                         <div
                             id={item.year}
                             data-story-section
-                            class="scroll-mt-24 md:grid md:grid-cols-[1fr_minmax(0,48rem)_1fr] md:gap-x-24"
+                            class="scroll-mt-24 w-full max-w-3xl mx-auto 2xl:max-w-none 2xl:grid 2xl:grid-cols-[1fr_minmax(0,48rem)_1fr] 2xl:gap-x-24"
                             data-reveal
                             style={`--reveal-delay: ${0.3 + i * 0.12}s`}
                         >
                             <h2
                                 class:list={[
-                                    "story-year font-heading text-7xl md:text-8xl mb-5 md:mb-0",
+                                    "story-year font-heading text-7xl 2xl:text-8xl mb-5 2xl:mb-0",
                                     "text-ink/25 transition-colors duration-500",
-                                    "md:row-start-1 md:self-center",
+                                    "2xl:row-start-1 2xl:self-center",
                                     i % 2 === 0
-                                        ? "md:col-start-1 md:text-right"
-                                        : "md:col-start-3 md:text-left",
+                                        ? "2xl:col-start-1 2xl:text-right"
+                                        : "2xl:col-start-3 2xl:text-left",
                                 ]}
                             >
                                 {item.year}
                             </h2>
-                            <p class="text-lg leading-relaxed text-justify md:col-start-2 md:row-start-1">
+                            <p class="text-paragraph leading-relaxed text-justify 2xl:col-start-2 2xl:row-start-1">
                                 {item.content}
                             </p>
                         </div>

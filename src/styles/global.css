@@ -84,9 +84,10 @@
 
     /* ---------- TYPE SCALE ---------- */
     /* Semantic sizes — tune once here.  → text-hero, text-title, … */
-    --text-label:   0.7rem;   /* countdown labels          */
-    --text-body:    1rem;
-    --text-heading: 5.25rem;  /* page headings (h1)        */
+    --text-label:     0.7rem;   /* countdown labels          */
+    --text-body:      1rem;
+    --text-paragraph: 1.125rem; /* was text-lg (page paragraphs) */
+    --text-heading:   5.25rem;  /* page headings (h1)        */
     --text-title:   3rem;     /* was text-5xl (page heads) */
     --text-display: 4.5rem;   /* was text-7xl              */
     --text-hero:    6rem;     /* was text-8xl (names)      */

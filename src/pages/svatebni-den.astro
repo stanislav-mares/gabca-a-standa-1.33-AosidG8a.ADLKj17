@@ -5,14 +5,14 @@ import { slideTransition } from "../utils/transitions";
 
 const heading = "Svatební den";
 const textContent = [
-    { time: "8:00", content: "Snídaně" },
-    { time: "10:30", content: "Příjezd hostů" },
-    { time: "12:00", content: "Obřad" },
-    { time: "13:00", content: "Gratulace a focení" },
-    { time: "14:00", content: "Oběd" },
-    { time: "16:00", content: "Krájení dortu" },
-    { time: "19:00", content: "První tanec" },
-    { time: "20:00", content: "Večerní zábava" },
+    { time: "8:00", content: "Snídaně", description: "Společně si dáme klidnou snídani, než den naplno začne." },
+    { time: "10:30", content: "Příjezd hostů", description: "Hosté postupně dorazí a usadí se na svá místa." },
+    { time: "12:00", content: "Obřad", description: "Řekneme si své ANO před rodinou a přáteli." },
+    { time: "13:00", content: "Gratulace a focení", description: "Prostor na gratulace, přípitek a společné fotografie." },
+    { time: "14:00", content: "Oběd", description: "Usedneme ke společnému obědu a odpočineme si." },
+    { time: "16:00", content: "Krájení dortu", description: "Nakrojíme svatební dort a rozdáme první kousky." },
+    { time: "19:00", content: "První tanec", description: "Otevřeme parket naším prvním společným tancem." },
+    { time: "20:00", content: "Večerní zábava", description: "Večer si užijeme hudbu, tanec a dobrou náladu." },
 ];
 ---
 
@@ -24,37 +24,37 @@ const textContent = [
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10">
             <h1 class="font-heading text-heading tracking-wider" data-reveal>{heading}</h1>
-            <article class="flex flex-col gap-6 w-full pt-20 pb-[50vh]">
+            <article class="flex flex-col gap-14 w-full pt-20 pb-[50vh]">
                 {
                     textContent.map((item, i) => (
-                        <>
-                        {i > 0 && (
-                            <div class="mx-auto w-px h-12 bg-ink/20" aria-hidden="true" />
-                        )}
                         <div
                             id={item.time.replace(":", "-")}
                             data-story-section
-                            class="scroll-mt-24 md:grid md:grid-cols-[1fr_minmax(0,48rem)_1fr] md:gap-x-24"
+                            class="scroll-mt-24 w-full max-w-3xl mx-auto 2xl:max-w-none 2xl:grid 2xl:grid-cols-[1fr_minmax(0,48rem)_1fr] 2xl:gap-x-24 2xl:gap-y-2"
                             data-reveal
                             style={`--reveal-delay: ${0.3 + i * 0.12}s`}
                         >
-                            <h2
-                                class:list={[
-                                    "story-year font-heading text-7xl md:text-8xl mb-5 md:mb-0",
-                                    "text-ink/25 transition-colors duration-500",
-                                    "md:row-start-1 md:self-center",
-                                    i % 2 === 0
-                                        ? "md:col-start-1 md:text-right"
-                                        : "md:col-start-3 md:text-left",
-                                ]}
-                            >
-                                {item.time}
-                            </h2>
-                            <h3 class="story-title font-heading text-5xl md:text-7xl py-4 md:py-6 text-center md:col-start-2 md:row-start-1 md:self-center text-ink/25 transition-colors duration-500">
-                                {item.content}
-                            </h3>
+                            <div class="flex items-baseline justify-start gap-x-4 2xl:contents">
+                                <h2
+                                    class:list={[
+                                        "story-year font-heading text-6xl 2xl:text-8xl",
+                                        "text-ink/25 transition-colors duration-500",
+                                        "2xl:row-start-1 2xl:self-center",
+                                        i % 2 === 0
+                                            ? "2xl:col-start-1 2xl:text-right"
+                                            : "2xl:col-start-3 2xl:text-left",
+                                    ]}
+                                >
+                                    {item.time}
+                                </h2>
+                                <h3 class="story-title font-heading text-4xl 2xl:text-7xl 2xl:py-6 text-left 2xl:text-center 2xl:col-start-2 2xl:row-start-1 2xl:self-center text-ink/25 transition-colors duration-500">
+                                    {item.content}
+                                </h3>
+                            </div>
+                            <p class="mt-1 text-paragraph text-left text-ink/50 2xl:mt-0 2xl:col-start-2 2xl:row-start-2 2xl:text-center">
+                                {item.description}
+                            </p>
                         </div>
-                        </>
                     ))
                 }
             </article>
