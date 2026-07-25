@@ -11,15 +11,15 @@ const photos = await getGalleryPhotosWithLightbox();
 
 <Layout>
     <main
-        class="h-screen w-full pt-32 bg-surface/95 overflow-y-auto"
+        class="h-screen w-full pt-20 bg-surface/95 overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10 md:px-40 pb-16">
-            <h1 class="font-heading text-heading tracking-wider mb-8" data-reveal>{heading}</h1>
+            <h1 class="font-heading text-heading tracking-wider" data-reveal>{heading}</h1>
             <div
                 id="galerie"
-                class="mt-24 grid grid-cols md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 grid-flow-dense auto-rows-[9rem] md:auto-rows-[11rem] gap-3 2xl:w-3/4"
+                class="pt-20 grid grid-cols md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 grid-flow-dense auto-rows-[9rem] md:auto-rows-[11rem] gap-3 2xl:w-3/4"
             >
                 {
                     photos.map((photo, index) => {

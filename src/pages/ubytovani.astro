@@ -25,23 +25,25 @@ const houses = [
 
 <Layout>
     <main
-        class="h-screen w-full pt-32 bg-surface/95 overflow-y-auto"
+        class="h-screen w-full pt-20 bg-surface/95 overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center px-6 sm:px-10 pb-24">
-            <h1 class="font-heading text-heading tracking-wider mb-16" data-reveal>
+            <h1 class="font-heading text-heading tracking-wider mb-20" data-reveal>
                 {heading}
             </h1>
-            <input
-                type="text"
-                id="guest-search"
-                placeholder="Jméno hosta"
-                autocomplete="off"
-                class="w-full max-w-xs mb-16 bg-transparent border-0 border-b border-ink/40 pb-2 text-center font-body text-ink placeholder:text-ink/40 focus:outline-none focus:border-ink transition-colors"
-                data-reveal
-                style="--reveal-delay: 0.35s"
-            />
+            <div class="w-full max-w-[104rem] mb-16 lg:grid lg:grid-cols-3 lg:gap-16">
+                <input
+                    type="text"
+                    id="guest-search"
+                    placeholder="Vyhledat jméno hosta"
+                    autocomplete="off"
+                    class="block w-full max-w-xs mx-auto lg:max-w-none lg:col-start-2 bg-transparent border-0 border-b border-ink/40 pb-2 text-center font-body text-ink placeholder:text-ink/40 focus:outline-none focus:border-ink transition-colors"
+                    data-reveal
+                    style="--reveal-delay: 0.35s"
+                />
+            </div>
             <div
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-16 w-full max-w-[104rem] items-start [&>:last-child]:md:max-lg:col-span-2 [&>:last-child]:md:max-lg:w-[calc(50%-2rem)] [&>:last-child]:md:max-lg:justify-self-center"
                 data-reveal

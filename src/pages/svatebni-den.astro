@@ -18,43 +18,51 @@ const textContent = [
 
 <Layout>
     <main
-        class="h-screen w-full pt-16 bg-surface/95 overflow-y-auto"
+        class="h-screen w-full pt-20 bg-surface/95 overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10">
             <h1 class="font-heading text-heading tracking-wider" data-reveal>{heading}</h1>
-            <article class="flex flex-col gap-14 w-full pt-20 pb-[50vh]">
+            <article class="flex flex-col w-full pt-20 pb-[50vh] 2xl:gap-14">
                 {
                     textContent.map((item, i) => (
-                        <div
-                            id={item.time.replace(":", "-")}
-                            data-story-section
-                            class="scroll-mt-24 w-full max-w-3xl mx-auto 2xl:max-w-none 2xl:grid 2xl:grid-cols-[1fr_minmax(0,48rem)_1fr] 2xl:gap-x-24 2xl:gap-y-2"
-                            data-reveal
-                            style={`--reveal-delay: ${0.3 + i * 0.12}s`}
-                        >
-                            <div class="flex items-baseline justify-start gap-x-4 2xl:contents">
-                                <h2
-                                    class:list={[
-                                        "story-year font-heading text-6xl 2xl:text-8xl",
-                                        "text-ink/25 transition-colors duration-500",
-                                        "2xl:row-start-1 2xl:self-center",
-                                        i % 2 === 0
-                                            ? "2xl:col-start-1 2xl:text-right"
-                                            : "2xl:col-start-3 2xl:text-left",
-                                    ]}
-                                >
-                                    {item.time}
-                                </h2>
-                                <h3 class="story-title font-heading text-4xl 2xl:text-7xl 2xl:py-6 text-left 2xl:text-center 2xl:col-start-2 2xl:row-start-1 2xl:self-center text-ink/25 transition-colors duration-500">
-                                    {item.content}
-                                </h3>
+                        <Fragment>
+                            <div
+                                id={item.time.replace(":", "-")}
+                                data-story-section
+                                class="scroll-mt-24 w-full max-w-3xl mx-auto pt-16 pb-16 first:pt-0 2xl:py-0 2xl:max-w-none 2xl:grid 2xl:grid-cols-[1fr_minmax(0,48rem)_1fr] 2xl:gap-x-24 2xl:gap-y-2"
+                                data-reveal
+                                style={`--reveal-delay: ${0.3 + i * 0.12}s`}
+                            >
+                                <div class="flex items-baseline justify-between gap-x-6 2xl:contents">
+                                    <h2
+                                        class:list={[
+                                            "story-year font-heading text-6xl 2xl:text-8xl",
+                                            "text-ink/25 transition-colors duration-500",
+                                            "2xl:row-start-1 2xl:self-center",
+                                            i % 2 === 0
+                                                ? "2xl:col-start-1 2xl:text-right"
+                                                : "2xl:col-start-3 2xl:text-left",
+                                        ]}
+                                    >
+                                        {item.time}
+                                    </h2>
+                                    <h3 class="story-title font-heading text-5xl 2xl:text-7xl 2xl:py-6 text-left 2xl:text-center 2xl:col-start-2 2xl:row-start-1 2xl:self-center text-ink/25 transition-colors duration-500">
+                                        {item.content}
+                                    </h3>
+                                </div>
+                                <p class="mt-1 text-paragraph text-center text-ink/50 2xl:mt-0 2xl:col-start-2 2xl:row-start-2 2xl:text-center">
+                                    {item.description}
+                                </p>
                             </div>
-                            <p class="mt-1 text-paragraph text-left text-ink/50 2xl:mt-0 2xl:col-start-2 2xl:row-start-2 2xl:text-center">
-                                {item.description}
-                            </p>
-                        </div>
+                            {i < textContent.length - 1 && (
+                                <span
+                                    aria-hidden="true"
+                                    class="self-center h-1.5 w-1.5 rounded-full bg-ink/25"
+                                />
+                            )}
+                        </Fragment>
                     ))
                 }
             </article>

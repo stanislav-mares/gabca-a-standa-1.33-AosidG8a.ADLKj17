@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-07-25
+
+### Sjednocení mezer nad/pod nadpisy podstránek
+- **`nas-pribeh.astro`**: horní odsazení `<main>` sjednoceno na `pt-20`, aby mezera **nad** h1 byla stejná jako `pt-20` mezera **pod** ním (dřív `pt-16` nahoře vs `pt-20` dole).
+- Zaveden jednotný standard kontejnerů dle vzoru `nas-pribeh` na **všech podstránkách**: `<main>` má `pt-20` (mezera nad h1) a mezera pod h1 je vždy **5rem**, umístěná na obsahovém kontejneru přes `pt-20`, ne na h1.
+- **`svatebni-den.astro`**, **`uvodni-informace.astro`**: `<main>` `pt-16` → `pt-20` (obsahový `article pt-20` už seděl).
+- **`fotogalerie.astro`**: `<main>` `pt-32` → `pt-20`; h1 zbaven `mb-8`, mezera přesunuta na galerijní `div` (`mt-24` → `pt-20`).
+- **`dotaznik.astro`**: `<main>` `pt-32` → `pt-20`; h1 zbaven `mb-8`, obsahový `div` `pt-24` → `pt-20`.
+- **`ubytovani.astro`**: `<main>` `pt-32` → `pt-20`; nemá jeden obsahový kontejner (za h1 rovnou input + grid), proto mezera zůstala na h1: `mb-16` → `mb-20` (stejných 5rem).
+- Horizontální paddingy (`px-6 sm:px-10`) a obsahová specifika (`md:px-40`, `pb-16`, `pb-24`) ponechány beze změny.
+
+### Stránka Ubytování — šířka vyhledávacího inputu
+- Input zabalen do wrapperu, který se na `lg` stane gridem se **stejnou stopou sloupců** jako grid domů (`grid-cols-3`, `gap-16`, `max-w-[104rem]`), a input sedí v `col-start-2` → přesně na šířce prostředního sloupce. Pod `lg` zůstává `max-w-xs` a vycentrovaný (`mx-auto`).
+
+### Stránka Svatební den — timeline: zarovnání a oddělovací tečky
+- Pod `2xl` je čas (`h2`) a nadpis (`h3`) v jednom flex řádku s **`justify-between`** — čas vlevo (start), nadpis vpravo (end); popisek pod tím `text-center`.
+- **Dekorativní tečka přesunuta** z prostoru mezi časem a nadpisem na **oddělovač mezi položkami** (za každou kromě poslední), `self-center`, `2xl:hidden`.
+- **Vertikální rytmus:** `<article>` ztratil základní `gap` (jen `2xl:gap-14`), každá položka má `pt-16 pb-16` (`first:pt-0`, `2xl:py-0`). Tečka tak sedí vertikálně uprostřed mezery — nad ní `pb` předchozí položky, pod ní `pt` následující. Desktop grid layout beze změny.
+
+### Stránka Náš příběh — velikost h2
+- `h2` (rok) sjednoceno se Svatebním dnem: `text-7xl` → `text-6xl` (základ), `2xl:text-8xl` shodné.
+
+### BackButton — relativní ztmavení
+- Tlačítko dostalo **trvalý** poloprůhledný `ink` překryv (`bg-ink/[0.03]`, hover `bg-ink/[0.07]`) místo jen na hoveru. Protože je tlačítko průhledné nad `bg-surface`, ztmavení je **relativní** — zůstane o něco tmavší při jakékoli barvě pozadí.
+
+### Svatební den — dekorativní tečky i na 2xl
+- Z oddělovací tečky mezi položkami odebráno `2xl:hidden` → zobrazuje se i na desktopu. `self-center` a `2xl:gap-14` na `<article>` ji drží vodorovně i svisle uprostřed mezery mezi položkami.
+
+### Nadpisový font — Parisienne
+- `--font-heading` přepnut z `Alex Brush` na **`Parisienne`** (doplněn Google Fonts import). Zkoušely se i Great Vibes a Allura; **Great Vibes ponechán zakomentovaný** (import i proměnná) jako rychlý přepínač.
+- **`Menu.astro`**: `font-alexbrush` → `font-heading`, aby menu následovalo nadpisový font (dřív mělo natvrdo Alex Brush).
+
 ## 2026-07-20
 
 ### Nasazení na GitHub Pages přes GitHub Actions
