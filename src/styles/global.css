@@ -85,18 +85,38 @@
     --color-ink:     #4b402d;  /* primary text (gray-700)  → text-ink    */
     --color-muted:   #4b402d;  /* secondary text (gray-500) → text-muted */
 
+    /*#f7d596;*/
+    /*#e4baa4*/
+    /*#734d29
+    #f5e2c1*/
+    --color-surface: #faeddc;
+    --color-surface: #f9f6f1;
+    /*#f7e6ca*/
+
+
+
     /* ---------- TYPE SCALE ---------- */
     /* Semantic sizes — tune once here.  → text-hero, text-title, … */
     --text-label:     0.7rem;   /* countdown labels          */
     --text-body:      1rem;
     --text-paragraph: 1.125rem; /* was text-lg (page paragraphs) */
-    --text-heading:   5.25rem;  /* page headings (h1)        */
+    --text-heading: clamp(2.25rem, 7vw, 5.25rem);  /* page headings (h1) — fluidní */
     --text-title:   3rem;     /* was text-5xl (page heads) */
     --text-display: 4.5rem;   /* was text-7xl              */
-    --text-hero:    6rem;     /* was text-8xl (names)      */
+    --text-hero:    clamp(3rem, 10vw, 6rem);  /* „Vstoupit" — fluidní (bylo 6rem) */
 }
 
 @layer base {
+    /* Dokument nikdy nescrolluje — veškeré scrollování je uvnitř <main>
+       (podstránky mají overflow-y-auto). Bez tohohle šel index po návratu
+       z podstránky (se schovanou adresní lištou) odscrollovat. */
+    html,
+    body {
+        height: 100dvh;
+        overflow: hidden;
+        overscroll-behavior: none;
+    }
+
     body {
         /*@apply text-gray-800;*/
     }

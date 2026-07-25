@@ -19,6 +19,6 @@ const { width = 128, height = 128 } = Astro.props;
         width={width}
         height={height}
         class="max-w-full h-auto"
-        style={`width: ${width}px`}
+        style={`width: min(${width}px, 60vw)`}
     />
 </div>

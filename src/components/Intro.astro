@@ -28,12 +28,12 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
     </div>
     <!-- Logo vlevo — zarovnané nad panelem Headeru kvůli plynulému přesunu -->
     <div class="relative w-full xl:w-1/2 flex items-center justify-center">
-        <div class="intro-logo">
+        <div class="intro-logo opacity-35">
             <Logo width={600} height={600} />
         </div>
     </div>
     <button
-        class="intro-enter absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 font-alexbrush text-hero text-ink hover:text-gray-500 cursor-pointer"
+        class="intro-enter absolute left-1/2 -translate-x-1/2 top-3/4 -translate-y-1/2 xl:top-1/2 z-10 font-alexbrush text-hero hover:text-gray-500 cursor-pointer"
         aria-label="Vstoupit na web">Vstoupit</button
     >
 </div>
@@ -154,6 +154,9 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             animating = true;
 
             if (logoWrap) {
+                // Po refreshi v menu je intro logo schované (viz skipIntro) —
+                // vrať mu viditelnost, ať může odletět zpátky.
+                logoWrap.style.opacity = "";
                 // Posaď logo bez animace na aktuální pozici headerového
                 // (uložený transform může být po resize zastaralý)…
                 logoWrap.style.transition = "none";
@@ -190,10 +193,13 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             ];
             for (const el of animated) if (el) el.style.transition = "none";
 
-            // Header musí stát na finální pozici, než se změří cíl letu
+            // Refresh za intrem: žádný vlet, žádné lepení. Intro logo se
+            // dřív „přilepovalo" na header přes flightTransform, jenže na
+            // téhle cestě se počítá hned při načtení, kdy layout ještě není
+            // hotový → logo dosedlo vedle a bylo vidět dvakrát. Teď ho jen
+            // schováme a necháme viditelné čistě header logo.
             headerPanel?.classList.add("header-entered");
-            void headerPanel?.offsetHeight;
-            if (logoWrap) logoWrap.style.transform = flightTransform(true);
+            if (logoWrap) logoWrap.style.opacity = "0";
             introOverlay.classList.add("intro-leaving");
             void introOverlay.offsetHeight;
 

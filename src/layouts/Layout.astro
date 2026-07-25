@@ -9,7 +9,7 @@ import mainPhoto from "../assets/dkr-1795.jpg";
 <html lang="cs">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
         <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.ico`} />
         <meta name="generator" content={Astro.generator} />
@@ -25,7 +25,7 @@ import mainPhoto from "../assets/dkr-1795.jpg";
 
         <ClientRouter />
     </head>
-    <body class="text-black text">
+    <body class="text-black text overscroll-none">
         <!-- Fotka pozadí mimo <main>: neúčastní se slide přechodu a prosvítá
              skrz průhledné panely podstránek -->
         <div class="fixed flex -z-10 overflow-hidden inset-0 w-full h-full">

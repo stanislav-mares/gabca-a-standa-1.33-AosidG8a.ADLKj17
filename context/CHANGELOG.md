@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-07-26
+
+### Responzivita — fluidní nadpisy, menu a logo
+- **`--text-heading`**: `5.25rem` → `clamp(2.25rem, 7vw, 5.25rem)`; **`--text-hero`**: `6rem` → `clamp(3rem, 10vw, 6rem)` — h1 i tlačítko „Vstoupit" se plynule zmenšují na malých telefonech (dřív pevné velikosti přetékaly).
+- **`Menu.astro`**: velikost položek z pevného `text-6xl` na fluidní `text-[clamp(1.75rem,6vw,3rem)] 2xl:text-[3rem]`; svislé rozestupy mezi položkami na mobilu `*:p-4` → `*:p-2 md:*:p-4`.
+- **`HouseColumn.astro`**: názvy domů `text-6xl` → `text-[clamp(2rem,7vw,3.75rem)]`.
+- **`Logo.astro`**: pevná šířka `width: {w}px` → `width: min({w}px, 60vw)` — intro i header logo se na mobilu/tabletu plynule zmenšuje, na desktopu drží původní px max.
+- **`Layout.astro`**: viewport meta doplněn o `initial-scale=1` (bez něj mobily nespolehlivě škálovaly).
+
+### Landing — header a intro
+- **`Header.astro`**: zrušeny `h-1/3` pásy a `justify-evenly` → `justify-center`; logo a menu jsou naskládané a vycentrované jako skupina, takže odstup menu od loga je konzistentní napříč šířkami (dřív ho `justify-evenly` roztahovalo podle výšky okna).
+- **`index.astro`**: šířka panelu headeru `xl:basis-[30%]` → `xl:basis-[40%]` (2xl `35%` beze změny).
+- **`Intro.astro`**: tlačítko „Vstoupit" na mobilu do dolní poloviny pod logem (`top-3/4`), na desktopu zpět do středu (`xl:top-1/2`), přidán `z-10`; intro logo ztlumené na `opacity-35`.
+
+### Oprava zdvojeného loga po refreshi v menu
+- Refresh, když už jsi za intrem (`skipIntro`), zdvojoval logo: intro logo se „přilepovalo" na header přes `flightTransform`, jenže výpočet běžel hned na `astro:page-load`, kdy layout ještě nebyl hotový → intro logo dosedlo vedle header loga.
+- **`Intro.astro`**: `skipIntro` už logo nelepí — jen ho **schová** (`opacity: 0`) a viditelné nechá čistě header logo; `backToIntro` mu při návratu na úvod viditelnost zase vrátí. Odpadá tím celá třída chyb „změřeno moc brzo po načtení".
+
+### Mobil — nescrollovatelný dokument (dvh)
+- `h-screen` (`100vh` počítá i plochu za lištami prohlížeče) → **`h-dvh`** na `index` a všech 6 podstránkách; `BackButton` `lg:min-h-screen` → `lg:min-h-dvh`.
+- **`global.css`**: `html, body { height: 100dvh; overflow: hidden; overscroll-behavior: none; }` — dokument nikdy nescrolluje, veškeré scrollování je uvnitř `<main>` (podstránky `overflow-y-auto`). Řeší to, že po scrollu na podstránce (schovaná adresní lišta) a návratu na index šel index odscrollovat. `overscroll-none` doplněno i na `<body>`.
+
+### Drobnosti
+- **`--color-surface`** doladěna z `#f0f1f5` na `#f9f6f1` (teplejší odstín; v souboru ponechány zakomentované další kandidáty).
+- **`package.json`**: `dev` skript → `astro dev --host` (kvůli testování na mobilu v lokální síti).
+
 ## 2026-07-25
 
 ### Sjednocení mezer nad/pod nadpisy podstránek
