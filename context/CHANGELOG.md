@@ -2,6 +2,25 @@
 
 ## 2026-07-27
 
+### Svatební den a Náš příběh — timeline
+- **h2 (`.story-year`)** na obou stránkách sjednoceno: `text-4xl md:text-6xl 2xl:text-8xl`, barva `text-text` bez rozlišení zařízení.
+- **Ztlumení neaktivních položek přešlo z barvy na průhlednost** — `setActive()` přepíná `opacity-100` / `opacity-25` místo `text-ink` / `text-ink/25`. Barva tak zůstává čistě v třídách a nemusí se duplikovat v JS.
+- **Svatební den**: h3 zmenšeno na `text-4xl 2xl:text-6xl`; h3 (`story-title`) i popisek (`story-desc`) zbaveny `text-ink/*` a připojeny k rozsvěcení — ztlumuje se celý blok, ne jen čas.
+- Ztlumení **nejde dát na `[data-story-section]`**, i když by to byl jeden řádek: ten element nese `data-reveal`, jehož animace končí na `opacity: 1` s `both` a třídu by přebila; vnitřní obal má na `2xl` `display: contents`, kde se opacity vůbec neuplatní. Proto tři konkrétní prvky.
+- **Nový token `--color-text`** (`#000000`) v `@theme` a `text-text` na `<body>` v `Layout.astro` — barva odstavců přestala záviset na výchozí barvě prohlížeče (vynucený tmavý režim ji nepřebarví).
+- Tečka mezi položkami: `bg-ink/25` → `bg-text/25`.
+
+### Accent v UI prvcích
+- **h1 na všech 6 podstránkách**: `underline decoration-2 decoration-accent underline-offset-8`. Zvoleno `text-decoration` místo `border-b`, protože linka kopíruje šířku textu — u psaného Parisienne za cenu toho, že prochází skrz dolní dotahy.
+- **Tlačítka dotazníku** (`Questionnaire.astro`): `bg-gray-900 text-white` → `bg-accent text-muted`, hover `bg-hover` + `text-ink`. Doplněn `cursor-pointer`.
+- **Inputy, textarea** (`QuestionElement.astro`) a **vyhledávání hostů** (`ubytovani.astro`): klidový border `black`, aktivní stav `accent` (`focus:border-accent`, u textových polí i `focus:ring-accent`).
+- **Checkboxy a radia**: `accent-gray-900` → `accent-accent`. Nativní prvek nemá obarvitelný rámeček, `accent-color` ovlivní jen výplň zaškrtnutého stavu.
+
+### Hover stavy na --color-hover
+- **`dotaznik.astro`**: oba inline odkazy „zde" dostaly `hover:bg-hover`.
+- `--color-hover` je světlý odstín, proto se všude používá jako **pozadí**, ne jako barva textu — jako text na světlém panelu prvek prakticky zmizí.
+- Popisky voleb u checkboxů zůstaly **bez hover stavu** (zpětná vazba jen kurzorem).
+
 ### Scrollbar během přechodu stránek
 - **`Layout.astro`**: skript drží po dobu view transition třídu `vt-running` na `<html>` — nasazuje ji v `astro:before-preparation` (před snímkem odcházející stránky) a **znovu** v `astro:after-swap`, sundává na `viewTransition.finished` (konec animace, ne konec swapu).
 - Proč dvakrát: Astro ve `swapRootAttributes()` smaže **všechny** atributy `<html>` a nasadí ty z načteného dokumentu — cokoli nasazeného před swapem se zahodí přesně v momentě, kdy začne najíždět nová stránka. `after-swap` běží ještě uvnitř update callbacku view transition, tedy před snímkem nové stránky.

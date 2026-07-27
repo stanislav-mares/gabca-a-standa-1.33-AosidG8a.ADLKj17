@@ -23,7 +23,7 @@ const textContent = [
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10">
-            <h1 class="font-heading text-heading tracking-wider" data-reveal>{heading}</h1>
+            <h1 class="font-heading text-heading tracking-wider underline decoration-2 decoration-accent underline-offset-8" data-reveal>{heading}</h1>
             <article class="flex flex-col w-full pt-20 pb-[50vh] 2xl:gap-14">
                 {
                     textContent.map((item, i) => (
@@ -38,8 +38,8 @@ const textContent = [
                                 <div class="flex items-baseline justify-between gap-x-6 2xl:contents">
                                     <h2
                                         class:list={[
-                                            "story-year font-heading text-6xl 2xl:text-8xl",
-                                            "text-ink/25 transition-colors duration-500",
+                                            "story-year font-heading text-4xl md:text-6xl 2xl:text-8xl",
+                                            "text-text opacity-25 transition-opacity duration-500",
                                             "2xl:row-start-1 2xl:self-center",
                                             i % 2 === 0
                                                 ? "2xl:col-start-1 2xl:text-right"
@@ -48,18 +48,18 @@ const textContent = [
                                     >
                                         {item.time}
                                     </h2>
-                                    <h3 class="story-title font-heading text-5xl 2xl:text-7xl 2xl:py-6 text-left 2xl:text-center 2xl:col-start-2 2xl:row-start-1 2xl:self-center text-ink/25 transition-colors duration-500">
+                                    <h3 class="story-title font-heading text-4xl 2xl:text-6xl 2xl:py-6 text-left 2xl:text-center 2xl:col-start-2 2xl:row-start-1 2xl:self-center opacity-25 transition-opacity duration-500">
                                         {item.content}
                                     </h3>
                                 </div>
-                                <p class="mt-1 text-paragraph text-center text-ink/50 2xl:mt-0 2xl:col-start-2 2xl:row-start-2 2xl:text-center">
+                                <p class="story-desc mt-1 text-paragraph text-center 2xl:mt-0 2xl:col-start-2 2xl:row-start-2 2xl:text-center opacity-25 transition-opacity duration-500">
                                     {item.description}
                                 </p>
                             </div>
                             {i < textContent.length - 1 && (
                                 <span
                                     aria-hidden="true"
-                                    class="self-center h-1.5 w-1.5 rounded-full bg-ink/25"
+                                    class="self-center h-1.5 w-1.5 rounded-full bg-text/25"
                                 />
                             )}
                         </Fragment>
@@ -86,10 +86,16 @@ const textContent = [
 
         const setActive = (active: HTMLElement) => {
             for (const section of sections) {
-                const parts = section.querySelectorAll(".story-year, .story-title");
+                // Přepínáme průhlednost, ne barvu: ta je v třídách responzivní
+                // (u h2 text-text na mobilu, text-ink od md) a barevný toggle
+                // by ji přebil. Ztlumení nejde dát na celý blok — ten nese
+                // data-reveal, jehož animace končí na opacity: 1 s `both`.
+                const parts = section.querySelectorAll(
+                    ".story-year, .story-title, .story-desc",
+                );
                 for (const part of parts) {
-                    part.classList.toggle("text-ink", section === active);
-                    part.classList.toggle("text-ink/25", section !== active);
+                    part.classList.toggle("opacity-100", section === active);
+                    part.classList.toggle("opacity-25", section !== active);
                 }
             }
         };

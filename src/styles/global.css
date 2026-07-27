@@ -79,22 +79,12 @@
 
 
     /* ---------- BRAND COLORS ---------- */
-    --color-surface: #f0f1f5;  /* beige panel background   → bg-surface  */
-    --color-accent:  #ddbeb5;  /* highlight / brand accent → text-accent */
-    --color-hover:   #4e4637;  /* interactive hover state  → text-hover  */
-    --color-ink:     #4b402d;  /* primary text (gray-700)  → text-ink    */
-    --color-muted:   #4b402d;  /* secondary text (gray-500) → text-muted */
-
-    /*#f7d596;*/
-    /*#e4baa4*/
-    /*#734d29
-    #f5e2c1*/
-    --color-surface: #faeddc;
-    --color-surface: #FAFAFA;
-    /*
-    */
-
-
+    --color-surface: #fafafa;  /* panel background   → bg-surface  */
+    --color-accent:  #734d29;  /* highlight / brand accent → text-accent */
+    --color-hover:   #f7d596;  /* interactive hover state  → text-hover  */
+    --color-ink:     #734d29;  /* primary text  → text-ink    */
+    --color-muted:   #4b402d;  /* secondary text → text-muted */
+    --color-text:    #000000;  /* body text (odstavce) → text-text */
 
     /* ---------- TYPE SCALE ---------- */
     /* Semantic sizes — tune once here.  → text-hero, text-title, … */
@@ -106,6 +96,15 @@
     --text-title:   3rem;     /* was text-5xl (page heads) */
     --text-display: 4.5rem;   /* was text-7xl              */
     --text-hero:    clamp(3rem, 10vw, 6rem);  /* „Vstoupit" — fluidní (bylo 6rem) */
+}
+
+.colors  {
+    --color-1: #f7d596;
+    --color-2: #e4baa4;
+    --color-3: #734d29;
+    --color-4: #f5e2c1;
+    --color-5: #faeddc;
+    --color-6: #FAFAFA;
 }
 
 @layer base {
@@ -121,10 +120,6 @@
 
     body {
         /*@apply text-gray-800;*/
-    }
-
-    a {
-        text-decoration: none;
     }
 
     /* View Transition Animations */

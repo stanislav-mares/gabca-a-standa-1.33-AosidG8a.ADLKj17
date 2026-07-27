@@ -87,7 +87,7 @@ const textContent = [
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10">
-            <h1 class="font-heading text-heading tracking-wider" data-reveal>{heading}</h1>
+            <h1 class="font-heading text-heading tracking-wider underline decoration-2 decoration-accent underline-offset-8" data-reveal>{heading}</h1>
             <article class="flex flex-col gap-10 w-full pt-20 pb-[50vh]">
                 {
                     textContent.map((item, i) => (
@@ -100,8 +100,8 @@ const textContent = [
                         >
                             <h2
                                 class:list={[
-                                    "story-year font-heading text-6xl 2xl:text-8xl mb-5 2xl:mb-0",
-                                    "text-ink/25 transition-colors duration-500",
+                                    "story-year font-heading text-4xl md:text-6xl 2xl:text-8xl mb-5 2xl:mb-0",
+                                    "text-text opacity-25 transition-opacity duration-500",
                                     "2xl:row-start-1 2xl:self-center",
                                     i % 2 === 0
                                         ? "2xl:col-start-1 2xl:text-right"
@@ -137,9 +137,11 @@ const textContent = [
 
         const setActive = (active: HTMLElement) => {
             for (const section of sections) {
+                // Přepínáme průhlednost, ne barvu: ta je v třídách responzivní
+                // (text-text na mobilu, text-ink od md) a barevný toggle by ji přebil.
                 const year = section.querySelector(".story-year");
-                year?.classList.toggle("text-ink", section === active);
-                year?.classList.toggle("text-ink/25", section !== active);
+                year?.classList.toggle("opacity-100", section === active);
+                year?.classList.toggle("opacity-25", section !== active);
             }
         };
 

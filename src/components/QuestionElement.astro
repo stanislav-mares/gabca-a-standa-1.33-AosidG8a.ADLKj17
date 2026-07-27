@@ -19,7 +19,7 @@ const { element, name, forceRequired = false } = Astro.props;
 const required = forceRequired || element.required;
 
 const inputClass =
-  "w-full px-4 py-3 bg-transparent border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-700 focus:ring-1 focus:ring-gray-700 transition-colors";
+  "w-full px-4 py-3 bg-transparent border border-black rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors";
 const labelClass =
   "block text-lg font-bold text-gray-900 mb-1";
 const descriptionClass =
@@ -91,7 +91,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
                 id={`${name}-${opt.value}`}
                 name={isMulti ? `${name}-${opt.value}` : name}
                 value={opt.value}
-                class="size-4 accent-gray-900"
+                class="size-4 accent-accent"
                 required={choiceRequired}
                 data-followup={
                   opt.followUp ? `${name}-${opt.value}-followup` : undefined

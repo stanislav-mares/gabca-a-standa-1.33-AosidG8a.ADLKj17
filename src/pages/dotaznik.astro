@@ -59,7 +59,7 @@ const questions: Question[] = [
                         value: "svatba",
                         label: "V den svatby",
                         followUp: {
-                            heading: `Příjezd cca mezi 10:30 - 11:00. Více informací naleznete zde: <a href="${import.meta.env.BASE_URL}svatebni-den" class="underline text-black">zde</a>`,
+                            heading: `Příjezd cca mezi 10:30 - 11:00. Více informací naleznete zde: <a href="${import.meta.env.BASE_URL}svatebni-den" class="underline text-black hover:bg-hover transition-colors">zde</a>`,
                             elements: [],
                         },
                     },
@@ -84,7 +84,7 @@ const questions: Question[] = [
                 type: "yes-no",
                 label: "Budeš chtít přespat přímo na místě nebo v blízkém okolí?",
                 description: `Ubytování jsme schopni zajistit pro všechny hosty. Bližší informace k ubytování budou zavčasu zveřejněny
-                <a href="${import.meta.env.BASE_URL}ubytovani" class="underline text-black">zde</a>`,
+                <a href="${import.meta.env.BASE_URL}ubytovani" class="underline text-black hover:bg-hover transition-colors">zde</a>`,
                 required: true,
                 options: [
                     {
@@ -341,7 +341,7 @@ const questions: Question[] = [
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center px-6 sm:px-10">
-            <h1 class="font-heading text-heading tracking-wider" data-reveal>{heading}</h1>
+            <h1 class="font-heading text-heading tracking-wider underline decoration-2 decoration-accent underline-offset-8" data-reveal>{heading}</h1>
             <div class="w-full max-w-3xl pt-20">
                 <p
                     class="text-lg leading-relaxed text-justify"
