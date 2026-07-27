@@ -9,17 +9,19 @@ import CeremonyDate from "./CeremonyDate.astro";
     id="main-header"
     class="h-full flex flex-col items-center justify-center content-center w-full bg-surface opacity-95"
 >
-    <div class="flex items-center">
+    <div class="flex items-center shrink-0">
         <button
             id="header-logo-btn"
             type="button"
             class="cursor-pointer"
             aria-label="Zpět na úvod"
         >
-            <Logo width={440} height={440} />
+            <Logo width={440} height={440} maxHeight="38svh" />
         </button>
     </div>
-    <div class="border-gray-600/50 w-full flex justify-center">
+    <div
+        class="border-gray-600/50 w-full flex justify-center items-start min-h-0 overflow-y-auto overscroll-contain"
+    >
         <Menu />
     </div>
     <!-- <div class="flex justify-center items-end"> -->

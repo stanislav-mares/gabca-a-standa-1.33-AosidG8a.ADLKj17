@@ -13,13 +13,13 @@ const links = [
 
 <nav class="menu-nav">
     <ul
-        class="menu menu-xl menu-vertical font-heading text-muted *:p-2 md:*:p-4 items-center justify-center"
+        class="menu menu-xl menu-vertical font-heading text-muted *:p-2 md:*:p-4 items-center"
     >
         {
             links.map(({ href, label }) => (
                 <li class="group flex justify-center">
                     <a
-                        class="rounded-none nav-btn text-[clamp(1.75rem,6vw,3rem)] 2xl:text-[3rem] inline-flex flex-col items-center text-center transition-all duration-300 group-hover:text-accent after:content-[attr(data-text)] after:h-0 after:overflow-hidden after:invisible after:font-extralight after:pointer-events-none"
+                        class="rounded-none nav-btn text-[clamp(2rem,6vmin,3rem)] 2xl:text-[3rem] inline-flex flex-col items-center text-center transition-all duration-300 group-hover:text-accent after:content-[attr(data-text)] after:h-0 after:overflow-hidden after:invisible after:font-extralight after:pointer-events-none"
                         href={href}
                         data-text={label}
                     >

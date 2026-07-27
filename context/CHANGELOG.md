@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-07-27
+
+### Mobil — scrollovatelné menu na úvodní stránce
+- **`Header.astro`**: wrapper menu dostal `min-h-0 overflow-y-auto overscroll-contain items-start`, logo `shrink-0`. Menu, které se na nízkých displejích do panelu nevešlo, se dá odscrollovat místo aby ho `overflow-hidden` na `<main>` oříznul. `min-h-0` je nutné, aby flex item vůbec směl být nižší než jeho obsah; `overscroll-contain` drží gesto uvnitř menu (`<body>` má `overscroll-none`).
+- **`Menu.astro`**: z `<ul>` odebráno `justify-center` — ve scrollovacím kontejneru by centrování při přetečení odsunulo horní položky mimo dosah. Vertikální vycentrování dál obstarává `justify-center` na `#main-header`, takže se vzhled nemění, dokud se menu vejde.
+
+### Logo — limit podle výšky viewportu (landscape)
+- **`Logo.astro`**: nový volitelný prop **`maxHeight?: string`**, zapojený do inline šířky jako `min({width}px, 60vw, {maxHeight})` — logo je čtvercové, takže limit šířky limituje i výšku. Bez propu se chování nemění.
+- Nasazeno: `Header.astro` **`38svh`**, `Intro.astro` **`60svh`**. V landscapu na telefonu se logo škálovalo jen podle šířky, takže si drželo 440 px a sežralo celou výšku panelu — na menu zbylo 0 px a nešlo ani vidět, ani scrollovat. **`svh`** místo `dvh` proto, aby se logo nepřeškálovalo při skrývání adresní lišty.
+
+### Typografie — velikosti stabilní při otočení telefonu
+- **`Menu.astro`**: `text-[clamp(1.75rem,6vw,3rem)]` → **`text-[clamp(2rem,6vmin,3rem)]`**. `vmin` je kratší rozměr viewportu, ten se otočením telefonu nemění → portrait i landscape 32 px (dřív 28 vs 48 px). `2xl:text-[3rem]` ponecháno: s `vmin` už není nadbytečné, drží desktop na 48 px i na širokém, ale nízkém okně.
+- **`--text-heading`**: `clamp(2.25rem, 7vw, 5.25rem)` → **`clamp(2.75rem, 7vmin, 5.25rem)`** — h1 na telefonu 44 px v obou orientacích (dřív 36 portrait / 59 landscape), desktop ~76 px. Propisuje se do všech šesti podstránek naráz.
+
 ## 2026-07-26
 
 ### Responzivita — fluidní nadpisy, menu a logo

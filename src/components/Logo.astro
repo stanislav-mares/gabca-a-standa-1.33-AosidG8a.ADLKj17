@@ -6,10 +6,15 @@ import mainLogo from "../assets/logo-new.webp";
 interface Props {
     width: number;
     height: number; // The '?' makes this prop optional
+    maxHeight?: string; // CSS délka; logo je čtvercové, takže limituje i šířku
 }
 
 // 2. Destructure the properties from Astro.props
-const { width = 128, height = 128 } = Astro.props;
+const { width = 128, height = 128, maxHeight } = Astro.props;
+
+const size = maxHeight
+    ? `min(${width}px, 60vw, ${maxHeight})`
+    : `min(${width}px, 60vw)`;
 ---
 
 <div class="flex justify-center">
@@ -19,6 +24,6 @@ const { width = 128, height = 128 } = Astro.props;
         width={width}
         height={height}
         class="max-w-full h-auto"
-        style={`width: min(${width}px, 60vw)`}
+        style={`width: ${size}`}
     />
 </div>
