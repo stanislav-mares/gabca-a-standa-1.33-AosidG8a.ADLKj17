@@ -49,8 +49,43 @@ import mainPhoto from "../assets/dkr-1795.jpg";
             // transition udělá snímek odcházející stránky — scrollbar tak zmizí
             // oběma. Sundáváme ji až na `finished` (konec animace, ne konec
             // swapu DOM); `finally` ji neponechá viset u přerušeného přechodu.
-            document.addEventListener("astro:before-preparation", () => {
+            document.addEventListener("astro:before-preparation", (e) => {
                 document.documentElement.classList.add("vt-running");
+
+                // Odchod z úvodní stránky: logo a menu zhasnou dřív, než panel
+                // odjede. View transition si odcházející stránku vyfotí hned na
+                // začátku, takže fade musí doběhnout ještě před tím — Astro na
+                // `loader` čeká, tak si do něj vložíme animaci. Podstránky
+                // header nemají, tam se navigace nezdrží.
+                //
+                // Web Animations API místo CSS tříd záměrně: animace sedí přímo
+                // na elementu, takže nezávisí na tom, který scoped stylopis má
+                // Astro po swapu zrovna v hlavičce. Přes třídy to fungovalo jen
+                // napoprvé a pak mizelo už jen logo. `fill: forwards` drží
+                // prvky ztlumené i pro snímek přechodu.
+                const fading = [
+                    document.getElementById("header-logo-btn"),
+                    document.querySelector(".menu-nav"),
+                ].filter((el) => el !== null);
+                if (fading.length === 0) return;
+
+                const load = e.loader;
+                e.loader = async () => {
+                    await Promise.all(
+                        fading.map(
+                            (el) =>
+                                el.animate(
+                                    { opacity: 0.3 },
+                                    {
+                                        duration: 500,
+                                        easing: "ease-in-out",
+                                        fill: "forwards",
+                                    },
+                                ).finished,
+                        ),
+                    );
+                    await load();
+                };
             });
 
             // Astro při swapu (swapRootAttributes) smaže VŠECHNY atributy

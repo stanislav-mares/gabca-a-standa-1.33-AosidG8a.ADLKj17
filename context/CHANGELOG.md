@@ -2,6 +2,13 @@
 
 ## 2026-07-27
 
+### Fade loga a menu při odchodu z úvodní stránky
+- **`Layout.astro`**: v `astro:before-preparation` se obalí `e.loader` — logo (`#header-logo-btn`) a menu (`.menu-nav`) se ztlumí na 30 % (500 ms) a teprve pak se pustí načtení a slide panelu.
+- Proč odklad: view transition si odcházející stránku **vyfotí v momentě, kdy začne**, takže animace spuštěná těsně předtím by se na snímku zafixovala rozpracovaná. Astro na `loader` čeká ještě před `startViewTransition`, takže se do něj dá zpoždění vložit.
+- **Web Animations API, ne CSS třídy.** Přes třídu na headeru to fungovalo jen napoprvé a pak mizelo už jen logo: `.menu-nav` vykresluje `Menu.astro`, takže ho scoped `<style>` Headeru přes `data-astro-cid` míjel, a `:global()` to nespravilo. Animace na elementu na stylopisech nezávisí; `fill: forwards` drží prvky ztlumené i pro snímek.
+- Guard na prázdné pole cílů znamená, že navigace mezi podstránkami se nezdrží.
+- **Zvažovaná alternativa:** dát logu a menu `transition:name` a animovat je souběžně se slidem přes `::view-transition-old/new(...)`. Zavrženo — pojmenované prvky opustí panelový snímek, takže se jim musí duplikovat `translateX` i délka slidu ve čtyřech sadách keyframes (old/new × forward/back) a držet je v synchronizaci s `transitions.ts`.
+
 ### Přechod mezi stránkami zpomalen
 - **`transitions.ts`**: slide panelu `0.8s` → **`1.2s`** ve všech čtyřech směrech. Délka a easing vytaženy do konstant `DURATION` / `EASING`, takže se ladí na jednom řádku místo na čtyřech.
 - Nesladěné zůstává `[data-reveal]` (1s, zpoždění 0,2–0,8s), laděné původně proti 0,8s slidu — obsah se teď vynoří dřív, než panel dojede.
