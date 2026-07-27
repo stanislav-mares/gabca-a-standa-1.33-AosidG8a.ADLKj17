@@ -2,6 +2,10 @@
 
 ## 2026-07-27
 
+### Přechod mezi stránkami zpomalen
+- **`transitions.ts`**: slide panelu `0.8s` → **`1.2s`** ve všech čtyřech směrech. Délka a easing vytaženy do konstant `DURATION` / `EASING`, takže se ladí na jednom řádku místo na čtyřech.
+- Nesladěné zůstává `[data-reveal]` (1s, zpoždění 0,2–0,8s), laděné původně proti 0,8s slidu — obsah se teď vynoří dřív, než panel dojede.
+
 ### Logo — velikosti a pozice v intru
 - **`Logo.astro`**: dva nové volitelné propy. `maxWidth` (default `60vw` = dosavadní chování) uvolňuje strop šířky, na který se na mobilu naráželo — zvyšování `width`/`maxHeight` tam nemělo efekt, protože `60vw` bylo v komponentě natvrdo. `size` přebije celý dopočet hotovým CSS rozměrem.
 - **Header logo**: `440/38svh` → `380px`, `maxWidth 72vw`, `maxHeight min(36svh, 324px)`. Vnořené `min()` je záměr: samotné zvýšení na `36svh` by narostlo i na desktopu, tenhle zápis nechá vyrůst mobil (234 → 281 px) a desktop drží na 324 px.
