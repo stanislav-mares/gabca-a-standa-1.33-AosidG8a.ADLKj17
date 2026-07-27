@@ -7,7 +7,7 @@ import CeremonyDate from "./CeremonyDate.astro";
 
 <header
     id="main-header"
-    class="h-full flex flex-col items-center justify-center content-center w-full bg-surface/95"
+    class="h-full flex flex-col items-center justify-evenly content-center w-full bg-surface/95"
 >
     <div class="flex items-center shrink-0">
         <button
@@ -16,7 +16,12 @@ import CeremonyDate from "./CeremonyDate.astro";
             class="cursor-pointer"
             aria-label="Zpět na úvod"
         >
-            <Logo width={440} height={440} maxHeight="38svh" />
+            <Logo
+                width={380}
+                height={380}
+                maxHeight="min(36svh, 324px)"
+                maxWidth="72vw"
+            />
         </button>
     </div>
     <div

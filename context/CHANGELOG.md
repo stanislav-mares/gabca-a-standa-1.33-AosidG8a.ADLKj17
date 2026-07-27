@@ -2,6 +2,14 @@
 
 ## 2026-07-27
 
+### Logo — velikosti a pozice v intru
+- **`Logo.astro`**: dva nové volitelné propy. `maxWidth` (default `60vw` = dosavadní chování) uvolňuje strop šířky, na který se na mobilu naráželo — zvyšování `width`/`maxHeight` tam nemělo efekt, protože `60vw` bylo v komponentě natvrdo. `size` přebije celý dopočet hotovým CSS rozměrem.
+- **Header logo**: `440/38svh` → `380px`, `maxWidth 72vw`, `maxHeight min(36svh, 324px)`. Vnořené `min()` je záměr: samotné zvýšení na `36svh` by narostlo i na desktopu, tenhle zápis nechá vyrůst mobil (234 → 281 px) a desktop drží na 324 px.
+- **Intro logo**: velikost přesunuta do proměnné `--intro-logo` na `#intro-overlay` (`min(600px, 88vw, 54svh)`) a předána přes `size="var(--intro-logo)"` — jeden zdroj pravdy.
+- **Pozice na mobilu**: kontejner loga `translate-y-[15svh] xl:translate-y-0` posune střed loga z 50 % na 65 % výšky. Transform sedí na kontejneru, ne na `.intro-logo` — tomu sahá do `style.transform` skript přeletu a translate by přepsal.
+- **Tlačítko „Vstoupit"**: `top-[calc(82.5%_+_var(--intro-logo)/4)]` = přesně v půlce mezi spodkem loga a spodkem stránky. Odvození: střed loga `65%`, spodek `65% + L/2`, půlka do `100%` je `82.5% + L/4`. Díky proměnné se pozice přepočítá sama při každé změně velikosti.
+- **Hover na „Vstoupit"** převeden z `opacity` na barvu (`text-text/35 hover:text-text`). Pravidlo `.intro-enter` má na `opacity` 0,8s prodlevu kvůli návratu do intra a ta se propisovala i do hoveru; `color` má v témž pravidle rychlý přechod bez prodlevy.
+
 ### Svatební den a Náš příběh — timeline
 - **h2 (`.story-year`)** na obou stránkách sjednoceno: `text-4xl md:text-6xl 2xl:text-8xl`, barva `text-text` bez rozlišení zařízení.
 - **Ztlumení neaktivních položek přešlo z barvy na průhlednost** — `setActive()` přepíná `opacity-100` / `opacity-25` místo `text-ink` / `text-ink/25`. Barva tak zůstává čistě v třídách a nemusí se duplikovat v JS.
