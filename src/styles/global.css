@@ -90,8 +90,9 @@
     /*#734d29
     #f5e2c1*/
     --color-surface: #faeddc;
-    --color-surface: #FEFCFA;
-    /*#f7e6ca*/
+    --color-surface: #FAFAFA;
+    /*
+    */
 
 
 
@@ -172,23 +173,6 @@
         animation: bg-fade-in 0.8s ease-in-out both;
     }
 
-    @keyframes bg-fade-outh {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
-    }
-
-    @keyframes bg-fade-in {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
 
     /* Menu fade animations */
     ::view-transition-old(menu-content) {
@@ -197,24 +181,6 @@
 
     ::view-transition-new(menu-content) {
         animation: fade-in-slow 0.5s ease-in-out;
-    }
-
-    @keyframes fade-out-quick {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
-    }
-
-    @keyframes fade-in-slow {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
     }
 
     /* Postupné vynořování obsahu během slide přechodu.
@@ -241,4 +207,24 @@
             animation: none;
         }
     }
+}
+
+/* ============================================================
+   MIMO @layer ZÁMĚRNĚ — Tailwind řadí vrstvy `base` před `utilities`,
+   takže by utilita `.overflow-y-auto` tahle pravidla přebila bez ohledu
+   na specificitu. Nevrstvené CSS má přednost před všemi vrstvami.
+   ============================================================ */
+
+/* Scrollbar panelu se během slide přechodu vezl spolu se stránkou.
+   Třídu `.vt-running` nasazuje Layout.astro po dobu view transition. */
+html.vt-running main {
+    overflow-y: hidden;
+}
+
+/* Scrollovací panel podstránek si drží místo pro scrollbar natrvalo, aby ho
+   schování během přechodu neuvolnilo a obsah na konci animace necuknul.
+   Na mobilu je scrollbar překryvný, takže je gutter nulový. Selektor cílí na
+   `overflow-y-auto` záměrně — index scrolluje uvnitř panelu, gutter by tam byl navíc. */
+main.overflow-y-auto {
+    scrollbar-gutter: stable;
 }

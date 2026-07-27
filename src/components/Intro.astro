@@ -257,9 +257,13 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
     // Spusť znovu po každé Astro navigaci
     document.addEventListener("astro:page-load", setupIntro);
 
-    // Klientská navigace nejde přes blokující skript v <head> — třídu
-    // proti probliku nasaď znovu před výměnou DOM
-    document.addEventListener("astro:before-swap", () => {
+    // Klientská navigace nejde přes blokující skript v <head> — třídu proti
+    // probliku nasaď znovu. Musí to být až v after-swap: Astro při swapu
+    // (swapRootAttributes) smaže všechny atributy <html>, takže cokoli
+    // nasazeného v before-swap by se zahodilo přesně v momentě, kdy se do DOM
+    // dostane intro overlay. After-swap ještě běží uvnitř update callbacku
+    // view transition, tedy před snímkem nové stránky.
+    document.addEventListener("astro:after-swap", () => {
         if (sessionStorage.getItem("intro-seen")) {
             document.documentElement.classList.add("intro-seen");
         }

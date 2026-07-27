@@ -2,6 +2,18 @@
 
 ## 2026-07-27
 
+### Scrollbar během přechodu stránek
+- **`Layout.astro`**: skript drží po dobu view transition třídu `vt-running` na `<html>` — nasazuje ji v `astro:before-preparation` (před snímkem odcházející stránky) a **znovu** v `astro:after-swap`, sundává na `viewTransition.finished` (konec animace, ne konec swapu).
+- Proč dvakrát: Astro ve `swapRootAttributes()` smaže **všechny** atributy `<html>` a nasadí ty z načteného dokumentu — cokoli nasazeného před swapem se zahodí přesně v momentě, kdy začne najíždět nová stránka. `after-swap` běží ještě uvnitř update callbacku view transition, tedy před snímkem nové stránky.
+- **`global.css`**: `html.vt-running main { overflow-y: hidden }` a `main.overflow-y-auto { scrollbar-gutter: stable }` — gutter drží místo po scrollbaru natrvalo, aby obsah na konci animace necuknul (na mobilu je scrollbar překryvný, tam je gutter nulový).
+- Obě pravidla jsou **mimo `@layer`** záměrně: Tailwind řadí vrstvu `base` před `utilities`, takže by je utilita `.overflow-y-auto` přebila bez ohledu na specificitu.
+
+### Průhlednost panelu menu
+- **`Header.astro`**: `bg-surface opacity-95` → **`bg-surface/95`**. `opacity` zprůhledňuje celý element včetně obsahu, takže logo i položky menu byly vybledlé na 95 %; `/95` se týká jen pozadí. Panel tak odpovídá podstránkám, které `bg-surface/95` používají.
+
+### Problikávání intra při návratu na úvod
+- **`Intro.astro`**: nasazení třídy `intro-seen` přesunuto z `astro:before-swap` na **`astro:after-swap`** — stejná příčina jako u scrollbaru (swap maže atributy `<html>`). Bez toho se při klientské navigaci zpět na úvod ukázal celý intro overlay po dobu 0.8s slidu, než ho `skipIntro()` usadil.
+
 ### Mobil — scrollovatelné menu na úvodní stránce
 - **`Header.astro`**: wrapper menu dostal `min-h-0 overflow-y-auto overscroll-contain items-start`, logo `shrink-0`. Menu, které se na nízkých displejích do panelu nevešlo, se dá odscrollovat místo aby ho `overflow-hidden` na `<main>` oříznul. `min-h-0` je nutné, aby flex item vůbec směl být nižší než jeho obsah; `overscroll-contain` drží gesto uvnitř menu (`<body>` má `overscroll-none`).
 - **`Menu.astro`**: z `<ul>` odebráno `justify-center` — ve scrollovacím kontejneru by centrování při přetečení odsunulo horní položky mimo dosah. Vertikální vycentrování dál obstarává `justify-center` na `#main-header`, takže se vzhled nemění, dokud se menu vejde.

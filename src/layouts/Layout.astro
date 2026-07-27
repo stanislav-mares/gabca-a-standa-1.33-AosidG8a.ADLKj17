@@ -42,5 +42,30 @@ import mainPhoto from "../assets/dkr-1795.jpg";
             </div>
         </div>
         <slot />
+
+        <script>
+            // Scrollbar panelu se během slide přechodu vezl spolu se stránkou.
+            // Třídu nasazujeme už v before-preparation, tedy dřív, než si view
+            // transition udělá snímek odcházející stránky — scrollbar tak zmizí
+            // oběma. Sundáváme ji až na `finished` (konec animace, ne konec
+            // swapu DOM); `finally` ji neponechá viset u přerušeného přechodu.
+            document.addEventListener("astro:before-preparation", () => {
+                document.documentElement.classList.add("vt-running");
+            });
+
+            // Astro při swapu (swapRootAttributes) smaže VŠECHNY atributy
+            // <html> a nasadí ty z načteného dokumentu — třídu tedy musíme
+            // vrátit. after-swap běží ještě uvnitř update callbacku view
+            // transition, takže to stihne před snímkem nové stránky.
+            document.addEventListener("astro:after-swap", () => {
+                document.documentElement.classList.add("vt-running");
+            });
+
+            document.addEventListener("astro:before-swap", (e) => {
+                e.viewTransition.finished.finally(() => {
+                    document.documentElement.classList.remove("vt-running");
+                });
+            });
+        </script>
     </body>
 </html>
