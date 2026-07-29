@@ -1,12 +1,11 @@
 ---
 import { Image } from "astro:assets";
-import mainLogo from "../assets/logo-bez-pozadi.png";
+import mainLogo from "../assets/logo3.png";
 
 // 1. (Optional) Define the TypeScript interface for your props
 interface Props {
-    width: number;
-    height: number; // The '?' makes this prop optional
-    maxHeight?: string; // CSS délka; logo je čtvercové, takže limituje i šířku
+    width?: number;
+    maxHeight?: string; // CSS délka; skutečný strop výšky (šířka dopočte poměrem)
     maxWidth?: string; // podíl šířky viewportu, který logo nesmí přesáhnout
     /** Hotový CSS rozměr; přebije dopočet z width/maxWidth/maxHeight.
      *  Umožňuje držet velikost v proměnné a odkazovat se na ni i odjinud. */
@@ -14,16 +13,23 @@ interface Props {
 }
 
 // 2. Destructure the properties from Astro.props
-const {
-    width = 128,
-    height = 128,
-    maxHeight,
-    maxWidth = "60vw",
-    size: sizeOverride,
-} = Astro.props;
+const { width = 128, maxHeight, maxWidth = "60vw", size: sizeOverride } = Astro.props;
 
-const limits = [`${width}px`, maxWidth, maxHeight].filter(Boolean);
+// Sharp ořezává (fit: cover), když width i height neodpovídají poměru zdroje —
+// výšku proto vždy dopočítáváme z rozměrů importovaného loga
+const height = Math.round((width * mainLogo.height) / mainLogo.width);
+
+// Všechny limity řešíme přes šířku. max-height by při definitní šířce jen
+// zploštil box (aspect-ratio se neuplatní) a logo by se v něm vycentrovalo —
+// naměřený box by pak neodpovídal vykreslenému logu, což rozbíjí přelet z Intra.
+const ratio = mainLogo.width / mainLogo.height;
+const limits = [
+    `${width}px`,
+    maxWidth,
+    maxHeight && `calc(${maxHeight} * ${ratio})`,
+].filter(Boolean);
 const size = sizeOverride ?? `min(${limits.join(", ")})`;
+const style = `width: ${size}; aspect-ratio: ${mainLogo.width} / ${mainLogo.height}`;
 ---
 
 <div class="flex justify-center">
@@ -33,6 +39,6 @@ const size = sizeOverride ?? `min(${limits.join(", ")})`;
         width={width}
         height={height}
         class="max-w-full h-auto"
-        style={`width: ${size}`}
+        style={style}
     />
 </div>

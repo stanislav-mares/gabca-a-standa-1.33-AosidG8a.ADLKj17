@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-07-29
+
+### Logo — nečtvercový podklad
+
+- **`Logo.astro`**: prop `height` z `Props` **odstraněn**, výška se dopočítává z rozměrů importovaného loga (`Math.round(width * mainLogo.height / mainLogo.width)`). Volání s `width={520} height={520}` nad podkladem 1340×857 nechalo sharp resizovat s výchozím `fit: cover`, takže se logo při buildu **ořízlo** na čtverec. Volající místa (`Header.astro`, `Intro.astro`) prop přestala předávat.
+- **`maxHeight` se převádí na limit šířky** — `calc(${maxHeight} * ${ratio})` v témž `min()` jako `width` a `maxWidth`. Dřív se do `min()` vkládal beze změny, tedy fungoval jako limit šířky s nesprávnou hodnotou (u čtvercového loga to vycházelo, u širokého ne).
+- **Proč ne `max-height` na `<img>`**: při definitní šířce se `aspect-ratio` neuplatní a `max-height` jen zploští **box** — logo se v něm vycentruje a naměřený box neodpovídá vykreslenému logu. `flightTransform()` v `Intro.astro` počítá `scale = to.width / from.width` právě z boxu, takže letící logo dosedlo o ~11 % větší než headerové a po přeletu byla vidět **dvě loga přes sebe**. Přepočet na šířku drží box vždy těsný.
+- Do inline stylu přidán `aspect-ratio` z rozměrů zdroje — zamyká poměr a slouží jako pojistka proti CLS.
+
+### Velikosti loga a menu
+
+- **Header logo**: `width` 380 → **840**, `maxHeight` `min(36svh, 324px)` → **`min(36svh, 360px)`**, `maxWidth` 72vw → **94vw**. Řídící hodnota je `maxHeight` (360px výšky = ~563px šířky); strop dává panel `2xl:basis-[35%]`, kde je ~110px rezervy.
+- **Intro logo**: `--intro-logo` `min(600px, 88vw, 54svh)` → **`min(1000px, 96vw, 105svh)`**. `svh` limituje šířku, takže 105svh šířky odpovídá ~67svh výšky.
+- **Prop `width` zvýšen na obou místech spolu s velikostí** (Header 840, Intro 1000) — neurčuje jen CSS limit, ale i **rozlišení rastru**, který Astro vygeneruje. Kdyby zůstal pod skutečnou vykreslenou šířkou, logo by se upscalovalo do rozmazání.
+- **`Menu.astro`**: `2xl:text-[3rem]` → **`2xl:text-[2.6rem]`**.
+
 ## 2026-07-27
 
 ### Fade loga a menu při odchodu z úvodní stránky
