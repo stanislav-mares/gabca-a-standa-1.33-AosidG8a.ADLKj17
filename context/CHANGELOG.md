@@ -16,6 +16,20 @@
 - **Prop `width` zvýšen na obou místech spolu s velikostí** (Header 840, Intro 1000) — neurčuje jen CSS limit, ale i **rozlišení rastru**, který Astro vygeneruje. Kdyby zůstal pod skutečnou vykreslenou šířkou, logo by se upscalovalo do rozmazání.
 - **`Menu.astro`**: `2xl:text-[3rem]` → **`2xl:text-[2.6rem]`**.
 
+### Přechod mezi stránkami — zrychlení
+
+- **`Layout.astro`**: fade a `load()` běží souběžně (`await Promise.all([faded, load()])`) místo sekvenčně. Fade se slidem sekvenční být **musí** — view transition si stránku fotí na svém začátku — ale síť se snímkem nesouvisí, takže navigace stojí `max(fade, síť)` místo jejich součtu.
+- **`astro.config.mjs`**: zapnut `prefetch` (`prefetchAll: true`, `defaultStrategy: 'viewport'`). Odkazy v menu jsou hned ve viewportu, takže se všech 7 stránek předtáhne po načtení úvodu a `load()` pak resolvuje z cache.
+- **Fade loga a menu jde v kaskádě, ne jako blok** — cílem jsou jednotlivé `.menu-nav li` (+ `#header-logo-btn`), `FADE = 90ms` s krokem `STEP = 18ms`, celkem 198 ms pro 7 prvků. **Prodloužit fade nejde zadarmo**: o jeho délku se protáhne celá navigace 1:1, protože ho `e.loader` odčeká celý. Kaskáda dá pozvolný dojem uvnitř stejného rozpočtu.
+- Easing fade `ease-in-out` → **`ease-in`**. Fade nesmí dobrzdit do stopky těsně před rozjezdem panelu — dvě zpomalení za sebou jsou na švu znát.
+
+### Přechod mezi stránkami — plynulost
+
+- **`transitions.ts`**: `EASING` `ease-in-out` → **`cubic-bezier(0.45, 0.05, 0.55, 0.95)`**. Záměrně plochá symetrická křivka, rychlost je po většinu dráhy skoro konstantní. **Silně decelerující křivky na 1.2s nefungují** — ujedou většinu dráhy hned a zbývající čas se čte jako zaseknutí.
+- **`global.css`**: `::view-transition-old/new(root)` → **`animation: none`**. Dosavadní pravidlo volalo `bg-fade-out` / `bg-fade-in`, jenže **ty `@keyframes` v projektu vůbec nejsou** — pravidlo tedy jen přebíjelo výchozí UA crossfade a nic nedosazovalo. Root je všechno mimo `main`, tedy hlavně fotka pozadí, a ta je na všech stránkách stejná — není co prolínat a skládání dvou snímků přes celý viewport bere výkon slidu.
+- Smazána mrtvá pravidla pro **`menu-content`** — žádná stránka to jméno nepoužívá (všech 7 má `main-panel`) a jejich keyframes `fade-out-quick` / `fade-in-slow` taky neexistovaly.
+- **`[data-reveal]` dorovnán na 1.2s slide** (dluh z commitu 118583d): trvání `1s` → `0.7s`, výchozí delay `0.2s` → `0.7s`, `--reveal-delay` na stránkách posunuty o +0.4 s. Obsah se teď vynořuje, až panel dosedá — dvě nesladěné pohybové vrstvy přes sebe působily neklidně.
+
 ## 2026-07-27
 
 ### Fade loga a menu při odchodu z úvodní stránky

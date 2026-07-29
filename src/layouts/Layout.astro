@@ -63,28 +63,43 @@ import mainPhoto from "../assets/dkr-1795.jpg";
                 // Astro po swapu zrovna v hlavičce. Přes třídy to fungovalo jen
                 // napoprvé a pak mizelo už jen logo. `fill: forwards` drží
                 // prvky ztlumené i pro snímek přechodu.
+                //
+                // Položky menu hasnou v kaskádě shora dolů, ne jako jeden blok.
+                // Prodloužit fade nejde zadarmo — o jeho délku se protáhne celá
+                // navigace — zatímco kaskáda dá pozvolný dojem uvnitř zhruba
+                // stejného rozpočtu: krátký fade jedné položky, posunuté starty.
                 const fading = [
                     document.getElementById("header-logo-btn"),
-                    document.querySelector(".menu-nav"),
+                    ...document.querySelectorAll(".menu-nav li"),
                 ].filter((el) => el !== null);
                 if (fading.length === 0) return;
 
+                const FADE = 90;
+                const STEP = 18;
+
                 const load = e.loader;
                 e.loader = async () => {
-                    await Promise.all(
+                    const faded = Promise.all(
                         fading.map(
-                            (el) =>
+                            (el, i) =>
                                 el.animate(
                                     { opacity: 0.3 },
                                     {
-                                        duration: 500,
-                                        easing: "ease-in-out",
+                                        duration: FADE,
+                                        delay: i * STEP,
+                                        // `ease-in`, ne `ease-in-out`: fade
+                                        // nesmí dobrzdit do stopky těsně před
+                                        // rozjezdem panelu, jinak je na švu
+                                        // znát dvojí zpomalení
+                                        easing: "ease-in",
                                         fill: "forwards",
                                     },
                                 ).finished,
                         ),
                     );
-                    await load();
+                    // Fetch se snímkem nesouvisí, tak ať běží souběžně s fade —
+                    // navigace pak stojí max(fade, síť) místo jejich součtu
+                    await Promise.all([faded, load()]);
                 };
             });
 

@@ -159,28 +159,19 @@
         }
     }
 
-    /* Background (root) – plynulé prolínání místo skokového naskočení */
-    ::view-transition-old(root) {
-        animation: bg-fade-out 0.8s ease-in-out both;
-    }
-
+    /* Root = všechno mimo `main`, tedy hlavně fotka pozadí. Ta je na všech
+       stránkách stejná, takže tu není co prolínat — výchozí crossfade UA jen
+       skládá dva snímky přes celý viewport a bere výkon slidu. Vypnutím zůstane
+       pozadí staticky stát, což je přesně dojem, který chceme. */
+    ::view-transition-old(root),
     ::view-transition-new(root) {
-        animation: bg-fade-in 0.8s ease-in-out both;
+        animation: none;
     }
 
-
-    /* Menu fade animations */
-    ::view-transition-old(menu-content) {
-        animation: fade-out-quick 0.5s ease-in-out;
-    }
-
-    ::view-transition-new(menu-content) {
-        animation: fade-in-slow 0.5s ease-in-out;
-    }
-
-    /* Postupné vynořování obsahu během slide přechodu.
-       Animace startuje vložením prvku do DOM (= swap stránky),
-       takže běží souběžně s 0.8s slidem panelu. */
+    /* Postupné vynořování obsahu po slide přechodu. Animace startuje vložením
+       prvku do DOM (= swap stránky), tedy na začátku 1.2s slidu — proto ten
+       delay: obsah se má vynořovat, až panel dosedá, ne přes jeho pohyb.
+       Dvě nesladěné pohybové vrstvy přes sebe působí neklidně. */
     @keyframes reveal-fade-up {
         from {
             opacity: 0;
@@ -193,8 +184,8 @@
     }
 
     [data-reveal] {
-        animation: reveal-fade-up 1s ease-out both;
-        animation-delay: var(--reveal-delay, 0.2s);
+        animation: reveal-fade-up 0.7s ease-out both;
+        animation-delay: var(--reveal-delay, 0.7s);
     }
 
     @media (prefers-reduced-motion: reduce) {
