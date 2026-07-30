@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-07-31
+
+### Stránka „Úvodní informace" — reálný obsah
+
+- Lorem ipsum nahrazen skutečným obsahem. Místo pole odstavců drží stránku pole **`sections`** (`interface Section`) — každá sekce má volitelný nadpis, odstavce a příznaky `map` / `routes` / `palette`, které do ní vloží mapu, odkazy na trasy nebo vzorky barev. Rozvržení tak zůstává v jedné šabloně a obsah je čistě data.
+- Odstavce se renderují přes **`set:html`**, aby v textu fungovaly `<strong>` a odkazy — v interpolaci `{}` je Astro jinak escapuje. Obsah je statický a psaný ručně, nikdy sem nesmí vstoupit uživatelský vstup.
+- Vnitřní odkazy (Ubytování, Dotazník) se skládají z **`import.meta.env.BASE_URL`**, ne z absolutní cesty — web běží na GitHub Pages pod `base: '/gabca-a-standa-…/'`, kde by `/ubytovani` skončilo mimo web.
+- **Mapa místa konání** jako `<iframe>` na `maps.google.com/maps?q=…&output=embed` — tahle varianta nepotřebuje API klíč a přijme adresu místo souřadnic. `loading="lazy"`.
+- **Doporučené trasy** jako dva odkazy do Map Google (`/maps/dir/?api=1`). Průjezdní bod je zatím prázdný (`via: ""`), takže obě trasy vedou rovnou na místo a od sebe se neliší; po doplnění obce se z nich stanou dvě různé trasy bez zásahu do kódu.
+- **Vzorky svatebních barev** jako kolečka z pole `palette` — pět barev z `.colors` v `global.css` (bez `--color-6`, což je surface) v pořadí 1, 2, 4, 5 a hnědá 3 na konci. Seznam je `aria-hidden`: bez názvů barev nemá pro čtečku význam.
+- Odstavce už nejsou `text-justify`, mezera mezi sekcemi `gap-10` → `gap-12`.
+- Zpoždění reveal animace **zastropováno na 1,4 s** (`Math.min(0.7 + i * 0.1, 1.4)`). Sekcí je deset, s původním krokem 0,12 s bez stropu by poslední naskočila skoro dvě sekundy po nadpisu.
+
 ## 2026-07-30
 
 ### Logo v Headeru
