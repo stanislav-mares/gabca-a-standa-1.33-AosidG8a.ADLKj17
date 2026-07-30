@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
+import GrainIcon from "../components/GrainIcon.astro";
 import Questionnaire from "../components/Questionnaire.astro";
 import type { Question } from "../utils/questionnaire";
 import { slideTransition } from "../utils/transitions";
@@ -352,6 +353,7 @@ const questions: Question[] = [
                 </p>
                 <div class="pt-10 pb-[50vh]" data-reveal style="--reveal-delay: 0.85s">
                     <Questionnaire questions={questions} showAll />
+                    <GrainIcon />
                 </div>
             </div>
         </section>

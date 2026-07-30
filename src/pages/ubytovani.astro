@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
+import GrainIcon from "../components/GrainIcon.astro";
 import HouseColumn from "../components/HouseColumn.astro";
 import { slideTransition } from "../utils/transitions";
 
@@ -52,6 +53,8 @@ const houses = [
                 {houses.map((house) => <HouseColumn {...house} />)}
             </div>
         </section>
+        <GrainIcon />
+
         <BackButton />
     </main>
 </Layout>

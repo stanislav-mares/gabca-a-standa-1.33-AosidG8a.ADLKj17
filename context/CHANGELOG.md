@@ -31,6 +31,14 @@
 - **`scale` místo `letter-spacing`** — Parisienne má spojené tahy, prostrkání by písmena od sebe odtrhlo.
 - Na mobilu menší: dolní mez clampu `1.7rem` (fluidní člen `5.46vmin` ji přeroste, až má kratší strana okna přes 440 px, takže od tabletu výš se nic nemění) a `py-2 md:py-3`. Logu zároveň staženo `maxWidth` na **72vw**.
 
+### Dekorativní ikona
+
+- Nová komponenta **`GrainIcon.astro`** — `grain.svg` jako malá ikona uprostřed dole v Headeru a na konci každé podstránky. Ryze dekorativní: `aria-hidden` na obalu a prázdný `alt`, pro čtečky prvek neexistuje.
+- **`<Image>`, ne inline SVG.** Astro 6 typuje `.svg` import jako `SvgComponent & ImageMetadata`, takže by šlo obojí — ale soubor má 29 kB a je na sedmi stránkách, takže inline by znamenal sedm kopií v HTML místo jednoho cachovaného požadavku.
+- Velikost po breakpointech `w-9 md:w-11 lg:w-12 2xl:w-14` (36 → 56 px). Atributy `width`/`height` odpovídají největší vykreslené velikosti a drží poměr 720:1024 — u vektoru se nahoru nemá co rozmazat, velikost řídí třídy.
+- V Headeru je ikona třetí položkou flexu s `shrink-0` a rozestup jí dává `justify-evenly` — přerozdělí se tím i mezery kolem loga a menu.
+- Na `nas-pribeh` a `dotaznik` sedí **uvnitř** bloku s `pb-[50vh]`, ne za ním. Ten padding drží prostor pro scroll-driven zvýrazňování a ikona za ním by se od obsahu odtrhla o půl výšky okna.
+
 ## 2026-07-29
 
 ### Logo — nečtvercový podklad
