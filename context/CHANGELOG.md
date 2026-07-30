@@ -56,7 +56,7 @@
 - U **alergie** a **jiné** je na `-s0` doplňující text a checklist až na `-s1`; přibyl proto řádek „– co konkrétně".
 - Nové sekce: **Velikost porcí** (dospělé/dětské vč. jmen) a řádek **e-maily**.
 - Ověřeno skriptem, že všech 43 klíčů, na které se Vyhodnocení odkazuje, formulář skutečně generuje — `range()` u neznámého klíče vyhodí výjimku.
-- **Pořadí nasazení**: přepastovat skript → poslat jeden kompletní testovací submit (vytvoří nové sloupce) → teprve pak spustit `vytvorVyhodnoceni()`. Dřív spuštěné padne na „chybí sloupec".
+- **Chybějící sloupec už Vyhodnocení neshodí.** Sloupec vzniká teprve tím, že v nějakém odeslání dorazí jeho klíč — u zaškrtávátka tedy až tím, že si možnost někdo vybere. Dosud kvůli jedné nezvolené možnosti (`sleep-e0-ano-s0-okoli`) padlo generování celého listu. `range()` proto nevyhazuje výjimku, ale přes `has()` degraduje na `=0` u počtů a `="—"` u seznamů. Ověřeno simulací nad podvrženou tabulkou: kompletní sada 55 klíčů, neúplná i skoro prázdná projdou všechny.
 
 ## 2026-07-29
 
