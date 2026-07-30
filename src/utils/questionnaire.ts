@@ -14,6 +14,9 @@
 
 export type ElementType =
   | "short-text" // krátký text (input)
+  | "email" // krátký text s nativní validací e-mailu
+  | "name-list" // seznam jmen – řádky se přidávají tlačítkem
+  | "person-checklist" // zaškrtávátka pro jména vyplněná v `name-list`
   | "textarea" // dlouhý text
   | "yes-no" // ano / ne
   | "single-choice" // výběr jedné z možností
@@ -30,9 +33,25 @@ export interface Option {
   label: string;
   /** Podotázka, která se zobrazí po vybrání této možnosti. */
   followUp?: SubQuestion;
+  /**
+   * Vybráním této možnosti dotazník končí – následující otázky se skryjí
+   * a odesílací tlačítko se přejmenuje. Zbytek dotazníku pro takového hosta
+   * nedává smysl (typicky „Bohužel nemohu").
+   */
+  endsForm?: boolean;
 }
 
-/** Jeden prvek otázky. */
+/**
+ * Jeden prvek otázky.
+ *
+ * `name-list` vykresluje N řádků na jména. Do formuláře se neposílají
+ * jednotlivé řádky, ale skryté pole se jmény spojenými čárkou – tabulka tak
+ * dostane stejný tvar dat jako obyčejný textový input a Apps Script se kvůli
+ * proměnnému počtu osob nemusí měnit.
+ *
+ * `person-checklist` se vykreslí prázdný a za běhu se naplní jmény z
+ * `name-list`. Odesílá se stejně: skryté pole se jmény zaškrtnutých osob.
+ */
 export interface Element {
   type: ElementType;
   /** Může obsahovat HTML. */
@@ -43,6 +62,15 @@ export interface Element {
   required?: boolean;
   /** Vyžadováno pro výběrové typy (yes-no / single-choice / multi-choice). */
   options?: Option[];
+  /** Jen pro `person-checklist`: osoby se předvyplní zaškrtnuté. */
+  defaultChecked?: boolean;
+  /**
+   * Jen pro výběrové prvky: osoba smí být zaškrtnutá jen v jednom z
+   * `person-checklist` pod možnostmi tohoto prvku. Zaškrtnutí ji jinde odebere.
+   * Dává smysl tam, kde se kategorie vylučují (velikost porce, typ ubytování),
+   * ne u vlastností, které lze kombinovat (stravovací omezení).
+   */
+  exclusivePersons?: boolean;
 }
 
 /** Podotázka rozbalená po vybrání možnosti – stejná stavba jako otázka. */

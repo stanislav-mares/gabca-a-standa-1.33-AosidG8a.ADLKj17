@@ -14,7 +14,7 @@ const { questions, showAll = false } = Astro.props;
 const fieldMeta = buildFieldMeta(questions);
 
 const buttonClass =
-  "sm:w-auto px-8 py-3 bg-accent hover:bg-hover hover:text-ink text-muted font-medium rounded-lg cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900";
+  "sm:w-auto px-8 py-3 bg-accent hover:bg-hover hover:text-ink text-hover font-medium rounded-lg cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900";
 ---
 
 <form action="#" method="POST" id="questionnaire-form" class="space-y-8">
@@ -70,10 +70,10 @@ const buttonClass =
 </form>
 
 <div id="form-success" class="hidden text-center py-12">
-  <p class="text-2xl font-semibold text-gray-900 mb-3">
+  <p class="text-2xl font-semibold text-gray-900 mb-3" data-success-title>
     Děkujeme!
   </p>
-  <p class="text-gray-700">
+  <p class="text-gray-700" data-success-text>
     Dotazník se odeslal a odpovědi máme uložené.
   </p>
 </div>
@@ -90,6 +90,12 @@ const buttonClass =
     submitQuestionnaire,
     type FieldMetaMap,
   } from "../utils/submit-questionnaire";
+  import {
+    clearDraft,
+    loadDraft,
+    saveDraft,
+    type Draft,
+  } from "../utils/questionnaire-draft";
 
   function initQuestionnaire() {
     const form = document.getElementById(
@@ -140,6 +146,166 @@ const buttonClass =
         });
     };
 
+    // --- Seznam jmen -------------------------------------------------------
+    // Viditelné řádky nemají atribut `name`, takže o nich FormData neví.
+    // Do formuláře je skládá skryté pole jako text oddělený čárkou — stejný
+    // tvar, jaký posílal dřívější jediný textový input, takže se kvůli
+    // proměnnému počtu osob nemusí měnit tabulka ani Apps Script.
+    const readNames = (list: HTMLElement): string[] =>
+      Array.from(list.querySelectorAll<HTMLInputElement>("[data-name-input]"))
+        .map((input) => input.value.trim())
+        .filter(Boolean);
+
+    const syncNameList = (list: HTMLElement) => {
+      const hidden = list.querySelector<HTMLInputElement>("[data-name-value]");
+      if (hidden) hidden.value = readNames(list).join(", ");
+
+      // Povinné je vždy jen první jméno — i když se první řádek smaže
+      const inputs = list.querySelectorAll<HTMLInputElement>("[data-name-input]");
+      inputs.forEach((input, i) => {
+        input.required = i === 0 && list.dataset.nameRequired === "1";
+      });
+
+      // Křížek dává smysl, teprve když je řádků víc
+      const rows = list.querySelectorAll<HTMLElement>("[data-name-row]");
+      rows.forEach((row) => {
+        row
+          .querySelector("[data-name-remove]")
+          ?.classList.toggle("hidden", rows.length === 1);
+      });
+
+      form.dispatchEvent(
+        new CustomEvent("names-change", { detail: readNames(list) }),
+      );
+    };
+
+    const initNameLists = () => {
+      form.querySelectorAll<HTMLElement>("[data-name-list]").forEach((list) => {
+        const rows = list.querySelector<HTMLElement>("[data-name-rows]");
+        const addBtn = list.querySelector<HTMLButtonElement>("[data-name-add]");
+        if (!rows || !addBtn) return;
+
+        const firstInput = rows.querySelector<HTMLInputElement>("[data-name-input]");
+        list.dataset.nameRequired = firstInput?.required ? "1" : "0";
+
+        addBtn.addEventListener("click", () => {
+          const template = rows.querySelector<HTMLElement>("[data-name-row]");
+          if (!template) return;
+          const row = template.cloneNode(true) as HTMLElement;
+          const input = row.querySelector<HTMLInputElement>("[data-name-input]");
+          if (input) input.value = "";
+          rows.appendChild(row);
+          syncNameList(list);
+          input?.focus();
+        });
+
+        // Psaní i mazání řeší delegace, takže přidané řádky nepotřebují
+        // vlastní posluchače
+        list.addEventListener("input", () => syncNameList(list));
+        list.addEventListener("click", (event) => {
+          const remove = (event.target as HTMLElement).closest(
+            "[data-name-remove]",
+          );
+          if (!remove) return;
+          remove.closest("[data-name-row]")?.remove();
+          syncNameList(list);
+        });
+
+        syncNameList(list);
+      });
+    };
+
+    // --- Jmenné checklisty -------------------------------------------------
+    // Prázdné kontejnery, které se plní jmény ze seznamu výš. Zaškrtnutí musí
+    // překreslení přežít, jinak by doplnění dalšího jména shodilo výběr, který
+    // už host udělal — proto se stavy před přestavbou vyzobou a znovu použijí.
+    let personNames: string[] = [];
+
+    const syncPersonList = (list: HTMLElement) => {
+      const checked = Array.from(
+        list.querySelectorAll<HTMLInputElement>("[data-person-check]"),
+      )
+        .filter((input) => input.checked)
+        .map((input) => input.value);
+
+      const hidden = list.querySelector<HTMLInputElement>("[data-person-value]");
+      if (hidden) hidden.value = checked.join(", ");
+    };
+
+    const renderPersonList = (list: HTMLElement) => {
+      const rows = list.querySelector<HTMLElement>("[data-person-rows]");
+      const empty = list.querySelector<HTMLElement>("[data-person-empty]");
+      if (!rows) return;
+
+      const previous = new Map(
+        Array.from(
+          rows.querySelectorAll<HTMLInputElement>("[data-person-check]"),
+        ).map((input) => [input.value, input.checked]),
+      );
+      const defaultChecked = list.dataset.defaultChecked === "1";
+
+      rows.replaceChildren(
+        ...personNames.map((person) => {
+          const label = document.createElement("label");
+          label.className =
+            "flex items-center gap-2 cursor-pointer text-gray-900";
+
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.className = "size-4 accent-accent";
+          input.value = person;
+          input.dataset.personCheck = "";
+          input.checked = previous.get(person) ?? defaultChecked;
+
+          const text = document.createElement("span");
+          text.textContent = person;
+
+          label.append(input, text);
+          return label;
+        }),
+      );
+
+      empty?.classList.toggle("hidden", personNames.length > 0);
+      syncPersonList(list);
+    };
+
+    const renderPersonLists = () => {
+      form
+        .querySelectorAll<HTMLElement>("[data-person-list]")
+        .forEach(renderPersonList);
+    };
+
+    form.addEventListener("names-change", (event) => {
+      personNames = (event as CustomEvent<string[]>).detail;
+      renderPersonLists();
+    });
+
+    form.addEventListener("change", (event) => {
+      const target = event.target as HTMLElement;
+      const list = target.closest<HTMLElement>("[data-person-list]");
+      if (!list) return;
+
+      // Vylučující se kategorie (typ ubytování, velikost porce): zaškrtnutí
+      // osoby ji odebere z ostatních checklistů téhož prvku
+      const group = list.closest<HTMLElement>("[data-person-exclusive]");
+      const changed = target.closest<HTMLInputElement>("[data-person-check]");
+      if (group && changed?.checked) {
+        group
+          .querySelectorAll<HTMLInputElement>("[data-person-check]")
+          .forEach((other) => {
+            if (other !== changed && other.value === changed.value) {
+              other.checked = false;
+            }
+          });
+        group
+          .querySelectorAll<HTMLElement>("[data-person-list]")
+          .forEach(syncPersonList);
+        return;
+      }
+
+      syncPersonList(list);
+    });
+
     const showStep = (step: HTMLElement) => {
       step.classList.remove("hidden");
       void step.offsetWidth; // force reflow so the transition runs
@@ -162,13 +328,53 @@ const buttonClass =
       return true;
     };
 
+    // --- Předčasné ukončení ------------------------------------------------
+    // Volba označená `endsForm` (typicky „Bohužel nemohu") zbytek dotazníku
+    // zneplatní. Skryté kroky se musí i `disable`nout — jinak by nevyplněná
+    // povinná pole za koncem formuláře zablokovala odeslání.
+    const cutSteps = new Set<HTMLElement>();
+
+    const submitLabel = () =>
+      cutSteps.size > 0 ? "Dokončit" : "Odeslat dotazník";
+
+    const syncFormEnd = () => {
+      // Nejdřív vrátit, co jsme sami schovali, ať se logika krokování
+      // nepere s naším skrýváním
+      cutSteps.forEach((step) => {
+        step.classList.remove("hidden");
+        setDisabled(step, false);
+      });
+      cutSteps.clear();
+
+      const trigger = form.querySelector<HTMLInputElement>(
+        "input[data-ends-form]:checked",
+      );
+      const endStep = trigger?.closest<HTMLElement>(".form-step");
+      const endIndex = endStep ? steps.indexOf(endStep as HTMLFieldSetElement) : -1;
+
+      if (endIndex !== -1) {
+        steps.slice(endIndex + 1).forEach((step) => {
+          step.classList.add("hidden");
+          setDisabled(step, true);
+          cutSteps.add(step);
+        });
+      }
+
+      submitBtn.textContent = submitLabel();
+    };
+
     const updateButtons = () => {
       const isLast = current === steps.length - 1;
       nextBtn.classList.toggle("hidden", isLast);
       submitBtn.classList.toggle("hidden", !isLast);
     };
 
-    form.addEventListener("change", syncFollowUps);
+    // Pořadí je podstatné: syncFormEnd kroky odblokuje, syncFollowUps pak
+    // zavřené podotázky zase zablokuje
+    form.addEventListener("change", () => {
+      syncFormEnd();
+      syncFollowUps();
+    });
 
     nextBtn.addEventListener("click", () => {
       if (!validateStep(steps[current])) return;
@@ -192,8 +398,19 @@ const buttonClass =
       submitBtn.disabled = true;
       submitBtn.textContent = "Odesílám…";
 
+      const endedEarly = cutSteps.size > 0;
+
       try {
         await submitQuestionnaire(form, fieldMeta, endpoint);
+        if (endedEarly) {
+          const title = successEl?.querySelector("[data-success-title]");
+          const text = successEl?.querySelector("[data-success-text]");
+          if (title) title.textContent = "Mrzí nás to!";
+          if (text)
+            text.textContent =
+              "Děkujeme za vyplnění . Odpověď máme uloženou.";
+        }
+        clearDraft(); // odesláno – rozepsaná verze už není k čemu
         form.classList.add("hidden");
         successEl?.classList.remove("hidden");
         successEl?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -201,10 +418,117 @@ const buttonClass =
         console.error("Odeslání dotazníku selhalo:", err);
         errorEl?.classList.remove("hidden");
         submitBtn.disabled = false;
-        submitBtn.textContent = "Odeslat dotazník";
+        submitBtn.textContent = submitLabel();
       }
     });
 
+    // --- Rozepsaný dotazník ------------------------------------------------
+    // Čte se i zapisuje plochá mapa podle atributu `name`. Dynamické části
+    // (řádky jmen, jmenné checklisty) se rekonstruují z týchž skrytých polí,
+    // která se odesílají — nemusí se tedy ukládat nic navíc.
+    const namedControls = () =>
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+        "input[name], textarea[name]",
+      );
+
+    const readDraft = (): Draft => {
+      const draft: Draft = {};
+      namedControls().forEach((control) => {
+        if (
+          control instanceof HTMLInputElement &&
+          (control.type === "checkbox" || control.type === "radio")
+        ) {
+          // Přepínače sdílejí `name`, takže do klíče patří i hodnota
+          draft[`${control.name}:${control.value}`] = control.checked;
+        } else {
+          draft[control.name] = control.value;
+        }
+      });
+      return draft;
+    };
+
+    const persist = () => saveDraft(readDraft());
+
+    const applyDraft = (draft: Draft) => {
+      // 1) Jména – musí být první, teprve z nich se vykreslí checklisty
+      form.querySelectorAll<HTMLElement>("[data-name-list]").forEach((list) => {
+        const hidden = list.querySelector<HTMLInputElement>("[data-name-value]");
+        const rows = list.querySelector<HTMLElement>("[data-name-rows]");
+        const template = rows?.querySelector<HTMLElement>("[data-name-row]");
+        if (!hidden || !rows || !template) return;
+
+        const names = String(draft[hidden.name] ?? "")
+          .split(",")
+          .map((part) => part.trim())
+          .filter(Boolean);
+        if (names.length === 0) return;
+
+        while (rows.querySelectorAll("[data-name-row]").length < names.length) {
+          rows.appendChild(template.cloneNode(true));
+        }
+        rows
+          .querySelectorAll<HTMLInputElement>("[data-name-input]")
+          .forEach((input, i) => {
+            input.value = names[i] ?? "";
+          });
+        syncNameList(list);
+      });
+
+      // 2) Volby – otevřou podotázky, tedy i checklisty uvnitř nich
+      form
+        .querySelectorAll<HTMLInputElement>(
+          "input[type=radio], input[type=checkbox]",
+        )
+        .forEach((input) => {
+          if (input.dataset.personCheck !== undefined) return; // řeší krok 4
+          const saved = draft[`${input.name}:${input.value}`];
+          if (typeof saved === "boolean") input.checked = saved;
+        });
+      syncFormEnd();
+      syncFollowUps();
+
+      // 3) Textová pole
+      namedControls().forEach((control) => {
+        if (
+          control instanceof HTMLInputElement &&
+          ["checkbox", "radio", "hidden"].includes(control.type)
+        ) {
+          return;
+        }
+        const saved = draft[control.name];
+        if (typeof saved === "string") control.value = saved;
+      });
+
+      // 4) Osoby v checklistech – rekonstrukce z uloženého skrytého pole
+      form.querySelectorAll<HTMLElement>("[data-person-list]").forEach((list) => {
+        const hidden = list.querySelector<HTMLInputElement>(
+          "[data-person-value]",
+        );
+        if (!hidden || !(hidden.name in draft)) return;
+        const checked = new Set(
+          String(draft[hidden.name] ?? "")
+            .split(",")
+            .map((part) => part.trim())
+            .filter(Boolean),
+        );
+        list
+          .querySelectorAll<HTMLInputElement>("[data-person-check]")
+          .forEach((input) => {
+            input.checked = checked.has(input.value);
+          });
+        syncPersonList(list);
+      });
+    };
+
+    initNameLists();
+
+    const draft = loadDraft();
+    if (draft) applyDraft(draft);
+
+    form.addEventListener("input", persist);
+    form.addEventListener("change", persist);
+
+    syncFormEnd();
     syncFollowUps(); // výchozí stav – skryté podotázky se rovnou disablují
   }
 

@@ -39,6 +39,25 @@
 - V Headeru je ikona třetí položkou flexu s `shrink-0` a rozestup jí dává `justify-evenly` — přerozdělí se tím i mezery kolem loga a menu.
 - Na `nas-pribeh` a `dotaznik` sedí **uvnitř** bloku s `pb-[50vh]`, ne za ním. Ten padding drží prostor pro scroll-driven zvýrazňování a ikona za ním by se od obsahu odtrhla o půl výšky okna.
 
+### Dotazník – jména po osobách, e-mail, rozepsaný formulář
+
+- **`name-list`** (nový typ prvku): jména se zadávají po jednom na řádek, další přidává kulaté „+". **Viditelné inputy nemají atribut `name`**, takže je `FormData` ignoruje; do formuláře je skládá skryté pole jako text oddělený čárkou. Tvar dat je tedy stejný jako u dřívějšího jediného textového pole — tabulka i heuristika počítání osob ve `vytvorVyhodnoceni()` fungují dál beze změny. Povinné je vždy jen první jméno, i když se první řádek smaže.
+- **`person-checklist`** (nový typ prvku): vykreslí se prázdný a plní se za běhu jmény ze seznamu výš přes `CustomEvent("names-change")`. Odesílá se stejným trikem — skryté pole se jmény zaškrtnutých osob. Nasazen u stravovacích omezení, ubytování a nové sekce Velikost porcí.
+- **Překreslení checklistu zachovává výběr**: stavy se před přestavbou vyzobou do mapy `jméno → zaškrtnuto`, jinak by doplnění dalšího jména shodilo, co už host naklikal. Přejmenování osoby se chová jako smazání a přidání.
+- **`exclusivePersons`** na výběrovém prvku: osoba smí být zaškrtnutá jen v jedné možnosti. Zapnuto u ubytování a velikosti porcí, **vypnuto u stravovacích omezení** — vegan a bezlepkář může být tentýž člověk.
+- **`endsForm`** na možnosti: „Bohužel nemohu" skryje a **`disable`ne** všechny následující kroky a přejmenuje tlačítko na „Dokončit". Samotné skrytí nestačí — nevyplněná povinná pole za koncem formuláře by tiše zablokovala odeslání. Pořadí je podstatné: `syncFormEnd()` kroky odblokuje a teprve pak `syncFollowUps()` zase zavře podotázky.
+- **Rozepsaný dotazník v `localStorage`** (`questionnaire-draft.ts`), ne v session — vyplňuje se na několikrát. Ukládá se plochá mapa podle `name`; u přepínačů je klíčem `název:hodnota`, protože skupina sdílí `name`. Dynamické části se rekonstruují z týchž skrytých polí, která se odesílají, takže se neukládá nic navíc. Draft se maže po úspěšném odeslání a při nedostupném úložišti (privátní režim, kvóta) se funkce tiše vypne.
+- Nový typ **`email`** s nativní validací, nepovinný, pod jménem. Do nealko přibyla **Voda s citrónem**.
+- Barva písma tlačítek dotazníku `text-muted` → **`text-hover`**.
+
+### Apps Script – Vyhodnocení po osobách
+
+- „– kdo se týká" u stravovacích omezení a ubytování se nově čte **přímo ze sloupce jmenného checklistu** (`listPersons`), ne z celého odeslání. Dřív vypisoval všechny lidi z odeslání, protože jinou informaci neměl.
+- U **alergie** a **jiné** je na `-s0` doplňující text a checklist až na `-s1`; přibyl proto řádek „– co konkrétně".
+- Nové sekce: **Velikost porcí** (dospělé/dětské vč. jmen) a řádek **e-maily**.
+- Ověřeno skriptem, že všech 43 klíčů, na které se Vyhodnocení odkazuje, formulář skutečně generuje — `range()` u neznámého klíče vyhodí výjimku.
+- **Pořadí nasazení**: přepastovat skript → poslat jeden kompletní testovací submit (vytvoří nové sloupce) → teprve pak spustit `vytvorVyhodnoceni()`. Dřív spuštěné padne na „chybí sloupec".
+
 ## 2026-07-29
 
 ### Logo — nečtvercový podklad

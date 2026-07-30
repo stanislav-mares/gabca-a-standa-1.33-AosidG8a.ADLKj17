@@ -129,6 +129,13 @@ function vytvorVyhodnoceni() {
   const listTexts = (key) =>
     `=IFERROR(TEXTJOIN(CHAR(10);TRUE;FILTER(${names}&": "&${range(key)};${range(key)}<>""));"—")`;
   /**
+   * Seznam jmen ze sloupce jmenného checklistu. Formulář do něj zapisuje
+   * přímo dotčené osoby oddělené čárkou, takže se na rozdíl od `listIf`
+   * nevypisují všichni z odeslání, ale jen ti zaškrtnutí.
+   */
+  const listPersons = (key) =>
+    `=IFERROR(TEXTJOIN(", ";TRUE;FILTER(${range(key)};${range(key)}<>""));"—")`;
+  /**
    * Počet osob: v textovém sloupci spočítá jména oddělená čárkou, středníkem,
    * novým řádkem nebo spojkou „ a ", sečteno přes řádky splňující podmínku
    * (bez podmínky přes všechny neprázdné). „Novákovi" bez oddělovače = 1.
@@ -168,6 +175,7 @@ function vytvorVyhodnoceni() {
       persons: who("arrival-e0", "Bohužel nemohu"),
     },
     { text: "– kdo nedorazí", formula: listIf("arrival-e0", "Bohužel nemohu") },
+    { text: "– e-maily", formula: listTexts("ucast-e1") },
     {},
     { text: "PŘÍJEZD", bold: true },
     {
@@ -193,46 +201,69 @@ function vytvorVyhodnoceni() {
       formula: countIf("sleep-e0", "Ne"),
       persons: who("sleep-e0", "Ne"),
     },
+    // Jména bere ze jmenného checklistu u každé možnosti, ne z celého
+    // odeslání – host teď rozděluje, kdo kde spí
     {
       text: "Přímo v místě",
       formula: countChecked("sleep-e0-ano-s0-misto"),
-      persons: who("sleep-e0-ano-s0-misto", "ano"),
+      persons: personCount("sleep-e0-ano-s0-misto-s0"),
     },
-    { text: "– kdo", formula: listIf("sleep-e0-ano-s0-misto", "ano") },
+    { text: "– kdo", formula: listPersons("sleep-e0-ano-s0-misto-s0") },
     {
       text: "V blízkém okolí",
       formula: countChecked("sleep-e0-ano-s0-okoli"),
-      persons: who("sleep-e0-ano-s0-okoli", "ano"),
+      persons: personCount("sleep-e0-ano-s0-okoli-s0"),
     },
-    { text: "– kdo", formula: listIf("sleep-e0-ano-s0-okoli", "ano") },
+    { text: "– kdo", formula: listPersons("sleep-e0-ano-s0-okoli-s0") },
     {
       text: "Vlastní stan / obytňák",
       formula: countChecked("sleep-e0-ano-s0-vlastni"),
-      persons: who("sleep-e0-ano-s0-vlastni", "ano"),
+      persons: personCount("sleep-e0-ano-s0-vlastni-s0"),
     },
-    { text: "– kdo", formula: listIf("sleep-e0-ano-s0-vlastni", "ano") },
+    { text: "– kdo", formula: listPersons("sleep-e0-ano-s0-vlastni-s0") },
     {},
     { text: "STRAVOVACÍ OMEZENÍ", bold: true },
   ];
 
+  // U alergie a „jiné" je na `-s0` doplňující text a jmenný checklist až
+  // na `-s1`; u zbytku je checklist rovnou na `-s0`
   const restrictions = [
-    ["vegan", "Vegan"],
-    ["vegetarian", "Vegetarián"],
-    ["bezlepkova", "Bezlepková dieta"],
-    ["alergie", "Alergie"],
-    ["jine", "Jiné"],
+    ["vegan", "Vegan", "s0", null],
+    ["vegetarian", "Vegetarián", "s0", null],
+    ["bezlepkova", "Bezlepková dieta", "s0", null],
+    ["alergie", "Alergie", "s1", "s0"],
+    ["jine", "Jiné", "s1", "s0"],
   ];
-  restrictions.forEach(([value, label]) => {
+  restrictions.forEach(([value, label, personSuffix, detailSuffix]) => {
     const key = `strava-e0-${value}`;
+    const personKey = `${key}-${personSuffix}`;
     rows.push({
       text: label,
       formula: countChecked(key),
-      persons: personCount(`${key}-s0`, key, "ano"),
+      persons: personCount(personKey),
     });
+    rows.push({ text: "– koho se týká", formula: listPersons(personKey) });
+    if (detailSuffix) {
+      rows.push({
+        text: "– co konkrétně",
+        formula: listTexts(`${key}-${detailSuffix}`),
+      });
+    }
+  });
+
+  rows.push({});
+  rows.push({ text: "VELIKOST PORCÍ", bold: true });
+  [
+    ["dospele", "Dospělé"],
+    ["detske", "Dětské"],
+  ].forEach(([value, label]) => {
+    const key = `porce-e0-${value}`;
     rows.push({
-      text: "– koho se týká",
-      formula: listCheckedWithDetail(key, `${key}-s0`),
+      text: label,
+      formula: countChecked(key),
+      persons: personCount(`${key}-s0`),
     });
+    rows.push({ text: "– kdo", formula: listPersons(`${key}-s0`) });
   });
 
   const drinkSections = [
@@ -241,6 +272,7 @@ function vytvorVyhodnoceni() {
       base: "piti-nealko-e0",
       options: [
         ["perliva-voda", "Perlivá voda"],
+        ["voda-citron", "Voda s citrónem"],
         ["dzus", "Džus"],
         ["kofola", "Kofola"],
         ["coca-cola", "Coca-Cola"],

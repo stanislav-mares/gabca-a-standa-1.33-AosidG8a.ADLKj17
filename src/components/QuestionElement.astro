@@ -25,6 +25,9 @@ const labelClass =
 const descriptionClass =
   "block text-sm text-gray-500 mb-2";
 
+const roundButtonClass =
+  "flex size-9 shrink-0 items-center justify-center rounded-full border border-black text-xl leading-none text-gray-900 hover:bg-hover hover:text-ink transition-colors cursor-pointer";
+
 const isMulti = element.type === "multi-choice";
 const isChoice =
   element.type === "yes-no" ||
@@ -36,20 +39,88 @@ const choiceRequired = required && !isMulti ? true : undefined;
 ---
 
 {
-  element.type === "short-text" && (
+  (element.type === "short-text" || element.type === "email") && (
     <div>
       <label for={name} class={labelClass} set:html={element.label} />
       {element.description && (
         <p class={descriptionClass} set:html={element.description} />
       )}
       <input
-        type="text"
+        type={element.type === "email" ? "email" : "text"}
         id={name}
         name={name}
         class={inputClass}
         placeholder={element.placeholder ?? "Zde napište krátkou odpověď..."}
         required={required}
       />
+    </div>
+  )
+}
+
+{
+  element.type === "name-list" && (
+    <div data-name-list={name}>
+      <span class={labelClass} set:html={element.label} />
+      {element.description && (
+        <p class={descriptionClass} set:html={element.description} />
+      )}
+
+      {/* Do formuláře jde jen tohle pole – jména spojená čárkou. Viditelné
+          řádky schválně `name` nemají, aby je FormData ignorovala. */}
+      <input type="hidden" name={name} data-name-value />
+
+      <div data-name-rows class="flex flex-col gap-2">
+        <div data-name-row class="flex items-center gap-2">
+          <input
+            type="text"
+            class={inputClass}
+            placeholder={element.placeholder ?? "Jan Novák"}
+            required={required}
+            data-name-input
+          />
+          <button
+            type="button"
+            class:list={[roundButtonClass, "hidden"]}
+            data-name-remove
+            aria-label="Odebrat osobu"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class:list={[roundButtonClass, "mt-3 mx-auto"]}
+        data-name-add
+        aria-label="Přidat další osobu"
+      >
+        <span aria-hidden="true">+</span>
+      </button>
+    </div>
+  )
+}
+
+{
+  element.type === "person-checklist" && (
+    <div
+      data-person-list
+      data-default-checked={element.defaultChecked ? "1" : "0"}
+    >
+      {element.label && (
+        <span class={labelClass} set:html={element.label} />
+      )}
+      {element.description && (
+        <p class={descriptionClass} set:html={element.description} />
+      )}
+
+      {/* Řádky dogeneruje skript ze jmen vyplněných výš; do formuláře jde
+          zase jen skryté pole se jmény zaškrtnutých osob. */}
+      <input type="hidden" name={name} data-person-value />
+      <div data-person-rows class="flex flex-col gap-3" />
+      <p data-person-empty class="text-sm text-gray-500">
+        Nejdřív prosím vyplňte jména v první otázce.
+      </p>
     </div>
   )
 }
@@ -77,7 +148,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
 
 {
   isChoice && (
-    <div>
+    <div data-person-exclusive={element.exclusivePersons ? "" : undefined}>
       <span class={labelClass} set:html={element.label} />
       {element.description && (
         <p class={descriptionClass} set:html={element.description} />
@@ -96,6 +167,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
                 data-followup={
                   opt.followUp ? `${name}-${opt.value}-followup` : undefined
                 }
+                data-ends-form={opt.endsForm ? "" : undefined}
               />
               <span set:html={opt.label} />
             </label>

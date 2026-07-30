@@ -16,11 +16,19 @@ const questions: Question[] = [
         heading: "",
         elements: [
             {
-                type: "short-text",
+                type: "name-list",
                 label: "Jméno a příjmení",
-                description: "Pokud vyplňuješ za více lidí, uveď prosím všechny, oddělené čárkou.",
+                description:
+                    "Pokud vyplňuješ za více lidí, přidej tlačítkem + řádek pro každého z nich.",
                 placeholder: "Jan Novák",
                 required: true,
+            },
+            {
+                type: "email",
+                label: "E-mail",
+                description:
+                    "Nemusíte vyplňovat, ale ulehčí nám to komunikaci s Vámi v případě např. problémů, pro následné zaslání fotek atd. Záleží na Vás :)",
+                placeholder: "jan.novak@email.cz",
             },
         ],
     },
@@ -38,10 +46,15 @@ const questions: Question[] = [
                         value: "ano",
                         label: "Ano",
                     },
-                    { value: "ne", label: "Bohužel nemohu", followUp: {
-                        heading: "Nevadí, děkujeme za vyplnění.",
-                        elements: [],
-                    },},
+                    {
+                        value: "ne",
+                        label: "Bohužel nemohu",
+                        endsForm: true,
+                        followUp: {
+                            heading: "Nevadí, děkujeme za vyplnění.",
+                            elements: [],
+                        },
+                    },
                 ],
             },
         ],
@@ -99,18 +112,49 @@ const questions: Question[] = [
                                     label: "",
                                     description: "",
                                     required: true,
+                                    exclusivePersons: true,
                                     options: [
                                         {
                                             value: "misto",
                                             label: "Preferuji přespat přímo v místě.",
+                                            followUp: {
+                                                elements: [
+                                                    {
+                                                        type: "person-checklist",
+                                                        label: "",
+                                                        description: "Koho se týká?",
+                                                        defaultChecked: true,
+                                                    },
+                                                ],
+                                            },
                                         },
                                         {
                                             value: "okoli",
                                             label: "Preferuji přespat v blízkém okolí (do 10km, odvoz zajištěn)",
+                                            followUp: {
+                                                elements: [
+                                                    {
+                                                        type: "person-checklist",
+                                                        label: "",
+                                                        description: "Koho se týká?",
+                                                        defaultChecked: true,
+                                                    },
+                                                ],
+                                            },
                                         },
                                         {
                                             value: "vlastni",
                                             label: "Vezmu si vlastní stan, obytňák, ...",
+                                            followUp: {
+                                                elements: [
+                                                    {
+                                                        type: "person-checklist",
+                                                        label: "",
+                                                        description: "Koho se týká?",
+                                                        defaultChecked: true,
+                                                    },
+                                                ],
+                                            },
                                         },
                                     ],
                                 },
@@ -137,7 +181,7 @@ const questions: Question[] = [
                 type: "multi-choice",
                 label: "Stravovací omezení",
                 description:
-                    "Zaškrtni vše, co se vás týká. U každé možnosti prosím napiš, koho konkrétně.",
+                    "Zaškrtni vše, co se vás týká, a u každé možnosti vyber, koho konkrétně.",
                 options: [
                     {
                         value: "vegan",
@@ -145,9 +189,9 @@ const questions: Question[] = [
                         followUp: {
                             elements: [
                                 {
-                                    type: "short-text",
+                                    type: "person-checklist",
                                     label: "",
-                                    placeholder: "Koho se týká? Jména oddělte čárkou.",
+                                    description: "Koho se týká?",
                                 },
                             ],
                         },
@@ -158,9 +202,9 @@ const questions: Question[] = [
                         followUp: {
                             elements: [
                                 {
-                                    type: "short-text",
+                                    type: "person-checklist",
                                     label: "",
-                                    placeholder: "Koho se týká? Jména oddělte čárkou.",
+                                    description: "Koho se týká?",
                                 },
                             ],
                         },
@@ -171,9 +215,9 @@ const questions: Question[] = [
                         followUp: {
                             elements: [
                                 {
-                                    type: "short-text",
+                                    type: "person-checklist",
                                     label: "",
-                                    placeholder: "Koho se týká? Jména oddělte čárkou.",
+                                    description: "Koho se týká?",
                                 },
                             ],
                         },
@@ -186,7 +230,12 @@ const questions: Question[] = [
                                 {
                                     type: "short-text",
                                     label: "",
-                                    placeholder: "Jaké alergie (ořechy, laktóza, …) a koho se týká? Jména oddělte čárkou.",
+                                    placeholder: "Jaké alergie? (ořechy, laktóza, …)",
+                                },
+                                {
+                                    type: "person-checklist",
+                                    label: "",
+                                    description: "Koho se týká?",
                                 },
                             ],
                         },
@@ -199,8 +248,54 @@ const questions: Question[] = [
                                 {
                                     type: "textarea",
                                     label: "",
-                                    placeholder:
-                                        "Jaké omezení a koho se týká? Jména oddělte čárkou.",
+                                    placeholder: "Jaké omezení?",
+                                },
+                                {
+                                    type: "person-checklist",
+                                    label: "",
+                                    description: "Koho se týká?",
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        id: "porce",
+        heading: "",
+        elements: [
+            {
+                type: "multi-choice",
+                label: "Velikost porcí",
+                description:
+                    "Vyber, kdo bude jíst dospělou a kdo dětskou porci. Dospělá porce je předvyplněná pro všechny.",
+                exclusivePersons: true,
+                options: [
+                    {
+                        value: "dospele",
+                        label: "Dospělé",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "person-checklist",
+                                    label: "",
+                                    description: "Koho se týká?",
+                                    defaultChecked: true,
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        value: "detske",
+                        label: "Dětské",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "person-checklist",
+                                    label: "",
+                                    description: "Koho se týká?",
                                 },
                             ],
                         },
@@ -218,6 +313,7 @@ const questions: Question[] = [
                 label: "Co by sis dal k pití: nealko?",
                 options: [
                     { value: "perliva-voda", label: "Perlivá voda" },
+                    { value: "voda-citron", label: "Voda s citrónem" },
                     { value: "dzus", label: "Džus" },
                     { value: "kofola", label: "Kofola" },
                     { value: "coca-cola", label: "Coca-Cola" },
