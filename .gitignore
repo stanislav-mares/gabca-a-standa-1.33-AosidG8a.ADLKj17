@@ -27,8 +27,9 @@ pnpm-debug.log*
 !.vscode/extensions.json
 !.vscode/launch.json
 
-# raw photo archives (stovky MB, nepatří do historie)
-media/*.zip
+# raw photo archives (stovky MB, nepatří do historie) — do galerie se fotky
+# dostávají výběrem do src/assets/galerie, ne odsud
+media/
 
 # OS files
 .DS_Store
