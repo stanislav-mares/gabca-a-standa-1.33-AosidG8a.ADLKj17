@@ -31,13 +31,6 @@ export function getGalleryPhotos(): ImageMetadata[] {
         .map(({ image }) => image);
 }
 
-// Každá HERO_INTERVAL-tá fotka se v mozaice roztáhne přes 2×2 buňky
-const HERO_INTERVAL = 5;
-
-export function isHeroPhoto(index: number): boolean {
-    return index % HERO_INTERVAL === 0;
-}
-
 // PhotoSwipe potřebuje znát rozměry velké varianty dopředu (data-pswp-width/height)
 const LIGHTBOX_MAX_WIDTH = 2000;
 

@@ -3,7 +3,7 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
 import { slideTransition } from "../utils/transitions";
-import { getGalleryPhotosWithLightbox, isHeroPhoto } from "../utils/gallery";
+import { getGalleryPhotosWithLightbox } from "../utils/gallery";
 
 const heading = "Fotogalerie";
 const photos = await getGalleryPhotosWithLightbox();
@@ -17,13 +17,20 @@ const photos = await getGalleryPhotosWithLightbox();
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10 md:px-40 pb-16">
             <h1 class="font-heading text-heading tracking-wider underline decoration-2 decoration-accent underline-offset-8" data-reveal>{heading}</h1>
+            {/* Mozaika: tvar buňky sleduje orientaci fotky — portrét stojí
+                v jednom sloupci (3:4), landscape leží přes dva (3:2). Poměr
+                držíme přes `aspect-*`, ne přes pevnou výšku řádku, aby tvar
+                buňky nezávisel na šířce okna. Řádky se pak dorovnávají na
+                stejnou výšku (výchozí `items-stretch`), takže mřížka nemá
+                díry — daní je mírný ořez, protože buňka nesedne na poměr
+                fotky přesně. */}
             <div
                 id="galerie"
-                class="pt-20 grid grid-cols md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 grid-flow-dense auto-rows-[9rem] md:auto-rows-[11rem] gap-3 2xl:w-3/4"
+                class="pt-20 grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-6 grid-flow-dense gap-3 2xl:w-3/4"
             >
                 {
                     photos.map((photo, index) => {
-                        const hero = isHeroPhoto(index);
+                        const landscape = photo.image.width > photo.image.height;
                         return (
                             <a
                                 href={photo.lightbox.src}
@@ -34,7 +41,7 @@ const photos = await getGalleryPhotosWithLightbox();
                                 rel="noreferrer"
                                 class:list={[
                                     "block overflow-hidden rounded-lg",
-                                    hero && "col-span-2 row-span-2",
+                                    landscape ? "col-span-2 aspect-[3/2]" : "aspect-[3/4]",
                                 ]}
                                 data-reveal
                                 style={`--reveal-delay: ${Math.min(0.7 + index * 0.06, 1.2)}s`}
@@ -42,11 +49,11 @@ const photos = await getGalleryPhotosWithLightbox();
                                 <Image
                                     src={photo.image}
                                     alt=""
-                                    widths={hero ? [800, 1600] : [400, 800]}
+                                    widths={landscape ? [800, 1600] : [400, 800]}
                                     sizes={
-                                        hero
-                                            ? "(min-width: 1536px) 40vw, (min-width: 1280px) 50vw, (min-width: 768px) 66vw, 100vw"
-                                            : "(min-width: 1536px) 20vw, (min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+                                        landscape
+                                            ? "(min-width: 1536px) 25vw, (min-width: 768px) 50vw, 100vw"
+                                            : "(min-width: 1536px) 13vw, (min-width: 768px) 25vw, 50vw"
                                     }
                                     class="h-full w-full object-cover opacity-90 transition-opacity duration-300 hover:opacity-100"
                                     loading="lazy"
