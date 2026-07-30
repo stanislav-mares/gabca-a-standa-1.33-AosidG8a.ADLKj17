@@ -79,7 +79,7 @@
 
 
     /* ---------- BRAND COLORS ---------- */
-    --color-surface: #fafafa;  /* panel background   → bg-surface  */
+    --color-surface: #ffffff;  /* panel background   → bg-surface  */
     --color-accent:  #734d29;  /* highlight / brand accent → text-accent */
     --color-hover:   #f7d596;  /* interactive hover state  → text-hover  */
     --color-ink:     #734d29;  /* primary text  → text-ink    */
@@ -104,7 +104,7 @@
     --color-3: #734d29;
     --color-4: #f5e2c1;
     --color-5: #faeddc;
-    --color-6: #FAFAFA;
+    --color-6: #FAFAFA;  /* surface */
 }
 
 @layer base {

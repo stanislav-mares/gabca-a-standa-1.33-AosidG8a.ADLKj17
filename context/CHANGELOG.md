@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-07-30
+
+### Logo v Headeru
+
+- **`Header.astro`**: `maxHeight` `min(36svh, 360px)` → **`min(50svh, 500px)`**. Šířka loga vychází z `min(840px, 94vw, maxHeight × 1.106)` a na desktopu je **řídící právě `maxHeight`** — zbylé dva limity se neuplatní, protože panel (`xl:basis-[40%]`) je širší než výsledek. Logo tak vyrostlo z ~398px na ~553px šířky, na mobilu se opře o `maxWidth` 94vw.
+- Cíl přeletu z Intra se měří za běhu (`getBoundingClientRect()` v `Intro.astro`), takže změna velikosti nevyžádala žádnou úpravu animace.
+- **`Logo.astro`**: podklad `logo5.png` → **`logo-edit.png`** (nečtvercový ořez).
+- **Pozor na rozlišení podkladu**: `logo-edit.png` má 772px na šířku, při ~553 CSS px se na 2× DPR displejích už upscaluje. Trvale to vyřeší až výměna zdroje za SVG.
+
+### Neprůhledné panely
+
+- `bg-surface/95` → **`bg-surface`** v `Header.astro` a na `<main>` všech šesti podstránek (`uvodni-informace`, `svatebni-den`, `ubytovani`, `nas-pribeh`, `fotogalerie`, `dotaznik`). Přes 95% krytí prosvítala fotka pozadí.
+- **`global.css`**: `--color-surface` `#fafafa` → **`#ffffff`** — panely jsou nově čistě bílé, ne lomeně.
+
 ## 2026-07-29
 
 ### Logo — nečtvercový podklad
