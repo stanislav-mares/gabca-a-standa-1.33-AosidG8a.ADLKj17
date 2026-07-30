@@ -34,7 +34,7 @@ const ruleBase =
                 <li class="group">
                     <a
                         href={href}
-                        class="flex items-center justify-center gap-2 py-3 text-muted transition-colors duration-300 group-hover:text-ink"
+                        class="flex items-center justify-center gap-2 py-2 md:py-3 text-muted transition-colors duration-300 group-hover:text-ink"
                     >
                         <span class={`${ruleBase} origin-left`} />
                         {/* scale místo letter-spacingu: Parisienne je psací
@@ -43,7 +43,7 @@ const ruleBase =
                             velikosti a v klidu se zmenšuje — rastr je pak
                             ostrý ve zvětšeném stavu, kam se uživatel dívá,
                             a zmenšení oko nepozná. */}
-                        <span class="font-heading text-[clamp(2rem,5.46vmin,3.05rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
+                        <span class="font-heading text-[clamp(1.7rem,5.46vmin,3.05rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
                             {label}
                         </span>
                         <span class={`${ruleBase} origin-right`} />

@@ -4,7 +4,7 @@
 
 ### Logo v Headeru
 
-- **`Header.astro`**: `maxHeight` `min(36svh, 360px)` → **`min(50svh, 500px)`**. Šířka loga vychází z `min(840px, 94vw, maxHeight × 1.106)` a na desktopu je **řídící právě `maxHeight`** — zbylé dva limity se neuplatní, protože panel (`xl:basis-[40%]`) je širší než výsledek. Logo tak vyrostlo z ~398px na ~553px šířky, na mobilu se opře o `maxWidth` 94vw.
+- **`Header.astro`**: `maxHeight` `min(36svh, 360px)` → **`min(50svh, 500px)`**. Šířka loga vychází z `min(840px, 94vw, maxHeight × 1.106)` a na desktopu je **řídící právě `maxHeight`** — zbylé dva limity se neuplatní, protože panel (`xl:basis-[40%]`) je širší než výsledek. Logo tak vyrostlo z ~398px na ~553px šířky. Na mobilu je naopak řídící `maxWidth` — ten byl později týž den stažen na 72vw, viz sekci o menu.
 - Cíl přeletu z Intra se měří za běhu (`getBoundingClientRect()` v `Intro.astro`), takže změna velikosti nevyžádala žádnou úpravu animace.
 - **`Logo.astro`**: podklad `logo5.png` → **`logo-edit.png`** (nečtvercový ořez).
 - **Pozor na rozlišení podkladu**: `logo-edit.png` má 772px na šířku, při ~553 CSS px se na 2× DPR displejích už upscaluje. Trvale to vyřeší až výměna zdroje za SVG.
@@ -13,6 +13,23 @@
 
 - `bg-surface/95` → **`bg-surface`** v `Header.astro` a na `<main>` všech šesti podstránek (`uvodni-informace`, `svatebni-den`, `ubytovani`, `nas-pribeh`, `fotogalerie`, `dotaznik`). Přes 95% krytí prosvítala fotka pozadí.
 - **`global.css`**: `--color-surface` `#fafafa` → **`#ffffff`** — panely jsou nově čistě bílé, ne lomeně.
+
+### Fotogalerie
+
+- **Řazení podle data pořízení** místo podle názvu souboru. Datum se nečte při buildu, ale z mapy `src/data/gallery-dates.json`, kterou generuje `npm run gallery:dates` — build tak nesahá na 84 souborů, hodnoty jsou vidět v gitu a jdou ručně opravit. **Generátor nikdy nepřepíše existující nenulovou hodnotu**, aby ruční doplnění přežilo další běh.
+- EXIF si `scripts/gallery-dates.mjs` parsuje sám (JPEG APP1 → TIFF → IFD), kvůli skriptu spouštěnému párkrát za rok nemá smysl držet závislost navíc. Výstup ověřen proti PIL na všech 84 souborech, 0 neshod.
+- Ze 84 fotek má 78 datum v `DateTimeOriginal`, 3 jen v názvu souboru, 3 nikde — ty doplněny ručně. **`mtime` jako záloha nepřipadá v úvahu**, u všech ukazuje na okamžik nakopírování do repa.
+- **Mozaika podle orientace** místo pevné výšky řádku: portrét stojí v jednom sloupci (`aspect-[3/4]`), landscape leží přes dva (`aspect-[3/2]`). Poměr drží `aspect-*`, ne výška řádku, takže tvar buňky nezávisí na šířce okna. Sbírku tvoří z 89 % formáty 3:4 a 4:3, které sednou skoro přesně — 56 z 84 fotek se neořízne vůbec, medián ořezu je nulový.
+- Opraven mobil: třída `grid-cols` bez čísla není platná, galerie tam spadla na jeden sloupec s fotkami rozřezanými na 9rem pruhy.
+- `isHeroPhoto()` vypadl — každá pátá fotka přes 2×2 buňky nemá v mozaice s tvary podle orientace co dělat.
+
+### Menu — číslovaný index s bočními čárkami
+
+- Vycentrované položky mezi dvěma krátkými čárkami. Čárky se krátí přes **`scaleX` s originem na vnějším konci, ne přes `width`** — měnící se šířka přeskládá flex řádek a vnější konec ujede dovnitř místo ven.
+- **Plynulost stojí na kompozitní vrstvě**: na čárce běží jen `transform` (+ `will-change`), barva se prolíná přes `::before` a `opacity`. Když na téže 1px lince běžel zároveň `background-color`, repaint zahodil cache vrstvy a hrana skákala po celých pixelech.
+- Popisek má v CSS rovnou zvětšenou velikost a v klidu se zmenšuje (`scale-[0.952]` → `scale-100`). Rastr je pak ostrý ve stavu, na který se uživatel dívá; opačné pořadí zvětšuje hotovou bitmapu a psací písmo měkne.
+- **`scale` místo `letter-spacing`** — Parisienne má spojené tahy, prostrkání by písmena od sebe odtrhlo.
+- Na mobilu menší: dolní mez clampu `1.7rem` (fluidní člen `5.46vmin` ji přeroste, až má kratší strana okna přes 440 px, takže od tabletu výš se nic nemění) a `py-2 md:py-3`. Logu zároveň staženo `maxWidth` na **72vw**.
 
 ## 2026-07-29
 
