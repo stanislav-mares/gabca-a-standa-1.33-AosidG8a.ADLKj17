@@ -22,15 +22,17 @@ const { name, guests } = Astro.props;
             vector-effect="non-scaling-stroke"
         />
     </svg>
-    <div class="flex-1 min-h-96 border-x border-b border-current px-8 md:px-6 pt-8 pb-12 text-center">
+    <div class="flex-1 min-h-96 border-x border-b border-current px-block py-section text-center">
         {/* „Továrníkova vila" měří v Parisienne 6,01 em. Od md jsou dva sloupce
-            a ty jsou nejužší z celého webu (264 px i po zúžení paddingu) — proto
-            strop 44 px, který text-subheading kolem md drží. Kdyby škála h2 na
-            těchhle šířkách vyrostla, název se tady zalomí. */}
-        <h2 class="font-heading text-subheading text-ink underline decoration-[0.05em] underline-offset-8 mb-10">
+            a ty jsou nejužší z celého webu — na 768 px zbude na text 287 px,
+            zatímco název při zdejších 43 px písma měří 260 px. Proto tu vnitřní
+            padding drží `block`, ne `gutter`: ten je na téhle šířce o 17 px na
+            stranu širší a název by se zalomil. Stejně tak nesmí povyrůst škála
+            `text-subheading`. */}
+        <h2 class="font-heading text-subheading text-ink underline decoration-[0.05em] underline-offset-8 mb-section">
             {name}
         </h2>
-        <ul class="flex flex-col gap-2.5 font-body text-lg text-text">
+        <ul class="flex flex-col gap-tight font-body text-lg text-text">
             {guests.map((guest) => <li data-guest>{guest}</li>)}
         </ul>
     </div>

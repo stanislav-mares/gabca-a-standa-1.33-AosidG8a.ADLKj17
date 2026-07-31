@@ -100,6 +100,19 @@
     --text-title:   3rem;     /* was text-5xl (page heads) */
     --text-display: 4.5rem;   /* was text-7xl              */
     --text-hero:    clamp(3rem, 10vw, 6rem);  /* „Vstoupit" — fluidní (bylo 6rem) */
+
+    /* ---------- SPACING SCALE ---------- */
+    /* Fluidní protějšek type scale: mezery rostou se šířkou okna, takže se
+       obsah na velkém monitoru nerozteče a na mobilu nedusí. Tailwind z každého
+       tokenu vyrobí celou rodinu utilit → px-gutter, pt-top, gap-section, …
+       Vždy sáhni po tokenu, ne po číselné utilitě (px-6, gap-10) — ta je pevná
+       a rozbije rytmus, který tahle škála drží. */
+    --spacing-gutter:  clamp(1.5rem, 0.75rem + 3vw, 3.5rem);    /* boční okraje stránky        */
+    --spacing-top:     clamp(5rem, 4.5rem + 2vw, 7rem);         /* odsazení pod lištou BackButtonu */
+    --spacing-heading: clamp(3rem, 2rem + 4vw, 6rem);           /* mezera pod PageHeading      */
+    --spacing-section: clamp(2.5rem, 1.8rem + 2.8vw, 4.5rem);   /* mezi sekcemi                */
+    --spacing-block:   clamp(1rem, 0.85rem + 0.6vw, 1.5rem);    /* mezi odstavci a bloky       */
+    --spacing-tight:   clamp(0.5rem, 0.4rem + 0.4vw, 0.75rem);  /* drobné vnitřní mezery       */
 }
 
 .colors  {
@@ -196,6 +209,16 @@
         [data-reveal] {
             animation: none;
         }
+    }
+}
+
+@layer components {
+    /* Jediná definice běžného odstavce — velikost i prokládání se ladí tady,
+       ne po stránkách. Margin zůstává nulový (z preflightu): svislé rozestupy
+       drží výhradně `gap-block` na rodiči, jinak by se margin a gap sčítaly a
+       každý blok by odsazoval jinak. */
+    .paragraph {
+        @apply text-paragraph leading-relaxed;
     }
 }
 

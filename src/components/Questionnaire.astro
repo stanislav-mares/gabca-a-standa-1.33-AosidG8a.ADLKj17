@@ -17,24 +17,24 @@ const buttonClass =
   "sm:w-auto px-8 py-3 bg-accent hover:bg-hover hover:text-ink text-white font-medium rounded-lg cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900";
 ---
 
-<form action="#" method="POST" id="questionnaire-form" class="space-y-8">
+<form action="#" method="POST" id="questionnaire-form" class="space-y-section">
   {
     questions.map((q, i) => (
       <fieldset
         data-step={i}
         class:list={[
-          "form-step transition-all duration-1000 ease-out pb-8 border-b border-gray-200 last:border-0 last:pb-0",
+          "form-step transition-all duration-1000 ease-out pb-section border-b border-gray-200 last:border-0 last:pb-0",
           i === 0 || showAll
             ? "opacity-100 translate-y-0"
             : "hidden opacity-0 -translate-y-8",
         ]}
       >
         <legend
-          class="text-xl font-semibold text-gray-900 mb-6"
+          class="text-xl font-semibold text-gray-900 mb-block"
           set:html={q.heading}
         />
 
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-section">
           {q.elements.map((el, j) => (
             <QuestionElement element={el} name={`${q.id}-e${j}`} />
           ))}
@@ -51,7 +51,7 @@ const buttonClass =
     vyplněné.
   </p>
 
-  <div class="pt-6 flex justify-center">
+  <div class="pt-section flex justify-center">
     <button
       type="button"
       id="next-btn"
@@ -69,11 +69,11 @@ const buttonClass =
   </div>
 </form>
 
-<div id="form-success" class="hidden text-center py-12">
-  <p class="text-2xl font-semibold text-gray-900 mb-3" data-success-title>
+<div id="form-success" class="hidden text-center py-section">
+  <p class="text-2xl font-semibold text-gray-900 mb-block" data-success-title>
     Děkujeme!
   </p>
-  <p class="text-gray-700" data-success-text>
+  <p class="paragraph text-gray-700" data-success-text>
     Dotazník se odeslal a odpovědi máme uložené.
   </p>
 </div>
@@ -247,8 +247,9 @@ const buttonClass =
       rows.replaceChildren(
         ...personNames.map((person) => {
           const label = document.createElement("label");
+          // Musí sedět se statickými volbami v QuestionElement.astro
           label.className =
-            "flex items-center gap-2 cursor-pointer text-gray-900";
+            "flex items-center gap-tight cursor-pointer text-gray-900";
 
           const input = document.createElement("input");
           input.type = "checkbox";

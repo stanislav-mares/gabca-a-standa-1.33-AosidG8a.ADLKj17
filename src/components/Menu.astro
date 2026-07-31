@@ -27,14 +27,14 @@ const ruleBase =
     "relative h-px w-10 shrink-0 bg-muted/30 transition-transform duration-300 will-change-transform group-hover:scale-x-75 before:absolute before:inset-0 before:bg-accent/60 before:opacity-0 before:transition-opacity before:duration-300 group-hover:before:opacity-100";
 ---
 
-<nav class="menu-nav w-max max-w-full px-6">
+<nav class="menu-nav w-max max-w-full px-gutter">
     <ul>
         {
             links.map(({ href, label }) => (
                 <li class="group">
                     <a
                         href={href}
-                        class="flex items-center justify-center gap-2 py-2 md:py-3 text-muted transition-colors duration-300 group-hover:text-ink"
+                        class="flex items-center justify-center gap-tight py-tight text-muted transition-colors duration-300 group-hover:text-ink"
                     >
                         <span class={`${ruleBase} origin-left`} />
                         {/* scale místo letter-spacingu: Parisienne je psací

@@ -20,25 +20,25 @@ const textContent = [
 
 <Layout>
     <main
-        class="h-dvh w-full pt-20 bg-surface overflow-y-auto"
+        class="h-dvh w-full pt-top bg-surface overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
-        <section class="flex flex-col items-center justify-center px-6 sm:px-10">
+        <section class="flex flex-col items-center justify-center px-gutter">
             <PageHeading text={heading} />
-            <article class="flex flex-col w-full pt-20 pb-[50vh] 2xl:gap-14">
-                <p class="text-center">Tuto část ještě pilujeme...</p>
+            <article class="flex flex-col w-full pt-heading pb-[50vh] 2xl:gap-section">
+                <p class="paragraph text-center">Tuto část ještě pilujeme...</p>
                 <!-- {
                     textContent.map((item, i) => (
                         <Fragment>
                             <div
                                 id={item.time.replace(":", "-")}
                                 data-story-section
-                                class="scroll-mt-24 w-full max-w-3xl mx-auto pt-16 pb-16 first:pt-0 2xl:py-0 2xl:max-w-none 2xl:grid 2xl:grid-cols-[1fr_minmax(0,48rem)_1fr] 2xl:gap-x-24 2xl:gap-y-2"
+                                class="scroll-mt-top w-full max-w-3xl mx-auto py-section first:pt-0 2xl:py-0 2xl:max-w-none 2xl:grid 2xl:grid-cols-[1fr_minmax(0,48rem)_1fr] 2xl:gap-x-section 2xl:gap-y-tight"
                                 data-reveal
                                 style={`--reveal-delay: ${0.7 + i * 0.12}s`}
                             >
-                                <div class="flex items-baseline justify-between gap-x-6 2xl:contents">
+                                <div class="flex items-baseline justify-between gap-x-block 2xl:contents">
                                     <h2
                                         class:list={[
                                             "story-year font-heading text-4xl md:text-6xl 2xl:text-8xl",
@@ -51,11 +51,11 @@ const textContent = [
                                     >
                                         {item.time}
                                     </h2>
-                                    <h3 class="story-title font-heading text-4xl 2xl:text-6xl 2xl:py-6 text-left 2xl:text-center 2xl:col-start-2 2xl:row-start-1 2xl:self-center opacity-25 transition-opacity duration-500">
+                                    <h3 class="story-title font-heading text-4xl 2xl:text-6xl 2xl:py-block text-left 2xl:text-center 2xl:col-start-2 2xl:row-start-1 2xl:self-center opacity-25 transition-opacity duration-500">
                                         {item.content}
                                     </h3>
                                 </div>
-                                <p class="story-desc mt-1 text-paragraph text-center 2xl:mt-0 2xl:col-start-2 2xl:row-start-2 2xl:text-center opacity-25 transition-opacity duration-500">
+                                <p class="story-desc paragraph mt-tight text-center 2xl:mt-0 2xl:col-start-2 2xl:row-start-2 opacity-25 transition-opacity duration-500">
                                     {item.description}
                                 </p>
                             </div>

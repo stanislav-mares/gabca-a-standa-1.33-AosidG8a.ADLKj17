@@ -13,11 +13,11 @@ const photos = await getGalleryPhotosWithLightbox();
 
 <Layout>
     <main
-        class="h-dvh w-full pt-20 bg-surface overflow-y-auto"
+        class="h-dvh w-full pt-top bg-surface overflow-y-auto"
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
-        <section class="flex flex-col items-center justify-center px-6 sm:px-10 md:px-40 pb-16">
+        <section class="flex flex-col items-center justify-center px-gutter md:px-40 pb-[50vh]">
             <PageHeading text={heading} />
             {/* Mozaika: tvar buňky sleduje orientaci fotky — portrét stojí
                 v jednom sloupci (3:4), landscape leží přes dva (3:2). Poměr
@@ -28,7 +28,7 @@ const photos = await getGalleryPhotosWithLightbox();
                 fotky přesně. */}
             <div
                 id="galerie"
-                class="pt-20 grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-6 grid-flow-dense gap-3 2xl:w-3/4"
+                class="pt-heading grid grid-cols-2 md:grid-cols-4 2xl:grid-cols-6 grid-flow-dense gap-tight 2xl:w-3/4"
             >
                 {
                     photos.map((photo, index) => {

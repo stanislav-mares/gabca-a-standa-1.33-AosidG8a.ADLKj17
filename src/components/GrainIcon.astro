@@ -8,7 +8,7 @@ interface Props {
     class?: string;
 }
 
-const { class: className = "mt-24 mb-10" } = Astro.props;
+const { class: className = "mt-heading mb-section" } = Astro.props;
 
 // Ryze dekorativní prvek — pro čtečky neexistuje (aria-hidden + prázdný alt).
 // `<Image>` místo inline SVG: soubor má 29 kB a je na sedmi stránkách, takže

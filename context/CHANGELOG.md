@@ -1,5 +1,41 @@
 # Changelog
 
+## 2026-08-01
+
+### Fluidní spacing škála
+
+- Do `@theme` přibylo šest tokenů `--spacing-*` (`gutter`, `top`, `heading`, `section`, `block`, `tight`). Typografie fluidní už byla (`--text-heading`, `--text-subheading`), ale **mezery zůstávaly pevné** — mezi 375 px a 2560 px se nehnuly, takže se obsah na velkém monitoru ztrácel v prázdnu a rytmus stránky závisel na tom, který breakpoint zrovna platil.
+- Tailwind 4 vyrábí z namespace `--spacing-*` celé rodiny utilit, takže z tokenů rovnou plyne `px-gutter`, `pt-top`, `gap-section`, `mb-heading` i `scroll-mt-top` — nic se nikde nedeklaruje zvlášť.
+- **Spodní meze sedí na dosavadní mobilní hodnoty** (`gutter` 1.5rem = `px-6`, `section` 2.5rem = `gap-10`, `block` 1rem = `gap-4`), takže se na telefonu nic nezmenšilo; škála roste jen nahoru.
+- `--spacing-top` má minimum 5rem záměrně: pod ním leží mobilní lišta `BackButton` (`h-16`, 4 rem) a obsah by pod ni zajel.
+- Tokeny pro sloupcovou mezeru a doběh se **nezakládaly**. Sloupcová mezera širokých mřížek jede na `section` a doběh zůstal literál `pb-[50vh]` — ten je viewport-relativní, takže fluidní je sám o sobě.
+
+### Jednotný odstavec
+
+- Nová třída **`.paragraph`** v `@layer components` (`text-paragraph` + `leading-relaxed`). Odstavce byly rozjeté do čtyř variant: `uvodni-informace` mělo `text-paragraph leading-relaxed`, `nas-pribeh` totéž plus `text-justify`, `dotaznik` **jinou velikost** `text-lg` a `svatebni-den` nemělo velikost vůbec.
+- `text-justify` padlo z celého webu. Bez dělení slov dělá justifikace v češtině nepravidelné mezislovní mezery a „řeky", nejvíc v úzkém sloupci na mobilu.
+- Margin zůstává nulový z preflightu a svislé rozestupy drží výhradně `gap-block` na rodiči. Kdyby odstavec nesl vlastní margin, ve flex sloupci by se s gapem sčítal a každý blok by odsazoval jinak.
+
+### Rámec podstránek
+
+- Všech šest stránek jede na stejný vzorec `pt-top` → `px-gutter` → `pt-heading` → `gap-section` → `gap-block`. Dřív se rozcházelo skoro všechno: mezera pod nadpisem `pt-20` proti `mb-20` na `ubytovani`, rozestup sekcí `gap-12` / `gap-10` / `gap-6` / `2xl:gap-14`.
+- Sjednotil se i doběh pod obsahem: `ubytovani` mělo `pb-24`, `fotogalerie` `pb-16`, zbytek `pb-[50vh]`. Nově `pb-[50vh]` všude.
+- Široké mřížky na `nas-pribeh` a `svatebni-den`: `2xl:gap-x-24` → `2xl:gap-x-section` (6 rem → fluidních 2,5–4,5 rem), `scroll-mt-24` → `scroll-mt-top`.
+- Přepsaná je i **zakomentovaná timeline** ve `svatebni-den`. Po odkomentování by jinak přinesla pevné mezery zpátky.
+- Beze změny zůstalo `md:px-40` a `2xl:w-3/4` na fotogalerii — řídí šířku mozaiky, ne okraj stránky.
+
+### Komponenty
+
+- `HouseColumn` dostal **`px-block`, ne `px-gutter`**. Fluidní gutter je na 768 px široký 35 px proti dosavadním 24 px, takže by na text zbylo 253,7 px — a „Továrníkova vila" měří 6,01 em × 43,2 px = **259,6 px**, tedy by se zalomila. `px-block` dá 287 px. Komentář v komponentě je přepsaný na tuhle podmínku; pořád platí i strop škály `text-subheading`.
+- `GrainIcon` má výchozí rozestup `mt-heading mb-section`, `PageHeading` čárky `gap-tight sm:gap-block`.
+- `Menu`: `px-6` → `px-gutter`, `py-2 md:py-3` → `py-tight` (8–12 px, tedy přesně dosavadní rozsah bez breakpointu). Čárky `w-10` zůstaly **pevné** — krátí se přes `scaleX` a fluidní šířka by přeskládala řádek.
+- Dotazník přešel na tokeny, ale **tlačítka si nechala `px-8 py-3`**. `px-section` by jim na širokém monitoru nafouklo boční padding na 72 px; fluidní má být rozvržení, ne vnitřek ovládacího prvku.
+- Jmenné checklisty se generují v JS, takže `label.className` v `Questionnaire.astro` musí zrcadlit statické volby v `QuestionElement.astro` — obojí je teď `gap-tight` a je u toho poznámka.
+
+### Tailwind skenuje i changelog
+
+- V CSS se pořád generuje `w-[calc(50%-2rem)]`, i když ta třída v kódu už není. Tailwind 4 hledá názvy tříd v celém projektu včetně `context/CHANGELOG.md`, takže **si je bere z prózy tohohle souboru** (zmínka na řádku o responzivitě Ubytování). Pár bajtů mrtvého CSS; existuje to nezávisle na téhle změně.
+
 ## 2026-07-31
 
 ### Typografie h2 — jedna škála pro celý web
