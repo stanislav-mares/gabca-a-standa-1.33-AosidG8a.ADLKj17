@@ -10,7 +10,7 @@ import { getLightboxSource, type LightboxSource } from "../utils/lightbox";
 import parkovisteMapa from "../assets/parkoviste-farni-dvur.png";
 
 const base = import.meta.env.BASE_URL;
-const heading = "Úvodní informace";
+const heading = "Kde, kdy, jak?";
 
 const VENUE = "Farní dvůr, Uhřínov 1, 517 91 Liberk";
 const venueQuery = encodeURIComponent(VENUE);
@@ -56,14 +56,10 @@ interface Section {
 
 const sections: Section[] = [
     {
-        heading: "Svatební den 26. 9. 2026",
+        heading: "Svatební den",
         paragraphs: [
             "Vše proběhne na jednom místě — obřad, hostina i svatební párty.",
             "Sejdeme se na Farním dvoře mezi <strong>10:30 a 11:00</strong>.",
-        ],
-    },
-    {
-        paragraphs: [
             "Svatební obřad proběhne ve <strong>12:00</strong>.",
             "Ve <strong>13:00</strong> už jako Marešovi společně usedneme ke svatebnímu stolu.",
         ],

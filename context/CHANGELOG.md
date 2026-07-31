@@ -2,6 +2,27 @@
 
 ## 2026-07-31
 
+### Typografie h2 — jedna škála pro celý web
+
+- `--text-subheading` přepsán z `clamp(2rem, 4vmin, 2.875rem)` na **`clamp(2.5rem, 1.9rem + 1.67vw, 3.5rem)`** (40 → 56 px). Kotva je nově **šířková, ne `vmin`** — cíl „na 2xl přesně tolik" jde přes `vmin` garantovat jen při známé výšce okna.
+- Sklon je dopočítaný tak, aby křivka **končila přesně na 1536 px**. Při pouhém stažení stropu by se trefil už kolem 1346 px a mezi xl a 2xl by zbyl rozdíl 1 px.
+- Spodní mez 2.5rem platí od ~577 px níž. Výš jít nejde: „Továrníkova vila" má 6,01 em, takže na 375px telefonu se při 44 px zalomí.
+- Názvy domů v `HouseColumn` opustily vlastní breakpointy (`text-[3.125rem] md:text-[2.5rem] 2xl:text-6xl`) a jedou po téhle škále. Na md tím vyrostly 40 → 43 px, na mobilu klesly 50 → 40 px, což zároveň odstranilo zalomení nejdelšího názvu na úzkých telefonech.
+- Nadpisy domů dostaly **podtržení** `underline decoration-[0.05em] underline-offset-8`. Tloušťka v `em`, ne v px, aby držela poměr k písmu přes celý fluidní rozsah; offset odsouvá linku pod dolní dotahy Parisienne.
+
+### Nadpisy podstránek se na mobilu nezalamují
+
+- `PageHeading`: `<h1>` dostal `whitespace-nowrap` a čárky ztratily `shrink-0` (nově `min-w-0`) — **role se prohodily**. Dřív byl jediným zmenšitelným prvkem nadpis, takže flex řešil nedostatek místa zalomením textu; teď ustupují čárky a krátí se zevnitř ven, s vnějším koncem na kraji řádku.
+- Mezera `gap-5` → `gap-3 sm:gap-5`, protože gapy se ve flexu nezmenšují a na 320px displeji je to 16 px rezervy. Obal dostal `w-full`, aby šířka řádku byla padding box rodiče — sekce používají `items-center`, takže obal byl jinak `fit-content` a závisel na nastavení rodiče.
+- Nadpis může při extrémní délce přetéct vodorovně. Je to vědomá volba proti `overflow-hidden`, které by ořízlo text z obou stran.
+
+### Menu — „Kde, kdy, jak?" a fluidnější velikost
+
+- Položka „Úvodní informace" přejmenována na **„Kde, kdy, jak?"** v menu i jako `<h1>` stránky; slug `uvodni-informace` zůstal. Stránka na ty tři otázky přesně odpovídá a název byl s 16 znaky nejdelší v menu, takže sám diktoval šířku panelu (`w-max`).
+- Velikost položek z `clamp(1.7rem, 5.46vmin, 3.05rem)` na **`clamp(1.9rem, 0.6rem + 1.4vw + 2vh, 3rem)`**. `vmin` i `min(vw, vh)` nechávají vždycky rozhodovat jen jednu veličinu, takže při tažení za okraj okna vzniká pásmo, kde se nemění nic — **aditivní tvar drží obě živé**.
+- Spodní mez 1.7 → 1.9rem, na telefonu tedy 27 → 30 px (viditelně ~29 px, položky jedou v klidu na `scale-[0.952]`).
+- Zbytek dead zone: strop 3rem se na 950px vysokém okně trefí kolem 1386 px šířky a nad tím velikost zase stojí.
+
 ### Ubytování — velikost názvů domů
 
 - Tři domy vedle sebe až od **2xl** (dřív od `lg`). V třísloupcovém layoutu se kolem 1500 px zalamoval nejdelší název. S prahem se posunulo i pravidlo pro osamocený třetí dům (`md:max-2xl:*`) a řádek s vyhledáváním.

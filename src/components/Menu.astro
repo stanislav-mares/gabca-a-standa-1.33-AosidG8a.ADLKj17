@@ -7,7 +7,7 @@ interface NavLink {
 }
 
 const links: NavLink[] = [
-    { href: `${base}uvodni-informace`, label: "Úvodní informace" },
+    { href: `${base}uvodni-informace`, label: "Kde, kdy, jak?" },
     { href: `${base}svatebni-den`, label: "Svatební den" },
     { href: `${base}ubytovani`, label: "Ubytování" },
     { href: `${base}nas-pribeh`, label: "Náš příběh" },
@@ -43,7 +43,15 @@ const ruleBase =
                             velikosti a v klidu se zmenšuje — rastr je pak
                             ostrý ve zvětšeném stavu, kam se uživatel dívá,
                             a zmenšení oko nepozná. */}
-                        <span class="font-heading text-[clamp(1.7rem,5.46vmin,3.05rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
+                        {/* Součet vw a vh, ne vmin ani min(): u obou vždycky
+                            rozhoduje jen jedna veličina a ta druhá je úplně
+                            ignorovaná, takže vzniklo pásmo, kde tažení za okraj
+                            okna nedělalo nic. Aditivní tvar drží obě živé.
+                            Strop 3rem se na 950px vysokém okně trefí kolem
+                            1386 px šířky — nad tím velikost zase stojí.
+                            Cena za aditivní tvar: na nízkém širokém okně vyjde
+                            písmo větší než s vmin a menu se odscrolluje. */}
+                        <span class="font-heading text-[clamp(1.9rem,0.6rem+1.4vw+2vh,3rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
                             {label}
                         </span>
                         <span class={`${ruleBase} origin-right`} />
