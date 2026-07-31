@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
 import GrainIcon from "../components/GrainIcon.astro";
+import PageHeading from "../components/PageHeading.astro";
 import { slideTransition } from "../utils/transitions";
 
 const base = import.meta.env.BASE_URL;
@@ -128,7 +129,7 @@ const sections: Section[] = [
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center justify-center px-6 sm:px-10">
-            <h1 class="font-heading text-heading tracking-wider underline decoration-2 decoration-accent underline-offset-8" data-reveal>{heading}</h1>
+            <PageHeading text={heading} />
             <article class="flex flex-col gap-12 w-full max-w-3xl mx-auto pt-20 pb-[50vh]">
                 {
                     sections.map((section, i) => (

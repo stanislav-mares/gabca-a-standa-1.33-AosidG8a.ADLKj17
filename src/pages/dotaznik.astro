@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
 import GrainIcon from "../components/GrainIcon.astro";
+import PageHeading from "../components/PageHeading.astro";
 import Questionnaire from "../components/Questionnaire.astro";
 import type { Question } from "../utils/questionnaire";
 import { slideTransition } from "../utils/transitions";
@@ -438,7 +439,7 @@ const questions: Question[] = [
         transition:name="main-panel"
     >
         <section class="flex flex-col items-center px-6 sm:px-10">
-            <h1 class="font-heading text-heading tracking-wider underline decoration-2 decoration-accent underline-offset-8" data-reveal>{heading}</h1>
+            <PageHeading text={heading} />
             <div class="w-full max-w-3xl pt-20">
                 <p
                     class="text-lg leading-relaxed text-justify"
