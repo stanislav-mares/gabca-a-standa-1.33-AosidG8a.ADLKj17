@@ -1,9 +1,13 @@
 ---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
 import GrainIcon from "../components/GrainIcon.astro";
 import PageHeading from "../components/PageHeading.astro";
 import { slideTransition } from "../utils/transitions";
+import { getLightboxSource, type LightboxSource } from "../utils/lightbox";
+import parkovisteMapa from "../assets/parkoviste-farni-dvur.png";
 
 const base = import.meta.env.BASE_URL;
 const heading = "Úvodní informace";
@@ -12,20 +16,19 @@ const VENUE = "Farní dvůr, Uhřínov 1, 517 91 Liberk";
 const venueQuery = encodeURIComponent(VENUE);
 // `output=embed` nepotřebuje API klíč a zvládne adresu místo souřadnic
 const mapEmbedUrl = `https://maps.google.com/maps?q=${venueQuery}&hl=cs&z=14&output=embed`;
+// POI Farního dvora na mapy.cz — stejné `firm` id, jaké mají obě trasy jako cíl
+const venueMapUrl = "https://mapy.com/cs/zakladni?source=firm&id=13923489";
 
-/**
- * Doporučené příjezdové trasy. `via` je průjezdní bod, přes který má trasa
- * vést — dokud zůstane prázdný, oba odkazy vedou rovnou k místu konání
- * a od sebe se neliší. Stačí doplnit obec, přes kterou se má jet.
- */
-const routes = [
-    { label: "Trasa A", via: "" },
-    { label: "Trasa B", via: "" },
+/** Doporučené příjezdové trasy — sdílecí odkazy z „Vložit na web" na mapy.com. */
+interface Route {
+    label: string;
+    embedUrl: string;
+}
+
+const routes: Route[] = [
+    { label: "Trasa A - doporučujeme", embedUrl: "https://mapy.com/s/nugojebaro" },
+    { label: "Trasa B", embedUrl: "https://mapy.com/s/jerefahuco" },
 ];
-
-const routeUrl = (via: string) =>
-    `https://www.google.com/maps/dir/?api=1&destination=${venueQuery}` +
-    (via ? `&waypoints=${encodeURIComponent(via)}` : "");
 
 /** Svatební paleta — shodná s `.colors` v global.css. */
 const palette = ["#f7d596", "#e4baa4", "#f5e2c1", "#faeddc", "#734d29"];
@@ -43,26 +46,21 @@ interface Section {
     paragraphs?: string[];
     /** Vloží mapu místa konání. */
     map?: boolean;
-    /** Vloží odkazy na doporučené příjezdové trasy. */
+    /** Vloží mapy doporučených příjezdových tras. */
     routes?: boolean;
     /** Vloží vzorky svatebních barev. */
     palette?: boolean;
+    /** Statický obrázek pod odstavci (např. plánek parkování), zvětšitelný. */
+    image?: { src: ImageMetadata; alt: string; lightbox: LightboxSource };
 }
 
 const sections: Section[] = [
-    {
-        paragraphs: [
-            `Řekneme si <strong>„ANO"</strong> dne <strong>26. 9. 2026</strong> na Farním dvoře, Uhřínov 1, 517 91 Liberk.`,
-        ],
-        map: true,
-    },
     {
         heading: "Svatební den 26. 9. 2026",
         paragraphs: [
             "Vše proběhne na jednom místě — obřad, hostina i svatební párty.",
             "Sejdeme se na Farním dvoře mezi <strong>10:30 a 11:00</strong>.",
         ],
-        routes: true,
     },
     {
         paragraphs: [
@@ -92,18 +90,30 @@ const sections: Section[] = [
         ],
     },
     {
+        heading: "Doprava",
+        paragraphs: [
+            `Přesná adresa místa: <a href="${venueMapUrl}" target="_blank" rel="noreferrer" class="${linkClass}">${VENUE}</a>.`,
+        ],
+        routes: true,
+    },
+    {
+        heading: "Parkování",
+        paragraphs: [
+            "Přímo v areálu je k dispozici parkování, jeho kapacita je ale omezená - Parkoviště 1. Proto někteří z vás budou přesměrováni na parkování na nedaleké louce - Parkoviště 2. Pro orientaci poslouží mapa níže.",
+        ],
+        image: {
+            src: parkovisteMapa,
+            alt: "Plánek parkování u Farního dvora v Uhřínově",
+            lightbox: await getLightboxSource(parkovisteMapa),
+        },
+    },
+    {
         heading: "Ubytování",
         paragraphs: [
             "Ubytovací kapacita svatebního místa je omezená. Nicméně pro všechny pozvané jsme schopni zajistit ubytování. Budeme rádi, když s námi protančíte celou noc.",
             `Bližší informace o možnostech ubytování i rozpis, kdo kde spí, najdete zavčasu na stránce <a href="${base}ubytovani" class="${linkClass}">Ubytování</a>.`,
             "V rámci svatebního místa počítáme primárně s ubytováním bližší rodiny a přátel. Z finančních důvodů bohužel nemůžeme uhradit ubytování všem — ubytování v penzionu Továrníkova vila a v chatě Liebich poprosíme hosty, aby si zaplatili sami. V obou je ubytování bez snídaně.",
             "Odvoz na ubytování bude zajištěn a během svatebního dne bude prostor na odvezení aut. Vzhledem ke vzdálenosti ale nebudeme zajišťovat rozvozy domů, proto prosím využijte možnost přespání, případně vlastní dopravu.",
-        ],
-    },
-    {
-        heading: "Parkování",
-        paragraphs: [
-            "Přímo v areálu je k dispozici parkování, jeho kapacita je ale omezená. Proto někteří z vás budou přesměrováni na parkování na nedaleké louce. Pro orientaci poslouží mapa výše.",
         ],
     },
     {
@@ -116,7 +126,7 @@ const sections: Section[] = [
         paragraphs: [
             "Svatební web budeme pravidelně aktualizovat o bližší informace. V případě, že by vám nějaké informace ke dni D chyběly, ozvěte se nám.",
             "Na všechny se moc těšíme :)",
-            "<strong>budoucí Marešovi</strong>",
+            "<strong>-- budoucí Marešovi</strong>",
         ],
     },
 ];
@@ -139,7 +149,7 @@ const sections: Section[] = [
                             style={`--reveal-delay: ${Math.min(0.7 + i * 0.1, 1.4)}s`}
                         >
                             {section.heading && (
-                                <h2 class="font-heading text-3xl md:text-4xl text-accent">
+                                <h2 class="font-heading text-subheading text-accent">
                                     {section.heading}
                                 </h2>
                             )}
@@ -164,22 +174,42 @@ const sections: Section[] = [
                             )}
 
                             {section.routes && (
-                                <div class="flex flex-col gap-2">
-                                    <p class="text-paragraph leading-relaxed">
-                                        Doporučujeme zvolit jednu z těchto tras:
-                                    </p>
-                                    <div class="flex flex-wrap gap-3">
-                                        {routes.map((route) => (
-                                            <a
-                                                href={routeUrl(route.via)}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                class="px-5 py-2 rounded-lg bg-accent text-hover hover:bg-hover hover:text-ink transition-colors"
-                                            >
+                                <div class="flex flex-col gap-6">
+                                    {routes.map((route) => (
+                                        <div class="flex flex-col gap-2">
+                                            <h3 class="font-heading text-2xl text-accent">
                                                 {route.label}
-                                            </a>
-                                        ))}
-                                    </div>
+                                            </h3>
+                                            <div class="w-full overflow-hidden rounded-lg border border-black/10">
+                                                <iframe
+                                                    src={route.embedUrl}
+                                                    title={`${route.label} – trasa na ${VENUE}`}
+                                                    class="w-full aspect-[4/3] md:aspect-video"
+                                                    loading="lazy"
+                                                    referrerpolicy="no-referrer-when-downgrade"
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {section.image && (
+                                <div data-lightbox>
+                                    <a
+                                        href={section.image.lightbox.src}
+                                        data-pswp-width={section.image.lightbox.width}
+                                        data-pswp-height={section.image.lightbox.height}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        class="block w-full overflow-hidden rounded-lg border border-black/10 cursor-zoom-in"
+                                    >
+                                        <Image
+                                            src={section.image.src}
+                                            alt={section.image.alt}
+                                            class="w-full"
+                                        />
+                                    </a>
                                 </div>
                             )}
 
@@ -203,3 +233,26 @@ const sections: Section[] = [
         <BackButton />
     </main>
 </Layout>
+
+<script>
+    import PhotoSwipeLightbox from "photoswipe/lightbox";
+    import "photoswipe/style.css";
+
+    let lightbox: PhotoSwipeLightbox | undefined;
+
+    // Modulový skript přežívá View Transitions, proto init/destroy přes eventy
+    document.addEventListener("astro:page-load", () => {
+        if (!document.querySelector("[data-lightbox]")) return;
+        lightbox = new PhotoSwipeLightbox({
+            gallery: "[data-lightbox]",
+            children: "a",
+            pswpModule: () => import("photoswipe"),
+        });
+        lightbox.init();
+    });
+
+    document.addEventListener("astro:before-swap", () => {
+        lightbox?.destroy();
+        lightbox = undefined;
+    });
+</script>

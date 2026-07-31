@@ -2,6 +2,42 @@
 
 ## 2026-07-31
 
+### Ubytování — velikost názvů domů
+
+- Tři domy vedle sebe až od **2xl** (dřív od `lg`). V třísloupcovém layoutu se kolem 1500 px zalamoval nejdelší název. S prahem se posunulo i pravidlo pro osamocený třetí dům (`md:max-2xl:*`) a řádek s vyhledáváním.
+- Velikost `h2` už neřídí `vw`, ale breakpointy: **50 px do xl, 40 px od md, 60 px od 2xl**. Propad na md je záměrný — tam se přepíná na dva sloupce a ty jsou nejužší místo celého webu. Vnitřní padding sloupce se od md zužuje `px-8` → `px-6`, aby na nadpis zbylo víc místa.
+- Meze jsou spočítané z **reálných metrik Parisienne** (parser `hmtx`/`cmap` nad TTF z Google Fonts), ne odhadem: „Továrníkova vila" měří **6,01 em**, tj. 0,376 em na znak. Původní odhad 0,45 em/znak byl o pětinu mimo a vedl k chybnému závěru, že se 60 px na 2xl nevejde — vejde (strop je 63 px).
+- Zbylé pásmo, kde se nejdelší název zalomí na dva řádky: **pod ~413 px** šířky okna. Bez zalomení kdekoli by musel být nadpis 41 px.
+
+### Úvodní informace — doprava, parkování, přeskládání
+
+- Nová sekce **Doprava**. Pořadí nadepsaných sekcí: Svatební den → Dresscode → Svatební dary → Doprava → Parkování → Ubytování → Dotazník.
+- Trasy A a B nejsou tlačítka, ale **iframy z mapy.com** (sdílecí odkazy `mapy.com/s/…` z „Vložit na web"). Plné URL aplikace mapy.com se do iframu vložit dají (mapy.com neposílá `X-Frame-Options` ani `frame-ancestors`), ale načtou celé rozhraní včetně cookie lišty — proto sdílecí varianta.
+- Adresa místa konání je odkaz na **POI na mapy.cz** (`source=firm&id=13923489`); id je vytažené z cíle obou tras.
+- **Plánek parkování** jako `<Image>` se zvětšením. `interface Section` má nové pole `image` (zdroj, `alt` a rozměry velké varianty pro lightbox).
+- Opravena sekce, která měla dvakrát klíč `paragraphs` — druhý ten první přepsal, takže se text o obřadu ve 12:00 vůbec nevykresloval.
+
+### Lightbox mimo galerii
+
+- Logika velké varianty (`LIGHTBOX_MAX_WIDTH = 2000`, přepočet výšky, `getImage`) vytažena z `gallery.ts` do nového **`src/utils/lightbox.ts`** jako `getLightboxSource()`. Galerie ji odtud importuje, konstanta nežije na dvou místech.
+- PhotoSwipe na Úvodních informacích se váže na **`[data-lightbox]`**, ne na pevné `id` — přibude-li na stránce další obrázek, funguje dál. Init/destroy přes `astro:page-load` / `astro:before-swap` jako v galerii.
+
+### Typografie h2
+
+- Nový token **`--text-subheading`** `clamp(2rem, 4vmin, 2.875rem)` (32 → 46 px) místo `text-3xl md:text-4xl`. `vmin` ze stejného důvodu jako u `--text-heading` — velikost drží po otočení telefonu.
+- Časové osy na `nas-pribeh` a `svatebni-den` (`text-4xl md:text-6xl 2xl:text-8xl`) zůstaly beze změny. Nejsou to nadpisy sekcí, ale letopočty a časy.
+
+### Nadpisy podstránek — čárky místo podtržení
+
+- Podtržení (`underline decoration-2 decoration-accent underline-offset-8`) sundáno ze všech šesti `<h1>` a nahrazeno **vodorovnými čárkami po obou stranách**, stejným receptem jako v hlavním menu (`h-px`, `bg-muted/30`) — jen bez hover chování, nadpis na kurzor nereaguje.
+- Vyčleněno do nové komponenty **`PageHeading.astro`**, takže rozměry (`w-12 sm:w-16`, `gap-5`) jdou ladit na jednom místě. Čárky jsou delší než v menu, protože nadpis je proti položce menu zhruba 1,7× větší.
+- **`data-reveal` sedí na obalu, ne na `<h1>`** — na nadpisu by se čárky ukázaly hned a naskakoval by jen text.
+- Prop `class` pokrývá jedinou odchylku: na `ubytovani` má nadpis navíc `mb-20`.
+
+### Dotazník
+
+- Text tlačítek „Další" / „Odeslat" **bílý** místo `text-hover` (#f7d596). Hover stav (`bg-hover` + `text-ink`) beze změny.
+
 ### Stránka „Úvodní informace" — reálný obsah
 
 - Lorem ipsum nahrazen skutečným obsahem. Místo pole odstavců drží stránku pole **`sections`** (`interface Section`) — každá sekce má volitelný nadpis, odstavce a příznaky `map` / `routes` / `palette`, které do ní vloží mapu, odkazy na trasy nebo vzorky barev. Rozvržení tak zůstává v jedné šabloně a obsah je čistě data.

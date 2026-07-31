@@ -22,8 +22,14 @@ const { name, guests } = Astro.props;
             vector-effect="non-scaling-stroke"
         />
     </svg>
-    <div class="flex-1 min-h-96 border-x border-b border-current px-8 pt-8 pb-12 text-center">
-        <h2 class="font-heading text-[clamp(2rem,7vw,3.75rem)] text-ink mb-10">{name}</h2>
+    <div class="flex-1 min-h-96 border-x border-b border-current px-8 md:px-6 pt-8 pb-12 text-center">
+        {/* „Továrníkova vila" měří v Parisienne 6,01 em. Od md jsou dva sloupce
+            a ty jsou nejužší z celého webu (264 px i po zúžení paddingu), proto
+            tam písmo klesá na 40 px — strop je 44 px. Pod md se 50 px vejde až
+            od ~413 px šířky okna, na užších telefonech se název zalomí. */}
+        <h2 class="font-heading text-[3.125rem] md:text-[2.5rem] 2xl:text-6xl text-ink mb-10">
+            {name}
+        </h2>
         <ul class="flex flex-col gap-2.5 font-body text-lg text-text">
             {guests.map((guest) => <li data-guest>{guest}</li>)}
         </ul>

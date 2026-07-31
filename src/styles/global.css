@@ -81,7 +81,7 @@
     /* ---------- BRAND COLORS ---------- */
     --color-surface: #ffffff;  /* panel background   → bg-surface  */
     --color-accent:  #734d29;  /* highlight / brand accent → text-accent */
-    --color-hover:   #f7d596;  /* interactive hover state  → text-hover  */
+    --color-hover:   #fff1a6;  /* interactive hover state  → text-hover  */
     --color-ink:     #734d29;  /* primary text  → text-ink    */
     --color-muted:   #4b402d;  /* secondary text → text-muted */
     --color-text:    #000000;  /* body text (odstavce) → text-text */
@@ -93,13 +93,14 @@
     --text-paragraph: 1.125rem; /* was text-lg (page paragraphs) */
     /* vmin místo vw: velikost drží po otočení telefonu (kratší rozměr se nemění) */
     --text-heading: clamp(2.75rem, 7vmin, 5.25rem);  /* page headings (h1) — fluidní */
+    --text-subheading: clamp(2rem, 4vmin, 2.875rem);  /* section headings (h2) — fluidní */
     --text-title:   3rem;     /* was text-5xl (page heads) */
     --text-display: 4.5rem;   /* was text-7xl              */
     --text-hero:    clamp(3rem, 10vw, 6rem);  /* „Vstoupit" — fluidní (bylo 6rem) */
 }
 
 .colors  {
-    --color-1: #f7d596;
+    --color-1: #fff1a6;
     --color-2: #e4baa4;
     --color-3: #734d29;
     --color-4: #f5e2c1;
