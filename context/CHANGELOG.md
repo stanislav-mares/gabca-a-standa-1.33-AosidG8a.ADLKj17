@@ -2,6 +2,12 @@
 
 ## 2026-08-01
 
+### Zpětné tlačítko má poloprůhledné pozadí
+
+- Kontejner `<aside>` dostal **`bg-surface/85`** — stejná barva jako panel podstránek (`--color-surface`), jen s 85% krytím, takže obsah pod ním lehce prosvítá. Tailwind generuje i fallback `#ffffffd9` pro prohlížeče bez `color-mix`.
+- Pozor na dosah: kontejner není jen mobilní lišta, **od `lg` je to celovýškový pruh vlevo** (`lg:w-40 lg:h-full`, 10 rem × celá výška). Dokud byl bez pozadí, byla to neviditelná klikací plocha. `ubytovani` a `fotogalerie` mají mřížky přes celou šířku a ty pod pruh zasahují, takže levý sloupec domů i první sloupec fotek jsou nově zčásti překryté.
+- Opraven chybějící **`</button>`**. Tlačítko se nikdy nezavíralo a implicitně ho uzavíral až `</aside>`, takže `<svg>` byl jeho posledním potomkem jen náhodou.
+
 ### Fluidní spacing škála
 
 - Do `@theme` přibylo šest tokenů `--spacing-*` (`gutter`, `top`, `heading`, `section`, `block`, `tight`). Typografie fluidní už byla (`--text-heading`, `--text-subheading`), ale **mezery zůstávaly pevné** — mezi 375 px a 2560 px se nehnuly, takže se obsah na velkém monitoru ztrácel v prázdnu a rytmus stránky závisel na tom, který breakpoint zrovna platil.
