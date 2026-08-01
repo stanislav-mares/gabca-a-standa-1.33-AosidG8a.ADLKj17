@@ -5,14 +5,20 @@ import Menu from "./Menu.astro";
 import GrainIcon from "./GrainIcon.astro";
 import CountDown from "./CountDown.astro";
 import CeremonyDate from "./CeremonyDate.astro";
-import podnadpis from "../assets/podnadpis.svg";
+import podnadpis from "../assets/podnadpis.png";
 ---
 
 <header
     id="main-header"
     class="h-full flex flex-col items-center justify-start content-center w-full p-cluster bg-surface"
 >
-            <div class="w-full flex items-center shrink-0">
+            {/* mt-auto tady a mb-auto na obalu menu: volné místo se rozdělí
+                na půl nad logo a pod menu, takže je celá skupina svisle na
+                střed. Auto-margin navíc při přetečení spadne na nulu, kdežto
+                justify-center by odsunul horní okraj mimo dosah scrollu.
+                Až od sm — pod ním je panel přes celou stránku a obsah
+                začíná nahoře. */}
+            <div class="w-full flex items-center shrink-0 sm:mt-auto">
                 <button
                     id="header-logo-btn"
                     type="button"
@@ -38,11 +44,13 @@ import podnadpis from "../assets/podnadpis.svg";
                 </button>
             </div>
             <div
-                class="@container w-full flex-1 min-h-0 flex overflow-y-auto overscroll-contain"
+                class="w-full min-h-0 flex flex-col overflow-y-auto overscroll-contain sm:mb-auto"
             >
-                <Menu />
-                <GrainIcon class="shrink-0 mt-auto" />
+                <div class="mx-auto flex flex-col items-center">
+                    <Menu />
+                </div>
             </div>
+            <GrainIcon class="mt-section absolute bottom-2" />
 
     <!-- <div class="flex justify-center items-end"> -->
         <!-- <Logo width="160" height="160" layout="constrained" /> -->

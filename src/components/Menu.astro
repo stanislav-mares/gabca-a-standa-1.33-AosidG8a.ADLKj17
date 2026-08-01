@@ -18,10 +18,7 @@ const links: NavLink[] = [
 ];
 ---
 
-{/* Centrování přes m-auto, ne přes justify/items-center na obalu: obal
-    scrolluje a při centrování by obsah, který se nevejde, přetekl mimo dosah
-    scrollu. Auto-margin se v takovém případě srazí na nulu. */}
-<nav class="menu-nav m-auto w-max max-w-full">
+<nav class="menu-nav w-max max-w-full">
 
     <ul>
         {
@@ -41,7 +38,7 @@ const links: NavLink[] = [
                             rozhoduje jen jedna veličina a ta druhá je úplně
                             ignorovaná, takže vzniklo pásmo, kde tažení za okraj
                             okna nedělalo nic. Aditivní tvar drží obě živé. */}
-                        <span class="font-heading text-[clamp(1.6rem,0.5rem+1.15vw+1.65vh,3rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
+                        <span class="font-heading text-[clamp(1.6rem,0.5rem+1.15vw+1.65vh,3.75rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
                             {label}
                         </span>
                     </a>

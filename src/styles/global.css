@@ -76,6 +76,10 @@
     --font-windsong: 'WindSong', sans-serif;
     --font-opensans: 'Open Sans', sans-serif;
     --font-alexbrush: 'Alex Brush', cursive;
+    /* Rodiny z astro:fonts. Vlastní název tokenu je nutný — kdyby se jmenoval
+       stejně jako proměnná z Astra, odkazoval by var() sám na sebe. */
+    --font-cormorant:          var(--astro-cormorant);
+    --font-cormorant-garamond: var(--astro-cormorant-garamond);
 
 
     /* ---------- BRAND COLORS ---------- */
@@ -92,11 +96,12 @@
     --text-body:      1rem;
     --text-paragraph: 1.125rem; /* was text-lg (page paragraphs) */
     /* vmin místo vw: velikost drží po otočení telefonu (kratší rozměr se nemění) */
-    --text-heading: clamp(2.75rem, 7vmin, 5.25rem);  /* page headings (h1) — fluidní */
-    /* h2 je kotvené na šířku (ne vmin jako h1): strop 3.5rem má sedět přesně
-       na breakpointu 2xl (1536 px), dolní 2.5rem drží od ~577 px níž. Výš už
-       jít nejde — v HouseColumn se na 375px telefonu zalomí „Továrníkova vila". */
-    --text-subheading: clamp(2.5rem, 1.9rem + 1.67vw, 3.5rem);  /* section headings (h2) — fluidní */
+    --text-heading: clamp(2.75rem, 7vmin, 6.5rem);  /* page headings (h1) — fluidní */
+    /* h2 je kotvené na šířku (ne vmin jako h1). Dolní 2.5rem drží od ~577 px
+       níž a níž už jít nejde — v HouseColumn se na 375px telefonu zalomí
+       „Továrníkova vila". Strop dřív seděl na 2xl (1536 px), jenže tím nad
+       tímhle breakpointem přestal růst; teď doběhne až kolem 2530 px. */
+    --text-subheading: clamp(2.5rem, 1.9rem + 1.67vw, 4.25rem);  /* section headings (h2) — fluidní */
     --text-title:   3rem;     /* was text-5xl (page heads) */
     --text-display: 4.5rem;   /* was text-7xl              */
     --text-hero:    clamp(3rem, 10vw, 6rem);  /* „Vstoupit" — fluidní (bylo 6rem) */
@@ -112,7 +117,7 @@
     --spacing-heading: clamp(3rem, 2rem + 4vw, 6rem);           /* mezera pod PageHeading      */
     --spacing-section: clamp(2.5rem, 1.8rem + 2.8vw, 4.5rem);   /* mezi sekcemi                */
     --spacing-block:   clamp(1rem, 0.85rem + 0.6vw, 1.5rem);    /* mezi odstavci a bloky       */
-    --spacing-cluster: clamp(1.25rem, 0.85rem + 1.6vw, 2.5rem); /* stupeň pod gutterem         */
+    --spacing-cluster: clamp(1.25rem, 0.85rem + 1.6vw, 3.5rem); /* stupeň pod gutterem         */
     --spacing-tight:   clamp(0.5rem, 0.4rem + 0.4vw, 0.75rem);  /* drobné vnitřní mezery       */
 }
 

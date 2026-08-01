@@ -2,6 +2,28 @@
 
 ## 2026-08-01
 
+### Písmo Cormorant přes `astro:fonts`
+
+- Obě rodiny (**Cormorant** i **Cormorant Garamond**) se stahují při buildu a servírují z vlastní domény, ne přes `@import` na `fonts.googleapis.com` jako starší rodiny — odpadá tím blokující požadavek na cizí doménu a Astro přidá metrikami dopočítaný fallback, takže se při načtení nehne layout.
+- Konfigurace je v `astro.config.mjs` sdílená pro obě rodiny: váhy 400 a 600, normální i kurzíva, subsety `latin` + **`latin-ext`** (bez něj chybí česká diakritika). Cormorant je variabilní font, takže z toho vzejde 8 `.woff2` souborů, ne 16.
+- `<Font>` se importuje z **`astro:assets`**, ne z `astro:fonts` — druhá varianta shodí build na nevyřešeném importu.
+- V `@theme` jsou tokeny `--font-cormorant` a `--font-cormorant-garamond` navázané na proměnné z Astra. Musí se jmenovat jinak než ty proměnné, jinak by `var()` odkazoval sám na sebe. Použití: `class="font-cormorant"`.
+
+### Fluidní škály přestávaly růst moc brzy
+
+- `--spacing-cluster` mělo strop 2,5 rem, na který se trefilo už při šířce okna 1650 px — nad tím byl padding headeru pevný. Strop je nově **3,5 rem** (doběhne kolem 2410 px).
+- Totéž u typografie: `--text-heading` 5,25 → **6,5 rem**, `--text-subheading` 3,5 → **4,25 rem** (dřív se zastavilo na 1533 px, tedy prakticky na `2xl`), velikost menu 3 → **3,75 rem** (dřív přesně na 1920×1080).
+- Spodní meze zůstaly beze změny, takže na mobilu a běžném notebooku se nic nezměnilo — jinak se chová jen pásmo nad ~1500 px.
+
+### Úvodní stránka se láme na `md` místo `xl`
+
+- Panel s headerem se roztahoval přes celou stránku všude pod 1280 px; nově je to jen pod **768 px** (`index.astro`), a stejný bod dostalo i `Intro.astro` — polovina obrazovky pro letící logo a pozice tlačítka „Vstoupit". Kdyby se ty dva rozešly, kompozice intra by neseděla na panel, do kterého logo přilétá.
+
+### Header: svislé centrování
+
+- Od `sm` se celá skupina (logo, podnadpis, menu) centruje na výšku — blok s logem má `sm:mt-auto`, kontejner menu `sm:mb-auto`. Kontejner menu zároveň přišel o `flex-1`; ten dřív spolkl všechno volné místo, takže logo nemělo kam ustoupit.
+- Auto-marginy místo `justify-center` záměrně: kontejner scrolluje a auto-margin se při přetečení srazí na nulu, kdežto centrování by odsunulo horní okraj mimo dosah scrollu.
+
 ### Header úvodní stránky
 
 - Pod logo přibyl **podnadpis** (`podnadpis.svg` — „Gabča & Standa / 26. září 2026") přes celou šířku panelu. Sedí **uvnitř `#header-logo-btn`**, protože to tlačítko nese celou choreografii opacity z intra (fade-in po dosednutí letícího loga, vypnutí přechodů v `skipIntro()`); jako samostatný sourozenec by svítil v panelu už během letu a při refreshi problikl. V DOM musí zůstat **za logem** — `Intro.astro` bere první `<img>` v headeru jako cíl přeletu. `loading="eager"`, protože header startuje odsunutý mimo viewport a lazy by obrázek dotáhl až po vjezdu.
