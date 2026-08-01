@@ -8,19 +8,35 @@ import { slideTransition } from "../utils/transitions";
 
 const heading = "Ubytování";
 
+const intro = [
+    "Odvoz na ubytování zajištěn",
+    "Ubytování je bez snídaně. V neděli možnost potkat se opět na Farním dvoře, případně se vydat rovnou domů. Na základě dotazníku budou rozděleny ubytovací kapacity.",
+    "Rozvoz domů nezajišťujeme.",
+];
+
 // Konfigurace ubytování — hosty stačí doplnit/upravit tady.
+// `mapUrl` jsou sdílecí odkazy z mapy.com, stejně jako trasy na `svatebni-den`.
 const houses = [
     {
         name: "Farní dvůr",
-        guests: ["Jan Novák", "Marie Nováková", "Petr Svoboda"],
+        address: "Uhřínov 1, 516 01 Liberk – Uhřínov, Česko",
+        mapUrl: "https://mapy.com/s/puzenurocu",
+        info: "Ubytování je uhrazeno v ceně pronájmu. Nemusíte si tak s tímto dělat starost s jeho placením.",
+        guests: ["Host 1"],
     },
     {
         name: "Chata Liebich",
-        guests: ["Lucie Dvořáková", "Tomáš Černý"],
+        address: "Deštné v Orlických horách 143, 517 91 Deštné v Orlických horách",
+        mapUrl: "https://mapy.com/s/hecudelasa",
+        info: "Cena 560 Kč za osobu a noc.",
+        guests: ["Host 2"],
     },
     {
         name: "Továrníkova vila",
-        guests: ["Anna Šťastná", "Jakub Procházka"],
+        address: "Skuhrov nad Bělou 93, 517 03 Skuhrov nad Bělou, Česko",
+        mapUrl: "https://mapy.com/s/kubumorabu",
+        info: "Cena 540 Kč za osobu a noc.",
+        guests: ["Host 3"],
     },
 ];
 ---
@@ -33,6 +49,20 @@ const houses = [
     >
         <section class="flex flex-col items-center px-gutter pb-[50vh]">
             <PageHeading text={heading} class="mb-heading" />
+            <div
+                class="w-full max-w-3xl flex flex-col gap-block mb-section"
+                data-reveal
+                style="--reveal-delay: 0.7s"
+            >
+                {intro.map((text) => <p class="paragraph">{text}</p>)}
+            </div>
+            <h2
+                class="font-heading text-subheading text-accent mb-block"
+                data-reveal
+                style="--reveal-delay: 0.85s"
+            >
+                Kde spím?
+            </h2>
             <div class="w-full max-w-[104rem] mb-section 2xl:grid 2xl:grid-cols-3 2xl:gap-section">
                 <input
                     type="text"
@@ -41,13 +71,13 @@ const houses = [
                     autocomplete="off"
                     class="block w-full max-w-xs mx-auto 2xl:max-w-none 2xl:col-start-2 bg-transparent border-0 border-b border-black pb-2 text-center font-body text-ink placeholder:text-ink/40 focus:outline-none focus:border-accent transition-colors"
                     data-reveal
-                    style="--reveal-delay: 0.7s"
+                    style="--reveal-delay: 0.95s"
                 />
             </div>
             <div
                 class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-section w-full max-w-[104rem] items-start [&>:last-child]:md:max-2xl:col-span-2 [&>:last-child]:md:max-2xl:w-[calc(50%_-_var(--spacing-section)/2)] [&>:last-child]:md:max-2xl:justify-self-center"
                 data-reveal
-                style="--reveal-delay: 0.85s"
+                style="--reveal-delay: 1.1s"
             >
                 {houses.map((house) => <HouseColumn {...house} />)}
             </div>

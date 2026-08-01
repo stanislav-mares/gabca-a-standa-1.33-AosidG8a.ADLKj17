@@ -1,10 +1,18 @@
 ---
 interface Props {
     name: string;
+    /** Odkaz na mapu; dokud je prázdný, řádek s mapou se nevykreslí. */
+    mapUrl?: string;
+    address?: string;
+    /** Text pod adresou — cena za osobu nebo poznámka k platbě. */
+    info?: string;
     guests: string[];
 }
 
-const { name, guests } = Astro.props;
+const { name, mapUrl, address, info, guests } = Astro.props;
+
+const linkClass =
+    "underline decoration-accent underline-offset-4 hover:bg-hover transition-colors";
 ---
 
 <div data-house class="flex flex-col text-ink/40 transition-opacity duration-300">
@@ -14,25 +22,64 @@ const { name, guests } = Astro.props;
         class="w-full h-24 overflow-visible"
         aria-hidden="true"
     >
+        {/* Otevřená polyline se pro výplň uzavírá sama, takže se vybarví celý
+            trojúhelník a naváže na podbarvený blok pod střechou. */}
         <polyline
             points="0,30 50,1 100,30"
-            fill="none"
+            class="fill-ink/5"
             stroke="currentColor"
             stroke-width="1"
             vector-effect="non-scaling-stroke"
         />
     </svg>
-    <div class="flex-1 min-h-96 border-x border-b border-current px-block py-section text-center">
+    <div class="flex-1 min-h-96 border-x border-b border-current px-block pb-section text-center">
         {/* „Továrníkova vila" měří v Parisienne 6,01 em. Od md jsou dva sloupce
             a ty jsou nejužší z celého webu — na 768 px zbude na text 287 px,
             zatímco název při zdejších 43 px písma měří 260 px. Proto tu vnitřní
             padding drží `block`, ne `gutter`: ten je na téhle šířce o 17 px na
             stranu širší a název by se zalomil. Stejně tak nesmí povyrůst škála
             `text-subheading`. */}
-        <h2 class="font-heading text-subheading text-ink underline decoration-[0.05em] underline-offset-8 mb-section">
-            {name}
-        </h2>
-        <ul class="flex flex-col gap-tight font-body text-lg text-text">
+        {/* Podbarvení bere stejnou barvu jako rám domu (`--color-ink`), jen
+            na 5 %. `-mx-block px-block` ho protáhne od jedné boční linky ke
+            druhé, takže pruh navazuje na výplň střechy nad ním. */}
+        <div class="-mx-block px-block pb-block bg-ink/5">
+            <h2 class="font-heading text-subheading text-ink underline decoration-[0.05em] underline-offset-8 mb-tight">
+                {name}
+            </h2>
+            {
+                (mapUrl || address || info) && (
+                    <ul class="list-disc pl-[1.25em] space-y-tight font-body text-body text-text text-left">
+                        {address && (
+                            <li>
+                                <strong>Adresa:</strong> {address}
+                            </li>
+                        )}
+                        {mapUrl && (
+                            <li>
+                                <strong>Mapa:</strong>{" "}
+                                <a
+                                    href={mapUrl}
+                                    target="_blank"
+                                    rel="noopener"
+                                    class={linkClass}
+                                >
+                                    Ukázat na mapě
+                                </a>
+                            </li>
+                        )}
+                        {info && (
+                            <li>
+                                <strong>Cena:</strong> {info}
+                            </li>
+                        )}
+                    </ul>
+                )
+            }
+        </div>
+        {/* Linka navazuje na boční rám domu — barvu i tloušťku bere
+            z `currentColor` stejně jako `border-x`/`border-b`. */}
+        <hr class="-mx-block border-t border-current" />
+        <ul class="flex flex-col gap-tight font-body text-lg text-text mt-block">
             {guests.map((guest) => <li data-guest>{guest}</li>)}
         </ul>
     </div>

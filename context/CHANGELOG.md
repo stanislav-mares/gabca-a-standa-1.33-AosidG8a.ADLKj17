@@ -2,6 +2,15 @@
 
 ## 2026-08-02
 
+### Stránka ubytování: informace o objektech
+
+- Pod nadpis přibyl **úvodní text** — odvoz na ubytování, snídaně, rozdělení kapacit podle dotazníku a rozvoz domů — v `max-w-3xl` s `.paragraph`. Reveal kaskáda stránky je nově 0.7 s text → 0.85 s nadpis → 0.95 s vyhledávání → 1.1 s mřížka domů.
+- Nad vyhledávání jména hosta přišel **h2 „Kde spím?"** ve stylu sekčních nadpisů z `svatebni-den` (`text-subheading text-accent`); nadpis domu má oproti tomu podtržení a `text-ink`, což by na sekční předěl bylo příliš.
+- `HouseColumn` dostal props **`address`, `mapUrl` a `info`**, data sedí v konfiguraci `houses` v `ubytovani.astro` (adresy, sdílecí odkazy z mapy.com, ceny za osobu). Každá položka se vykreslí, jen když je vyplněná, takže rozpracovaná konfigurace stránku nerozbije.
+- Uvnitř domu je **nadpis nahoře bez horní výplně** a pod ním odrážkový seznam **Adresa / Mapa / Cena** s tučnými popisky, zarovnaný doleva a o stupeň menší (`text-body`). Odkaz vede na mapy.com pod textem „Ukázat na mapě".
+- Horní část domu je **podbarvená `bg-ink/5`** a stejný odstín dostala i střecha (`fill-ink/5` na polyline — otevřená polyline se pro výplň uzavírá sama). `-mx-block px-block` protahuje podbarvení až k bočním linkám, takže na výplň střechy navazuje bez švu.
+- Podbarvený blok odděluje od seznamu hostů `<hr class="-mx-block border-t border-current">`; barvu i tloušťku bere ze stejného `currentColor` jako rám domu, takže na něj navazuje.
+
 ### Header: postupný náběh obsahu po příchodu z Intra
 
 - Podnadpis a položky menu dostaly `data-reveal` (mechanismus z `global.css`) s delayem počítaným **od kliknutí na „Vstoupit"**: podnadpis 1.3 s, položky 1.45 s s krokem 0.08 s. Sekvence tedy navazuje na dosednutí letícího loga v 1.2 s.
