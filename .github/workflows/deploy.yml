@@ -30,8 +30,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Astro vpéká PUBLIC_* proměnné do bundlu při buildu, takže hodnota musí
+      # být v prostředí právě tady — .env je v .gitignore a na runneru není.
+      # Bez toho se dotazník odešle do prázdna (viz Questionnaire.astro).
       - name: Build
         run: npm run build
+        env:
+          PUBLIC_QUESTIONNAIRE_ENDPOINT: ${{ secrets.PUBLIC_QUESTIONNAIRE_ENDPOINT }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
