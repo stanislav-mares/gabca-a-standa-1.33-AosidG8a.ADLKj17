@@ -2,6 +2,18 @@
 
 ## 2026-08-01
 
+### Dotazník: formulace pro celou rodinu a volba „Jiné"
+
+- Otázky nově počítají s tím, že formulář vyplňuje jeden člověk za pár nebo rodinu („Dorazíš / dorazíte", „Máš / máte nějaké stravovací omezení?"). Úvodní text je kratší, popisky u jména, e-mailu a velikosti porcí konkrétnější.
+- Účast i přespání mají třetí možnost **„Jiné" s volným textem**. Ano/ne nepokrývalo případy typu „obřad nestihnu, ale na párty budu" nebo „přijedu obytňákem".
+- U přespání zmizel mezikrok s výběrem místo / blízké okolí / vlastní stan a zůstal rovnou jmenný checklist — varianty pokrývá to nové „Jiné". Popis odkazuje na `svatebni-den` i `ubytovani`.
+
+### Vyhodnocení v Apps Scriptu sladěné s otázkami
+
+- `vytvorVyhodnoceni` je natvrdo šitá na konkrétní klíče otázek, takže každá změna dotazníku znamená i zásah tady. Sekce **ÚČAST** a **PŘESPÁNÍ** nově vypisují volbu „Jiné" včetně textu odpovědi (`arrival-e0-jine-s0`, `sleep-e0-jine-s0`) — samotný počet by bez obsahu nic neřekl.
+- Tři bloky pro místo / okolí / stan nahradil jeden nad `sleep-e0-ano-s0`. Počet osob se u „Chce přespat" bere ze **jmenného checklistu**, ne z celého odeslání: host vyplňuje za rodinu, ale přespat může chtít jen část z ní.
+- Staré sloupce `sleep-e0-ano-s0-misto/okoli/vlastni` zůstávají v listu Odpovědi i s daty z testovacích odeslání; vzorce je ignorují, takže se nemusí mazat. Chybějící sloupec u nové možnosti znamená nulu, ne chybu — vyhodnocení jde spustit i dřív, než dorazí první taková odpověď.
+
 ### Písmo Cormorant přes `astro:fonts`
 
 - Obě rodiny (**Cormorant** i **Cormorant Garamond**) se stahují při buildu a servírují z vlastní domény, ne přes `@import` na `fonts.googleapis.com` jako starší rodiny — odpadá tím blokující požadavek na cizí doménu a Astro přidá metrikami dopočítaný fallback, takže se při načtení nehne layout.
