@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-08-02
+
+### Header: postupný náběh obsahu po příchodu z Intra
+
+- Podnadpis a položky menu dostaly `data-reveal` (mechanismus z `global.css`) s delayem počítaným **od kliknutí na „Vstoupit"**: podnadpis 1.3 s, položky 1.45 s s krokem 0.08 s. Sekvence tedy navazuje na dosednutí letícího loga v 1.2 s.
+- Animace visí na třídě **`header-revealing`** — `#main-header:not(.header-revealing) [data-reveal] { animation: none }`. Bez třídy se animace vůbec nenasadí, takže po refreshi i po návratu z podstránky je panel rovnou usazený a pravidlo pro `prefers-reduced-motion` z `global.css` zůstává funkční. Nasazením třídy se `animation-name` mění z `none`, což je přesně moment startu — pauzování přes `animation-play-state` by odpočet delaye jen zmrazilo, ale nešlo by ho restartovat.
+- Sundáním třídy se animace zahodí a dalším vstupem se nasadí znovu od nuly, takže **stagger funguje i při druhém průchodu intrem** bez ručního resetu přes reflow. Třídu nasazuje jen `enterMain()`, `backToIntro()` ji sundává.
+- **Dvojí opacity gate v headeru**: `#header-logo-btn` se prolíná rovnou s vjezdem panelu (drží tím odchodový fade i pro podnadpis), nový obal `#header-logo` má vlastní fade se zpožděním 1.2 s, protože čeká na dosednutí letícího loga. Dokud bylo obojí na tlačítku, nemohl podnadpis naskočit dřív než logo. `skipIntro()` vypíná přechody na obou.
+- Posun položek o 1 rem se počítá do scrollovací oblasti panelu menu, takže na dobu animace naskakoval **scrollbar** a jeho šířka cukla obsahem. Po dobu náběhu má proto `.menu-scroll` `overflow: hidden` a `endRevealWhenDone()` v `Intro.astro` sundá třídu, jakmile vše doběhne — konec zjišťuje z `getAnimations({ subtree: true })` a `Promise.allSettled(…finished)`. Při `prefers-reduced-motion` je pole prázdné, promise se splní hned a panel nezůstane bez scrollu; čítač `revealRun` brání tomu, aby doběhlá promise sundala třídu už dalšímu průchodu.
+
+### Header: velikosti drží od Full HD nahoru konstantní proporci
+
+- Logo (`maxHeight="min(50svh, clamp(263px, 13.7vw, 525px))"`), podnadpis (`max-w-[clamp(511px,26.6vw,1020px)] mx-auto`) i text menu (strop `clamp(2.25rem,1.875vw,4.5rem)` uvnitř stávajícího clampu) mají nově **fluidní strop místo pevného**. Od FHD nahoru tak každý drží stálý podíl na šířce okna (13.7 % / 26.6 % / 1.875 %) a kompozice vypadá stejně na FHD, 2K i 4K; nad 4K se růst zastaví.
+- Na FHD to znamená zmenšení zhruba o čtvrtinu — referencí je proporce z 2K, kde byly prvky vůči oknu menší. Nahrazuje to strop `3.75rem` u menu z 2026-08-01.
+- Podnadpis byl do té doby jediný, kdo rostl úplně bez omezení (`w-full` uvnitř panelu o 40 % šířky okna).
+
+### Header: svislé centrování na všech šířkách
+
+- Auto-marginy skupiny logo + menu přišly o prefix `sm:`. Pod 640 px se vypínaly a obsah skákal na `justify-start`; auto-margin se při přetečení stejně srazí na nulu, takže se na nízkých displejích nic neuřízne.
+
+### Intro: logo a „Vstoupit" jako jedna skupina
+
+- Tlačítko se přestěhovalo dovnitř kontejneru s logem (`flex-col items-center gap-block`), takže sedí pod logem na střed. Odpadlo absolutní pozicování včetně `top-[calc(82.5% + var(--intro-logo)/4)]`.
+- Umístění skupiny: od **1300 px** poloviční šířka u levého okraje (= čtvrtina šířky stránky) s posunem `translate-y-[10svh]`, pod prahem na střed s `translate-y-[25svh]`, čímž střed skupiny padne na 75 % výšky, tedy doprostřed spodní poloviny. Posun je v `svh`, ne v `%` — kontejner je kvůli `items-center` na overlayi vysoký jen jako obsah, takže `%` by měřilo skupinu, ne stránku.
+- `--intro-logo` se přesunulo z inline stylu do scoped `<style>`, protože inline styl neumí media query: pod 1300 px je logo menší (`min(33svh, 90vw)`), aby se skupina s tlačítkem do spodní poloviny vešla celá.
+
 ## 2026-08-01
 
 ### Dotazník: formulace pro celou rodinu a volba „Jiné"

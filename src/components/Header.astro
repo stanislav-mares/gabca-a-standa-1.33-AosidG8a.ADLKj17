@@ -15,36 +15,45 @@ import podnadpis from "../assets/podnadpis.png";
             {/* mt-auto tady a mb-auto na obalu menu: volné místo se rozdělí
                 na půl nad logo a pod menu, takže je celá skupina svisle na
                 střed. Auto-margin navíc při přetečení spadne na nulu, kdežto
-                justify-center by odsunul horní okraj mimo dosah scrollu.
-                Až od sm — pod ním je panel přes celou stránku a obsah
-                začíná nahoře. */}
-            <div class="w-full flex items-center shrink-0 sm:mt-auto">
+                justify-center by odsunul horní okraj mimo dosah scrollu. */}
+            <div class="w-full flex items-center shrink-0 mt-auto">
                 <button
                     id="header-logo-btn"
                     type="button"
                     class="w-full cursor-pointer"
                     aria-label="Zpět na úvod"
                 >
-                    <Logo
-                        width={840}
-                        maxHeight="min(50svh, 500px)"
-                        maxWidth="50%"
-                    />
-                    {/* Uvnitř tlačítka schválně: dědí tím fade-in po dosednutí
-                        letícího loga i vypnutí přechodů v skipIntro(). Musí
-                        zůstat za logem — Intro bere první <img> v headeru jako
-                        cíl přeletu. Eager, protože header startuje odsunutý
-                        mimo viewport a lazy by obrázek dotáhl až po vjezdu. */}
+                    {/* Zpožděný fade visí na tomhle obalu, ne na celém
+                        tlačítku — jinak by za logem čekal i podnadpis, který
+                        má naskočit hned. */}
+                    <div id="header-logo">
+                        {/* Fluidní strop drží od FHD nahoru konstantních 13.7 %
+                            šířky okna, takže proporce vypadá stejně na FHD, 2K
+                            i 4K; nad 4K se růst zastaví. Pod FHD strop nezasahuje
+                            a rozhoduje maxWidth. */}
+                        <Logo
+                            width={840}
+                            maxHeight="min(50svh, clamp(263px, 13.7vw, 525px))"
+                            maxWidth="50%"
+                        />
+                    </div>
+                    {/* Uvnitř tlačítka schválně: klikatelný je tím celý blok
+                        včetně podnadpisu. Musí zůstat za logem — Intro bere
+                        první <img> v headeru jako cíl přeletu. Eager, protože
+                        header startuje odsunutý mimo viewport a lazy by
+                        obrázek dotáhl až po vjezdu. */}
                     <Image
                         src={podnadpis}
                         alt="Gabča & Standa — 26. září 2026"
                         loading="eager"
-                        class="w-full h-auto py-cluster"
+                        class="w-full max-w-[clamp(511px,26.6vw,1020px)] mx-auto h-auto py-cluster"
+                        data-reveal
+                        style="--reveal-delay: 1.3s"
                     />
                 </button>
             </div>
             <div
-                class="w-full min-h-0 flex flex-col overflow-y-auto overscroll-contain sm:mb-auto"
+                class="menu-scroll w-full min-h-0 flex flex-col overflow-y-auto overscroll-contain mb-auto"
             >
                 <div class="mx-auto flex flex-col items-center">
                     <Menu />
@@ -61,6 +70,22 @@ import podnadpis from "../assets/podnadpis.png";
 </header>
 
 <style>
+    /* Reveal (viz global.css) patří jen k příchodu z Intra — třídu nasazuje
+       enterMain(). Po refreshi i po návratu z podstránky panel rovnou stojí,
+       takže se animace vůbec nenasadí a prvky se vykreslí normálně.
+       Zapnutím třídy se animation-name mění z `none`, a přesně tím animace
+       startuje: delaye se tedy počítají od kliknutí na „Vstoupit". */
+    #main-header:not(.header-revealing) :global([data-reveal]) {
+        animation: none;
+    }
+
+    /* Posun položek o 1rem dolů se počítá do scrollovací oblasti panelu, takže
+       by na dobu animace naskočil scrollbar a jeho šířka by cukla obsahem.
+       Třídu sundá Intro hned po doběhnutí revealu, pak se scroll vrátí. */
+    #main-header.header-revealing .menu-scroll {
+        overflow: hidden;
+    }
+
     /* Schovaný vlevo, dokud ho Intro při odchodu nepustí dovnitř (.header-entered) */
     #main-header {
         transform: translateX(-100%);
@@ -78,22 +103,34 @@ import podnadpis from "../assets/podnadpis.png";
         transition: none;
     }
 
-    :global(html.intro-seen)
-        #main-header:not(.header-entered)
-        #header-logo-btn {
+    :global(html.intro-seen) #main-header:not(.header-entered) #header-logo-btn,
+    :global(html.intro-seen) #main-header:not(.header-entered) #header-logo {
         opacity: 1;
         transition: none;
     }
 
-    /* Letící logo zůstává viditelné (80 %) i po dosednutí; headerové
-       se pod ním objeví až po konci letu (1.2s) a jen ho „doostří"
-       na 100 %. Při odletu naopak zhasne hned (bez delay). */
+    /* Dvojí gate: tlačítko se prolíná rovnou s vjezdem panelu, čímž drží
+       odchodový fade i pro podnadpis (ten si nástup načasuje sám svým
+       revealem, do té doby ho schová `both` fill)… */
     #header-logo-btn {
         opacity: 0;
         transition: opacity 0.3s ease-out;
     }
 
     #main-header.header-entered #header-logo-btn {
+        opacity: 1;
+        transition: opacity 0.3s ease-in;
+    }
+
+    /* …zatímco logo uvnitř čeká na konec letu. Letící logo zůstává viditelné
+       (80 %) i po dosednutí; headerové se pod ním objeví až po 1.2s a jen ho
+       „doostří" na 100 %. Při odletu naopak zhasne hned (bez delay). */
+    #header-logo {
+        opacity: 0;
+        transition: opacity 0.3s ease-out;
+    }
+
+    #main-header.header-entered #header-logo {
         opacity: 1;
         transition: opacity 0.3s ease-in 1.2s;
     }

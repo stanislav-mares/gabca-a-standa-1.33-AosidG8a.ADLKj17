@@ -21,9 +21,16 @@ const links: NavLink[] = [
 <nav class="menu-nav w-max max-w-full">
 
     <ul>
+        {/* Delay se počítá od kliknutí na „Vstoupit" (Header pauzuje reveal,
+            dokud panel nevjede): položky navazují na dosednutí letícího loga
+            (1.2s) a hned za ním jdoucí podnadpis. */}
         {
-            links.map(({ href, label }) => (
-                <li class="group">
+            links.map(({ href, label }, i) => (
+                <li
+                    class="group"
+                    data-reveal
+                    style={`--reveal-delay: ${1.45 + i * 0.08}s`}
+                >
                     <a
                         href={href}
                         class="flex items-start justify-center py-[calc(var(--spacing-tight)/2)] text-muted transition-colors duration-300 group-hover:text-ink"
@@ -38,7 +45,11 @@ const links: NavLink[] = [
                             rozhoduje jen jedna veličina a ta druhá je úplně
                             ignorovaná, takže vzniklo pásmo, kde tažení za okraj
                             okna nedělalo nic. Aditivní tvar drží obě živé. */}
-                        <span class="font-heading text-[clamp(1.6rem,0.5rem+1.15vw+1.65vh,3.75rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
+                        {/* Strop je sám fluidní: od FHD nahoru drží text
+                            konstantních 1.875 % šířky okna, takže proporce sedí
+                            stejně na FHD, 2K i 4K a na velkém monitoru nezůstane
+                            drobný. Nad 4K se růst zastaví. */}
+                        <span class="font-heading text-[clamp(1.6rem,0.5rem+1.15vw+1.65vh,clamp(2.25rem,1.875vw,4.5rem))] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
                             {label}
                         </span>
                     </a>

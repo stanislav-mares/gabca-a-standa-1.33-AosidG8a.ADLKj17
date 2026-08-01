@@ -7,7 +7,6 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
 <div
     id="intro-overlay"
     class="fixed inset-0 z-20 flex items-center  overflow-hidden"
-    style="--intro-logo: min(1000px, 96vw, 105svh)"
 >
     <!-- Podklad pod fotkou — musí se prolínat s ostatními vrstvami,
          kořen overlaye zůstává průhledný -->
@@ -27,23 +26,41 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
         class="intro-bg absolute inset-0 bg-gradient-to-r from-surface/90 via-surface/40 to-transparent"
     >
     </div>
-    <!-- Logo vlevo — zarovnané nad panelem Headeru kvůli plynulému přesunu -->
-    <!-- Posun na mobilu dávám na kontejner, ne na .intro-logo — tomu sahá
-         do style.transform skript přeletu a translate by přepsal -->
+    {/* Od 1300px poloviční šířka u levého okraje = skupina logo + tlačítko
+        sedí na čtvrtině šířky stránky, posunutá o 10 % dolů. Pod prahem je na
+        střed a o 25 % níž, čímž její střed padne na 75 % výšky, tedy doprostřed
+        spodní poloviny (menší logo z media query se tam vejde celé).
+        Posun je v svh, ne v %: kontejner je kvůli `items-center` na overlayi
+        vysoký jen jako obsah, takže % by měřilo skupinu, ne stránku.
+        Translate patří kontejneru — do .intro-logo sahá skript přeletu. */}
     <div
-        class="relative w-full md:w-1/2 flex items-center justify-center translate-y-[15svh] md:translate-y-0"
+        class="relative w-full min-[1300px]:w-1/2 flex flex-col items-center justify-center gap-block translate-y-[25svh] min-[1300px]:translate-y-[10svh]"
     >
         <div class="intro-logo opacity-35">
-            <Logo width={1000} size="var(--intro-logo)" />
+            <Logo width={1200} size="var(--intro-logo)" />
         </div>
+        <button
+            class="intro-enter font-alexbrush text-hero text-text/35 hover:text-text cursor-pointer"
+            aria-label="Vstoupit na web">Vstoupit</button
+        >
     </div>
-    <button
-        class="intro-enter absolute left-1/2 -translate-x-1/2 top-[calc(82.5%_+_var(--intro-logo)/4)] -translate-y-1/2 md:top-1/2 z-10 font-alexbrush text-hero text-text/35 hover:text-text cursor-pointer"
-        aria-label="Vstoupit na web">Vstoupit</button
-    >
 </div>
 
 <style>
+    /* Velikost loga. Je čtvercové, takže svh strop je zároveň stropem výšky;
+       90vw je pojistka pro úzká okna, kde by se ta výška do šířky nevešla.
+       Pod prahem 1300px je logo menší, aby se celá skupina s tlačítkem vešla
+       do spodní poloviny okna (viz translate u kontejneru). */
+    #intro-overlay {
+        --intro-logo: min(33svh, 90vw);
+    }
+
+    @media (min-width: 1300px) {
+        #intro-overlay {
+            --intro-logo: min(55.33svh, 90vw);
+        }
+    }
+
     /* Uživatel už intrem prošel (html třídu nastavuje blokující skript
        v Layoutu): schovej overlay hned, než ho skipIntro() usadí —
        jinak intro po refreshi bliklo. Po usazení (.intro-leaving)
@@ -106,6 +123,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
         const logoWrap = introOverlay.querySelector<HTMLElement>(".intro-logo");
         const headerPanel = document.getElementById("main-header");
         let animating = false;
+        let revealRun = 0;
 
         // Transform, který posadí intročkové logo přesně na logo v Headeru.
         // headerAtFinal: header už stojí na finální pozici (návrat z hl. strany),
@@ -141,6 +159,24 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             return `translate(${dx}px, ${dy}px) scale(${scale})`;
         };
 
+        // Třída header-revealing platí jen po dobu náběhu obsahu — panel menu
+        // podle ní na tu chvíli vypíná scroll (viz Header.astro). Musí se volat
+        // až po jejím nasazení, jinak getAnimations() reveal ještě nevidí.
+        // Prázdné pole (prefers-reduced-motion) je v pořádku: promise se splní
+        // hned a třída padne, takže panel nezůstane bez scrollu. Prvky přitom
+        // nikam neskočí — animace končí na hodnotách, které mají i bez ní.
+        const endRevealWhenDone = () => {
+            if (!headerPanel) return;
+            const run = ++revealRun;
+            const running = headerPanel.getAnimations({ subtree: true });
+            void Promise.allSettled(running.map((a) => a.finished)).then(() => {
+                // Mezitím mohl proběhnout návrat do Intra a další vstup —
+                // ten si svůj náběh dohlídá sám
+                if (run === revealRun)
+                    headerPanel.classList.remove("header-revealing");
+            });
+        };
+
         const enterMain = () => {
             if (animating || introOverlay.classList.contains("intro-leaving"))
                 return;
@@ -149,8 +185,11 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             document.removeEventListener("keydown", onKeydown);
 
             if (logoWrap) logoWrap.style.transform = flightTransform(false);
-            headerPanel?.classList.add("header-entered");
+            // header-revealing jen tady: postupný náběh obsahu patří k příchodu
+            // z Intra, ne k refreshi ani návratu z podstránky (viz Header.astro)
+            headerPanel?.classList.add("header-entered", "header-revealing");
             introOverlay.classList.add("intro-leaving");
+            endRevealWhenDone();
         };
 
         const backToIntro = () => {
@@ -171,7 +210,10 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
                 // …a nech ho odletět zpátky doprostřed
                 logoWrap.style.transform = "";
             }
-            headerPanel?.classList.remove("header-entered");
+            // Sundáním třídy se animace zahodí (prvky zůstanou viditelné,
+            // panel stejně odjíždí) — a při dalším vstupu se nasadí znovu
+            // od nuly, takže položky zase naběhnou postupně
+            headerPanel?.classList.remove("header-entered", "header-revealing");
             introOverlay.classList.remove("intro-leaving");
         };
 
@@ -191,6 +233,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             const animated = [
                 headerPanel,
                 document.getElementById("header-logo-btn"),
+                document.getElementById("header-logo"),
                 logoWrap,
                 ...introOverlay.querySelectorAll<HTMLElement>(
                     ".intro-bg, .intro-enter",
