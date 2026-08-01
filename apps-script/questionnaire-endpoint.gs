@@ -192,6 +192,14 @@ function vytvorVyhodnoceni() {
       persons: who("arrival-e0", "Bohužel nemohu"),
     },
     { text: "– kdo nedorazí", formula: listIf("arrival-e0", "Bohužel nemohu") },
+    // Volba „Jiné" pokrývá případy, na které ano/ne nestačí (dorazím jen na
+    // část dne, rozhodnu se později) – bez výpisu textu je počet k ničemu
+    {
+      text: "Jiné",
+      formula: countIf("arrival-e0", "Jiné"),
+      persons: who("arrival-e0", "Jiné"),
+    },
+    { text: "– co uvedli", formula: listTexts("arrival-e0-jine-s0") },
     { text: "– e-maily", formula: listTexts("ucast-e1") },
     {},
     { text: "PŘÍJEZD", bold: true },
@@ -208,36 +216,27 @@ function vytvorVyhodnoceni() {
     { text: "– kdo v pátek", formula: listIf("prijezd-e0", "V pátek") },
     {},
     { text: "PŘESPÁNÍ", bold: true },
+    // Počet osob bere ze jmenného checklistu, ne z celého odeslání: host
+    // vyplňuje za celou rodinu, ale přespat může chtít jen část z ní
     {
       text: "Chce přespat",
       formula: countIf("sleep-e0", "Ano"),
-      persons: who("sleep-e0", "Ano"),
+      persons: personCount("sleep-e0-ano-s0"),
     },
+    { text: "– kdo", formula: listPersons("sleep-e0-ano-s0") },
     {
       text: "Nepřespí (jede domů)",
       formula: countIf("sleep-e0", "Ne"),
       persons: who("sleep-e0", "Ne"),
     },
-    // Jména bere ze jmenného checklistu u každé možnosti, ne z celého
-    // odeslání – host teď rozděluje, kdo kde spí
+    // Dřív se tu rozpadalo místo / okolí / vlastní stan na tři podotázky;
+    // dotazník to nahradil volným textem u „Jiné"
     {
-      text: "Přímo v místě",
-      formula: countChecked("sleep-e0-ano-s0-misto"),
-      persons: personCount("sleep-e0-ano-s0-misto-s0"),
+      text: "Jiné",
+      formula: countIf("sleep-e0", "Jiné"),
+      persons: who("sleep-e0", "Jiné"),
     },
-    { text: "– kdo", formula: listPersons("sleep-e0-ano-s0-misto-s0") },
-    {
-      text: "V blízkém okolí",
-      formula: countChecked("sleep-e0-ano-s0-okoli"),
-      persons: personCount("sleep-e0-ano-s0-okoli-s0"),
-    },
-    { text: "– kdo", formula: listPersons("sleep-e0-ano-s0-okoli-s0") },
-    {
-      text: "Vlastní stan / obytňák",
-      formula: countChecked("sleep-e0-ano-s0-vlastni"),
-      persons: personCount("sleep-e0-ano-s0-vlastni-s0"),
-    },
-    { text: "– kdo", formula: listPersons("sleep-e0-ano-s0-vlastni-s0") },
+    { text: "– co uvedli", formula: listTexts("sleep-e0-jine-s0") },
     {},
     { text: "STRAVOVACÍ OMEZENÍ", bold: true },
   ];
