@@ -8,7 +8,7 @@ import type { Question } from "../utils/questionnaire";
 import { slideTransition } from "../utils/transitions";
 
 const heading = "Dotazník";
-const intro = "Poprosíme vás o vyplnění krátkého dotazníku. Moc nám to pomůže s další organizací a přípravami, abychom tak mohli strávit příjemný čas spolu ke spokojenosti všech. Pokud vás napadne něco dalšího, co není v otázkách, napište nám to prosím do posledního formuláře níže. Děkujeme :)";
+const intro = "Poprosíme vás o vyplnění krátkého dotazníku. Moc nám to pomůže s další organizací a přípravami na náš svatební den. Děkujeme :)";
 
 // Ukázková konfigurace – uprav si otázky i prvky přímo tady.
 const questions: Question[] = [
@@ -20,7 +20,7 @@ const questions: Question[] = [
                 type: "name-list",
                 label: "Jméno a příjmení",
                 description:
-                    "Pokud vyplňuješ za více lidí, přidej tlačítkem + řádek pro každého z nich.",
+                    "Pokud vyplňuješ za rodinu / pár, přidej tlačítkem + řádek pro každého z nich.",
                 placeholder: "Jan Novák",
                 required: true,
             },
@@ -28,7 +28,7 @@ const questions: Question[] = [
                 type: "email",
                 label: "E-mail",
                 description:
-                    "Nemusíte vyplňovat, ale ulehčí nám to komunikaci s Vámi v případě např. problémů, pro následné zaslání fotek atd. Záleží na Vás :)",
+                    "Nemusíte vyplňovat, ale ulehčí nám to komunikaci s Vámi v případě např. problémů, pro následné zaslání fotek atd.",
                 placeholder: "jan.novak@email.cz",
             },
         ],
@@ -39,7 +39,7 @@ const questions: Question[] = [
         elements: [
             {
                 type: "yes-no",
-                label: "Dorazíš na svatbu?",
+                label: "Dorazíš / dorazíte na svatbu?",
                 description: "Prosíme o potvrzení účasti nejpozději do konce srpna.",
                 required: true,
                 options: [
@@ -54,6 +54,19 @@ const questions: Question[] = [
                         followUp: {
                             heading: "Nevadí, děkujeme za vyplnění.",
                             elements: [],
+                        },
+                    },
+                    {
+                        value: "jine",
+                        label: "Jiné",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "textarea",
+                                    label: "",
+                                    placeholder: "Např. obřad nestihnu ale na odpolední párty budu, teď nevím - vyjádřím se do konce srpna, aj...",
+                                },
+                            ],
                         },
                     },
                 ],
@@ -82,7 +95,7 @@ const questions: Question[] = [
                         value: "patek",
                         label: "V pátek",
                         followUp: {
-                            heading: "Budeme rádi za pomoc s přípravami. Jídlo, pití a spaní zajištěno.",
+                            heading: "Pokud to máte na svatební místo daleko nebo chcete pomoct se svatebními přípravami, můžete využít příjezdu již v pátek.",
                             elements: [],
                         },
                     },
@@ -98,66 +111,21 @@ const questions: Question[] = [
             {
                 type: "yes-no",
                 label: "Budeš chtít přespat přímo na místě nebo v blízkém okolí?",
-                description: `Ubytování jsme schopni zajistit pro všechny hosty. Bližší informace k ubytování budou zavčasu zveřejněny
-                <a href="${import.meta.env.BASE_URL}ubytovani" class="underline text-black hover:bg-hover transition-colors">zde</a>`,
+                description: `Ubytování jsme schopni zajistit pro všechny hosty. Bližší informace k ubytování jsou popsány na stránce
+                <a href="${import.meta.env.BASE_URL}svatebni-den" class="underline text-black hover:bg-hover transition-colors">Svatební den</a>. Bližší informace k možnostem ubytování včetně rozdělení pokojů a přehledu ubytovaných najdete včas na stránce
+                <a href="${import.meta.env.BASE_URL}ubytovani" class="underline text-black hover:bg-hover transition-colors">Ubytování</a>.`,
                 required: true,
                 options: [
                     {
                         value: "ano",
                         label: "Ano",
                         followUp: {
-                            heading: "",
                             elements: [
                                 {
-                                    type: "multi-choice",
+                                    type: "person-checklist",
                                     label: "",
-                                    description: "",
-                                    required: true,
-                                    exclusivePersons: true,
-                                    options: [
-                                        {
-                                            value: "misto",
-                                            label: "Preferuji přespat přímo v místě.",
-                                            followUp: {
-                                                elements: [
-                                                    {
-                                                        type: "person-checklist",
-                                                        label: "",
-                                                        description: "Koho se týká?",
-                                                        defaultChecked: true,
-                                                    },
-                                                ],
-                                            },
-                                        },
-                                        {
-                                            value: "okoli",
-                                            label: "Preferuji přespat v blízkém okolí (do 10km, odvoz zajištěn)",
-                                            followUp: {
-                                                elements: [
-                                                    {
-                                                        type: "person-checklist",
-                                                        label: "",
-                                                        description: "Koho se týká?",
-                                                        defaultChecked: true,
-                                                    },
-                                                ],
-                                            },
-                                        },
-                                        {
-                                            value: "vlastni",
-                                            label: "Vezmu si vlastní stan, obytňák, ...",
-                                            followUp: {
-                                                elements: [
-                                                    {
-                                                        type: "person-checklist",
-                                                        label: "",
-                                                        description: "Koho se týká?",
-                                                        defaultChecked: true,
-                                                    },
-                                                ],
-                                            },
-                                        },
-                                    ],
+                                    description: "Koho se týká?",
+                                    defaultChecked: true,
                                 },
                             ],
                         },
@@ -170,6 +138,19 @@ const questions: Question[] = [
                             elements: [],
                         },
                     },
+                    {
+                        value: "jine",
+                        label: "Jiné",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "textarea",
+                                    label: "",
+                                    placeholder: "Přivezu si např. stan, přijedu obytňákem, aj...",
+                                },
+                            ],
+                        },
+                    },
                 ],
             },
         ],
@@ -180,7 +161,7 @@ const questions: Question[] = [
         elements: [
             {
                 type: "multi-choice",
-                label: "Stravovací omezení",
+                label: "Máš / máte nějaké stravovací omezení?",
                 description:
                     "Zaškrtni vše, co se vás týká, a u každé možnosti vyber, koho konkrétně.",
                 options: [
@@ -269,9 +250,9 @@ const questions: Question[] = [
         elements: [
             {
                 type: "multi-choice",
-                label: "Velikost porcí",
+                label: "Pro rodiny s dětmi prosíme o uvedení, zda požadujete na oběd dětskou porci?",
                 description:
-                    "Vyber, kdo bude jíst dospělou a kdo dětskou porci. Dospělá porce je předvyplněná pro všechny.",
+                    "Dospělá porce je předvyplněná pro všechny. Pro batole nechat obě možnosti prázdné.",
                 exclusivePersons: true,
                 options: [
                     {
@@ -311,7 +292,7 @@ const questions: Question[] = [
         elements: [
             {
                 type: "multi-choice",
-                label: "Co by sis dal k pití: nealko?",
+                label: "Co by sis dal / dali během svatebního dne k pití: nealko?",
                 options: [
                     { value: "perliva-voda", label: "Perlivá voda" },
                     { value: "voda-citron", label: "Voda s citrónem" },
@@ -362,7 +343,7 @@ const questions: Question[] = [
         elements: [
             {
                 type: "multi-choice",
-                label: "Co by sis dal k pití: alko?",
+                label: "Co by sis dal / dali během svatebního dne k pití: alko?",
                 options: [
                     { value: "pivo", label: "Pivo" },
                     { value: "vino", label: "Víno" },
@@ -393,7 +374,7 @@ const questions: Question[] = [
         elements: [
             {
                 type: "multi-choice",
-                label: "Co by sis dal k pití: alko+?",
+                label: "Co by sis dal / dali během svatebního dne k pití: alko+?",
                 options: [
                     { value: "slivovice", label: "Slivovice" },
                     { value: "mandlovice", label: "Mandlovice" },
@@ -425,7 +406,7 @@ const questions: Question[] = [
             {
                 type: "textarea",
                 label: "Napadá tě ještě něco dalšího?",
-                placeholder: "Cokoli, co bychom měli vědět…",
+                placeholder: "...",
             },
         ],
     },
