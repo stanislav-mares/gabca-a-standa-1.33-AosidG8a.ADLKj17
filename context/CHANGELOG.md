@@ -2,6 +2,24 @@
 
 ## 2026-08-01
 
+### Header úvodní stránky
+
+- Pod logo přibyl **podnadpis** (`podnadpis.svg` — „Gabča & Standa / 26. září 2026") přes celou šířku panelu. Sedí **uvnitř `#header-logo-btn`**, protože to tlačítko nese celou choreografii opacity z intra (fade-in po dosednutí letícího loga, vypnutí přechodů v `skipIntro()`); jako samostatný sourozenec by svítil v panelu už během letu a při refreshi problikl. V DOM musí zůstat **za logem** — `Intro.astro` bere první `<img>` v headeru jako cíl přeletu. `loading="eager"`, protože header startuje odsunutý mimo viewport a lazy by obrázek dotáhl až po vjezdu.
+- Rám headeru: `justify-evenly` → **`justify-start` + `p-cluster`**, podnadpis má `py-cluster`, takže jeho mezery sedí na okraje panelu.
+- Logo se zmenšuje přes **`maxWidth="50%"`, ne přes `vw`**. Panel má na `xl`/`2xl` 40 % šířky okna, takže jakákoli `vw` mez pod ~35vw se tam neuplatní a velikost stejně určí `max-w-full` — snižování `72vw` → `45vw` nedělalo na širokém okně vůbec nic. Procenta se počítají vůči tlačítku, tedy vůči panelu bez paddingu.
+- Kontejner menu je **`flex-1 min-h-0`** se scrollem; nav se centruje **`m-auto`**, ne `justify/items-center` na obalu — v scrollovacím kontejneru by centrování přes `align-items` odsunulo přetékající obsah mimo dosah scrollu, kdežto auto-margin se srazí na nulu.
+
+### Menu
+
+- **Čárky po stranách položek odstraněny** (`ruleBase` i oba `<span>`). Z hoveru zbylo přebarvení `text-muted → text-ink` a jemné zvětšení písma.
+- Fluidní velikost přepočítána na **`clamp(1.6rem, 0.5rem+1.15vw+1.65vh, 3rem)`**. Menší základ a hlavně jiný strop: původní se trefoval zhruba na 1536×900, takže nad `2xl` už písmo nerostlo. Nový nechá růst dál, zastaví se kolem 1920×1080.
+- Svislé mezery položek na **polovinu `tight`** (`py-[calc(var(--spacing-tight)/2)]`) — odvozeno z tokenu, ne pevné číslo.
+- `px-gutter` z `<nav>` pryč, odsazení drží `p-cluster` headeru; dvojitý rám jen ubíral šířku.
+
+### Spacing škála
+
+- Nový token **`--spacing-cluster: clamp(1.25rem, 0.85rem + 1.6vw, 2.5rem)`**. Mezi `block` (1–1,5 rem) a `gutter` (1,5–3,5 rem) nebyl žádný stupeň, takže „o něco menší než gutter" nešlo napsat bez pevného čísla.
+
 ### Zpětné tlačítko má poloprůhledné pozadí
 
 - Kontejner `<aside>` dostal **`bg-surface/85`** — stejná barva jako panel podstránek (`--color-surface`), jen s 85% krytím, takže obsah pod ním lehce prosvítá. Tailwind generuje i fallback `#ffffffd9` pro prohlížeče bez `color-mix`.

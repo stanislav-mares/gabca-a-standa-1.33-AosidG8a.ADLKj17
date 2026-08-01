@@ -1,4 +1,7 @@
+
 ---
+import GrainIcon from "./GrainIcon.astro";
+
 const base = import.meta.env.BASE_URL;
 
 interface NavLink {
@@ -7,36 +10,27 @@ interface NavLink {
 }
 
 const links: NavLink[] = [
-    { href: `${base}uvodni-informace`, label: "Kde, kdy, jak?" },
     { href: `${base}svatebni-den`, label: "Svatební den" },
     { href: `${base}ubytovani`, label: "Ubytování" },
     { href: `${base}nas-pribeh`, label: "Náš příběh" },
     { href: `${base}fotogalerie`, label: "Fotogalerie" },
     { href: `${base}dotaznik`, label: "Dotazník" },
 ];
-
-// Čárky mají pevný box (w-10) a krátí se přes scaleX, ne přes width —
-// šířka by přeskládala řádek a vnější konec by ujel dovnitř. Origin na
-// vnějším konci drží ten konec na místě a ubírá se jen zevnitř ven.
-//
-// Plynulost: na elementu smí běžet jen transform (+ will-change), aby ho
-// prohlížeč nechal na vlastní vrstvě. Barva se proto nepřebarvuje, ale
-// prolíná přes ::before — opacity i transform zvládne kompozitor, takže
-// se 1px linka nerasterizuje každý snímek znovu a hrana neposkakuje.
-const ruleBase =
-    "relative h-px w-10 shrink-0 bg-muted/30 transition-transform duration-300 will-change-transform group-hover:scale-x-75 before:absolute before:inset-0 before:bg-accent/60 before:opacity-0 before:transition-opacity before:duration-300 group-hover:before:opacity-100";
 ---
 
-<nav class="menu-nav w-max max-w-full px-gutter">
+{/* Centrování přes m-auto, ne přes justify/items-center na obalu: obal
+    scrolluje a při centrování by obsah, který se nevejde, přetekl mimo dosah
+    scrollu. Auto-margin se v takovém případě srazí na nulu. */}
+<nav class="menu-nav m-auto w-max max-w-full">
+
     <ul>
         {
             links.map(({ href, label }) => (
                 <li class="group">
                     <a
                         href={href}
-                        class="flex items-center justify-center gap-tight py-tight text-muted transition-colors duration-300 group-hover:text-ink"
+                        class="flex items-start justify-center py-[calc(var(--spacing-tight)/2)] text-muted transition-colors duration-300 group-hover:text-ink"
                     >
-                        <span class={`${ruleBase} origin-left`} />
                         {/* scale místo letter-spacingu: Parisienne je psací
                             písmo, prostrkání by rozpojilo tahy mezi znaky.
                             Písmo je v CSS rovnou v té větší (hoverované)
@@ -46,15 +40,10 @@ const ruleBase =
                         {/* Součet vw a vh, ne vmin ani min(): u obou vždycky
                             rozhoduje jen jedna veličina a ta druhá je úplně
                             ignorovaná, takže vzniklo pásmo, kde tažení za okraj
-                            okna nedělalo nic. Aditivní tvar drží obě živé.
-                            Strop 3rem se na 950px vysokém okně trefí kolem
-                            1386 px šířky — nad tím velikost zase stojí.
-                            Cena za aditivní tvar: na nízkém širokém okně vyjde
-                            písmo větší než s vmin a menu se odscrolluje. */}
-                        <span class="font-heading text-[clamp(1.9rem,0.6rem+1.4vw+2vh,3rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
+                            okna nedělalo nic. Aditivní tvar drží obě živé. */}
+                        <span class="font-heading text-[clamp(1.6rem,0.5rem+1.15vw+1.65vh,3rem)] leading-snug whitespace-nowrap origin-center transform-gpu scale-[0.952] transition-transform duration-300 will-change-transform group-hover:scale-100">
                             {label}
                         </span>
-                        <span class={`${ruleBase} origin-right`} />
                     </a>
                 </li>
             ))

@@ -1,35 +1,49 @@
 ---
+import { Image } from "astro:assets";
 import Logo from "./Logo.astro";
 import Menu from "./Menu.astro";
 import GrainIcon from "./GrainIcon.astro";
 import CountDown from "./CountDown.astro";
 import CeremonyDate from "./CeremonyDate.astro";
+import podnadpis from "../assets/podnadpis.svg";
 ---
 
 <header
     id="main-header"
-    class="h-full flex flex-col items-center justify-evenly content-center w-full bg-surface"
+    class="h-full flex flex-col items-center justify-start content-center w-full p-cluster bg-surface"
 >
-    <div class="flex items-center shrink-0">
-        <button
-            id="header-logo-btn"
-            type="button"
-            class="cursor-pointer"
-            aria-label="Zpět na úvod"
-        >
-            <Logo
-                width={840}
-                maxHeight="min(50svh, 500px)"
-                maxWidth="72vw"
-            />
-        </button>
-    </div>
-    <div
-        class="w-full flex justify-center items-start min-h-0 overflow-y-auto overscroll-contain"
-    >
-        <Menu />
-    </div>
-    <GrainIcon class="shrink-0" />
+            <div class="w-full flex items-center shrink-0">
+                <button
+                    id="header-logo-btn"
+                    type="button"
+                    class="w-full cursor-pointer"
+                    aria-label="Zpět na úvod"
+                >
+                    <Logo
+                        width={840}
+                        maxHeight="min(50svh, 500px)"
+                        maxWidth="50%"
+                    />
+                    {/* Uvnitř tlačítka schválně: dědí tím fade-in po dosednutí
+                        letícího loga i vypnutí přechodů v skipIntro(). Musí
+                        zůstat za logem — Intro bere první <img> v headeru jako
+                        cíl přeletu. Eager, protože header startuje odsunutý
+                        mimo viewport a lazy by obrázek dotáhl až po vjezdu. */}
+                    <Image
+                        src={podnadpis}
+                        alt="Gabča & Standa — 26. září 2026"
+                        loading="eager"
+                        class="w-full h-auto py-cluster"
+                    />
+                </button>
+            </div>
+            <div
+                class="@container w-full flex-1 min-h-0 flex overflow-y-auto overscroll-contain"
+            >
+                <Menu />
+                <GrainIcon class="shrink-0 mt-auto" />
+            </div>
+
     <!-- <div class="flex justify-center items-end"> -->
         <!-- <Logo width="160" height="160" layout="constrained" /> -->
     <!-- </div> -->
