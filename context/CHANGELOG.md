@@ -2,6 +2,13 @@
 
 ## 2026-08-02
 
+### Dotazník: značení povinných polí
+
+- Nad formulářem je legenda **„* - označuje povinná pole"** jako samostatný odstavec oddělený `mt-block`. Hvězdička je `text-red-600` a o stupeň větší (`text-xl`), aby se v běžném textu neztratila.
+- Úvodní odstavec se vykresloval přes `{intro}`, takže Astro escapovalo značky a na stránce se doslova zobrazovalo `<br/>` i `<span>`. Přes **`set:html`** teď jde jen legenda (statický, ručně psaný obsah), úvodní věta zůstala prostým textem.
+- `QuestionElement` skládá **`labelHtml`** — k labelu přilepí stejnou hvězdičku, když je prvek povinný. Nasazené je to ve všech pěti typech prvků, takže značku dostala čtyři povinná pole (jméno, účast, příjezd, přespání) a automaticky i podotázky, které se povinnými stávají po rozbalení (`forceRequired`).
+- Hvězdička u polí má `aria-hidden="true"`: povinnost čtečkám sděluje atribut `required` na vstupu, jinak by ji ohlásily dvakrát. V legendě `aria-hidden` není, tam je to nesená informace.
+
 ### Stránka ubytování: informace o objektech
 
 - Pod nadpis přibyl **úvodní text** — odvoz na ubytování, snídaně, rozdělení kapacit podle dotazníku a rozvoz domů — v `max-w-3xl` s `.paragraph`. Reveal kaskáda stránky je nově 0.7 s text → 0.85 s nadpis → 0.95 s vyhledávání → 1.1 s mřížka domů.

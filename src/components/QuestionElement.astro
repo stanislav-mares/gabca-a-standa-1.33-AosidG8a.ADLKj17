@@ -18,6 +18,15 @@ const { element, name, forceRequired = false } = Astro.props;
 
 const required = forceRequired || element.required;
 
+// Hvězdička u povinných polí; legendu k ní nese úvodní text stránky.
+// `aria-hidden`, protože povinnost čtečkám sděluje atribut `required`
+// na samotném vstupu — jinak by ji ohlásily dvakrát. Prázdný label
+// (follow-upy) ji nedostane, aby nikde nevisela sama.
+const requiredMark =
+  ' <span class="text-red-600 text-xl leading-none align-middle" aria-hidden="true">*</span>';
+const labelHtml =
+  required && element.label ? element.label + requiredMark : element.label;
+
 const inputClass =
   "w-full px-4 py-3 bg-transparent border border-black rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors";
 const labelClass =
@@ -41,7 +50,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
 {
   (element.type === "short-text" || element.type === "email") && (
     <div>
-      <label for={name} class={labelClass} set:html={element.label} />
+      <label for={name} class={labelClass} set:html={labelHtml} />
       {element.description && (
         <p class={descriptionClass} set:html={element.description} />
       )}
@@ -60,7 +69,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
 {
   element.type === "name-list" && (
     <div data-name-list={name}>
-      <span class={labelClass} set:html={element.label} />
+      <span class={labelClass} set:html={labelHtml} />
       {element.description && (
         <p class={descriptionClass} set:html={element.description} />
       )}
@@ -108,7 +117,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
       data-default-checked={element.defaultChecked ? "1" : "0"}
     >
       {element.label && (
-        <span class={labelClass} set:html={element.label} />
+        <span class={labelClass} set:html={labelHtml} />
       )}
       {element.description && (
         <p class={descriptionClass} set:html={element.description} />
@@ -128,7 +137,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
 {
   element.type === "textarea" && (
     <div>
-      <label for={name} class={labelClass} set:html={element.label} />
+      <label for={name} class={labelClass} set:html={labelHtml} />
       {element.description && (
         <p class={descriptionClass} set:html={element.description} />
       )}
@@ -149,7 +158,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
 {
   isChoice && (
     <div data-person-exclusive={element.exclusivePersons ? "" : undefined}>
-      <span class={labelClass} set:html={element.label} />
+      <span class={labelClass} set:html={labelHtml} />
       {element.description && (
         <p class={descriptionClass} set:html={element.description} />
       )}

@@ -8,7 +8,12 @@ import type { Question } from "../utils/questionnaire";
 import { slideTransition } from "../utils/transitions";
 
 const heading = "Dotazník";
-const intro = "Poprosíme vás o vyplnění krátkého dotazníku. Moc nám to pomůže s další organizací a přípravami na náš svatební den. Děkujeme :)";
+const intro =
+    "Poprosíme vás o vyplnění krátkého dotazníku. Moc nám to pomůže s další organizací a přípravami na náš svatební den. Děkujeme :)";
+
+// Vykresluje se přes `set:html`, takže smí obsahovat značky — obsah je
+// statický a psaný ručně, nikdy sem nesmí vstup od uživatele.
+const requiredLegend = `<span class="text-red-600 text-xl leading-none align-middle">*</span> - označuje povinná pole`;
 
 // Ukázková konfigurace – uprav si otázky i prvky přímo tady.
 const questions: Question[] = [
@@ -422,9 +427,10 @@ const questions: Question[] = [
         <section class="flex flex-col items-center px-gutter">
             <PageHeading text={heading} />
             <div class="w-full max-w-3xl pt-heading">
-                <p class="paragraph" data-reveal style="--reveal-delay: 0.7s">
-                    {intro}
-                </p>
+                <div data-reveal style="--reveal-delay: 0.7s">
+                    <p class="paragraph">{intro}</p>
+                    <p class="paragraph mt-block" set:html={requiredLegend} />
+                </div>
                 <div class="pt-section pb-[50vh]" data-reveal style="--reveal-delay: 0.85s">
                     <Questionnaire questions={questions} showAll />
                     <GrainIcon />
