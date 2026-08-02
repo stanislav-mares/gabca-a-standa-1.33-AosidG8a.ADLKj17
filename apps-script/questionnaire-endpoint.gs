@@ -152,17 +152,23 @@ function vytvorVyhodnoceni() {
       ? `=IFERROR(TEXTJOIN(", ";TRUE;FILTER(${range(key)};${range(key)}<>""));"—")`
       : DASH;
   /**
-   * Počet osob: v textovém sloupci spočítá jména oddělená čárkou, středníkem,
-   * novým řádkem nebo spojkou „ a ", sečteno přes řádky splňující podmínku
-   * (bez podmínky přes všechny neprázdné). „Novákovi" bez oddělovače = 1.
+   * Počet osob: co input ve formuláři, to jedna osoba. Formulář má na každou
+   * osobu vlastní řádek a skládá je do buňky oddělené čárkou (`readNames(…)
+   * .join(", ")` v Questionnaire.astro), takže stačí spočítat čárky + 1.
+   * Sečteno přes řádky splňující podmínku, bez podmínky přes všechny neprázdné.
+   *
+   * Čárka je jediný oddělovač schválně. Dřív se tu dělilo i na „ a ",
+   * středníku a novém řádku – pozůstatek jediného volného textového pole,
+   * který rozbíjel víceslovná jména: „Marie a Jan Novákovi" v jednom inputu
+   * vyšlo jako dvě osoby. Stejný předpoklad (čárka = oddělovač) má i formulář,
+   * když si hodnotu rozebírá zpátky do řádků a jmenných checklistů.
    */
   const personCount = (textKey, condKey, condValue) => {
     if (!has(textKey) || (condKey && !has(condKey))) return ZERO;
-    const text = range(textKey);
-    const norm = `SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(${text};" a ";",");CHAR(10);",");";";",")`;
-    const perRow = `LEN(${norm})-LEN(SUBSTITUTE(${norm};",";""))+1`;
+    const text = `TRIM(${range(textKey)})`;
+    const perRow = `LEN(${text})-LEN(SUBSTITUTE(${text};",";""))+1`;
     const cond = condKey ? `(${range(condKey)}="${condValue}")*` : "";
-    return `=SUMPRODUCT(${cond}(TRIM(${text})<>"")*(${perRow}))`;
+    return `=SUMPRODUCT(${cond}(${text}<>"")*(${perRow}))`;
   };
 
   const who = (condKey, condValue) =>
@@ -171,7 +177,7 @@ function vytvorVyhodnoceni() {
   const rows = [
     { text: "VYHODNOCENÍ DOTAZNÍKU", bold: true },
     {
-      text: "Aktualizuje se samo. Počty osob vychází ze jmen oddělených čárkou.",
+      text: "Aktualizuje se samo. Počty osob: co řádek ve formuláři, to jedna osoba (jména jsou v buňce oddělená čárkou).",
     },
     { text: "", formula: `="odpovědí"`, persons: `="osob"` },
     {

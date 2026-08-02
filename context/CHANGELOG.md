@@ -2,6 +2,31 @@
 
 ## 2026-08-02
 
+### Landscape na telefonu: panel i intro se vejdou
+
+- Panel na úvodní stránce scrolluje **celý** (`#main-header` má `overflow-y-auto overscroll-contain`), ne jen menu. Blok s logem je `shrink-0`, takže si na nízkém okně ukrojil výšku první a menu se smrsklo — na 667×375 px až na nulu, položky pak nešlo vůbec zobrazit. Menu teď drží `shrink-0` a přetečení řeší scroll panelu; auto-marginy skupinu dál centrují, dokud se vejde.
+- Zámek scrollu během revealu se přesunul z `.menu-scroll` na `#main-header` (třída `menu-scroll` zanikla) a `html.vt-running` v `global.css` kryje i `#main-header`, aby se scrollbar panelu nevezl během slide přechodu.
+- Intro: posun skupiny logo + „Vstoupit" se **zastropoval zbývajícím místem** — `translateY(min(var(--intro-shift), calc((100svh - 100%) / 2 - 1rem)))`. `100%` v translate měří samotnou skupinu, a protože je vycentrovaná, `(100svh - 100%) / 2` je přesně vzdálenost k dolnímu okraji okna. Na landscape telefonu se dřív „Vstoupit" ořízlo (844×390 px o ~27 px). Počítá se to z aktuálních rozměrů, takže tam není breakpoint, který by šel uhádnout špatně; samotný posun (25svh, nad 1300 px 10svh) se přesunul z tříd do `--intro-shift`.
+
+### GrainIcon jako patička podstránek
+
+- Na `fotogalerie`, `ubytovani` a `svatebni-den` byla ikona **sourozencem** kontejneru s `pb-[50vh]`, takže se kreslila až pod tou mezerou, na konci kontejneru. Teď je posledním dítětem toho kontejneru, tedy hned za obsahem, a 50vh zůstává pod ní jako doskrolovací prostor.
+- Výchozí odstup v `GrainIcon` je `mt-section mb-section` místo `mt-heading` — ikona je sekční předěl, `--spacing-heading` patří k `PageHeading`. Na `svatebni-den` a `nas-pribeh`, kde má kontejner `gap-section`, se předává jen `mb-section`, jinak by se odstupy sčítaly. Na všech pěti podstránkách je tak nad ikonou stejná mezera (40 px na mobilu, 65 px na 1280 px).
+
+### Vyhodnocení dotazníku: co input, to jedna osoba
+
+- `personCount` počítá jména **výhradně podle čárek**. Normalizace `" a "`, středníku a nového řádku na čárku byla pozůstatkem doby, kdy jména chodila z jednoho volného textového pole — „Marie a Jan Novákovi" v jednom inputu vycházelo jako dvě osoby. Formulář má dnes jeden řádek na osobu a spojuje je čárkou (`readNames(…).join(", ")`); stejný předpoklad má i rozebírání hodnoty zpátky do řádků a jmenných checklistů.
+- Propisuje se to i do jmenných checklistů (`sleep-e0-ano-s0`, `strava-e0-*`, `porce-e0-*`), které jména přebírají ze stejných inputů.
+
+### Svatební den: barevná paleta
+
+- Obrázek palety se zmenšil po breakpointech (`w-[90%] sm:w-[80%] md:w-[72%]`) — na desktopu z 768×209 na 553×150 px, protože byl full-bleed přes celý sloupec `max-w-3xl`.
+- `widths` + `sizes` teprve teď generují srcset; bez nich Astro posílalo všem zařízením plný 1536px zdroj. Telefon si stáhne ~1 kB WebP místo 64 kB.
+
+### Fotogalerie: data pořízení
+
+- `npm run gallery:dates` po výměně fotek — 77 položek, tři nové z EXIFu (`IMG_1868`, `IMG_8382`, `dkr-1804`), deset odebraných vypadlo z mapy. Žádná fotka nezůstala bez data.
+
 ### Dotazník: volba „Jiné" u otázky na příjezd
 
 - Otázka **„Kdy přijedeš?"** má třetí možnost **„Jiné" s volným textem**. Dvojice „v den svatby / v pátek" nepokrývala odchylky typu jiného času příjezdu, které stejně dorazily jako poznámka jinde ve formuláři.

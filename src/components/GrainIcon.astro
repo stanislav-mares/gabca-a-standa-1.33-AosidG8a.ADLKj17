@@ -3,12 +3,15 @@ import { Image } from "astro:assets";
 import grain from "../assets/grain.svg";
 
 interface Props {
-    /** Rozestupy okolo ikony. Výchozí hodnota sedí na patičku podstránek,
-     *  v Headeru je rozestup daný `justify-evenly` a předává se `shrink-0`. */
+    /** Rozestupy okolo ikony. Výchozí hodnota sedí na patičku podstránek —
+     *  ikona odděluje konec obsahu, takže drží `--spacing-section` jako
+     *  ostatní předěly. Na stránkách, jejichž kontejner má `gap-section`,
+     *  ten odstup dodává rovnou mřížka a předává se jen `mb-section`,
+     *  jinak by se sčítaly. V Headeru je rozestup vlastní (`shrink-0`). */
     class?: string;
 }
 
-const { class: className = "mt-heading mb-section" } = Astro.props;
+const { class: className = "mt-section mb-section" } = Astro.props;
 
 // Ryze dekorativní prvek — pro čtečky neexistuje (aria-hidden + prázdný alt).
 // `<Image>` místo inline SVG: soubor má 29 kB a je na sedmi stránkách, takže

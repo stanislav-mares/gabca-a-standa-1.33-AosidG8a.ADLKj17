@@ -30,11 +30,11 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
         sedí na čtvrtině šířky stránky, posunutá o 10 % dolů. Pod prahem je na
         střed a o 25 % níž, čímž její střed padne na 75 % výšky, tedy doprostřed
         spodní poloviny (menší logo z media query se tam vejde celé).
-        Posun je v svh, ne v %: kontejner je kvůli `items-center` na overlayi
-        vysoký jen jako obsah, takže % by měřilo skupinu, ne stránku.
+        Samotný posun je ve stylu níž (.intro-group) — potřebuje se zastropovat
+        zbývajícím místem, na což třídy nestačí.
         Translate patří kontejneru — do .intro-logo sahá skript přeletu. */}
     <div
-        class="relative w-full min-[1300px]:w-1/2 flex flex-col items-center justify-center gap-block translate-y-[25svh] min-[1300px]:translate-y-[10svh]"
+        class="intro-group relative w-full min-[1300px]:w-1/2 flex flex-col items-center justify-center gap-block"
     >
         <div class="intro-logo opacity-35">
             <Logo width={1200} size="var(--intro-logo)" />
@@ -55,9 +55,27 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
         --intro-logo: min(33svh, 90vw);
     }
 
+    /* Svislý posun skupiny pod střed okna. Strop drží „Vstoupit" nad dolním
+       okrajem: `100%` v translate měří samotnou skupinu, a protože je
+       vycentrovaná, je `(100svh - 100%) / 2` přesně vzdálenost od její
+       aktuální pozice k dolnímu okraji okna. Bez toho se na nízkých oknech
+       (telefon na šířku) tlačítko ořízlo — a odscrollovat to nejde, overlay je
+       `fixed` a jako úvodní obrazovka scrollovat nemá. Počítá se to samo z
+       aktuálních rozměrů, takže tu není žádný breakpoint na uhádnutí. */
+    .intro-group {
+        --intro-shift: 25svh;
+        transform: translateY(
+            min(var(--intro-shift), calc((100svh - 100%) / 2 - 1rem))
+        );
+    }
+
     @media (min-width: 1300px) {
         #intro-overlay {
             --intro-logo: min(55.33svh, 90vw);
+        }
+
+        .intro-group {
+            --intro-shift: 10svh;
         }
     }
 
