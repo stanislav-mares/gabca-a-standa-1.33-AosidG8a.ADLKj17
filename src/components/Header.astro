@@ -8,9 +8,13 @@ import CeremonyDate from "./CeremonyDate.astro";
 import podnadpis from "../assets/podnadpis.png";
 ---
 
+{/* Scrolluje celý panel, ne jen menu. Na nízkém okně (telefon na šířku) se
+    logo s podnadpisem do výšky nevejde a dřív ukrojilo místo menu až na nulu —
+    položky pak nešlo vůbec zobrazit. Takhle si každý blok drží svou velikost
+    a při přetečení se panel prostě odscrolluje. */}
 <header
     id="main-header"
-    class="h-full flex flex-col items-center justify-start content-center w-full p-cluster bg-surface"
+    class="h-full flex flex-col items-center justify-start content-center w-full p-cluster bg-surface overflow-y-auto overscroll-contain"
 >
             {/* mt-auto tady a mb-auto na obalu menu: volné místo se rozdělí
                 na půl nad logo a pod menu, takže je celá skupina svisle na
@@ -52,14 +56,17 @@ import podnadpis from "../assets/podnadpis.png";
                     />
                 </button>
             </div>
-            <div
-                class="menu-scroll w-full min-h-0 flex flex-col overflow-y-auto overscroll-contain mb-auto"
-            >
+            {/* shrink-0: menu si drží plnou výšku i v přetečeném panelu.
+                Bez toho by se smrsklo místo toho, aby se panel odscrolloval. */}
+            <div class="w-full shrink-0 flex flex-col mb-auto">
                 <div class="mx-auto flex flex-col items-center">
                     <Menu />
                 </div>
             </div>
-            <GrainIcon class="mt-section absolute bottom-2" />
+            {/* V toku, ne `absolute`: díky `mb-auto` na obalu menu zůstane
+                u spodku panelu, ale při přetečení se odscrolluje spolu
+                s položkami menu místo aby je překryla. */}
+            <GrainIcon class="mt-section shrink-0" />
 
     <!-- <div class="flex justify-center items-end"> -->
         <!-- <Logo width="160" height="160" layout="constrained" /> -->
@@ -82,7 +89,7 @@ import podnadpis from "../assets/podnadpis.png";
     /* Posun položek o 1rem dolů se počítá do scrollovací oblasti panelu, takže
        by na dobu animace naskočil scrollbar a jeho šířka by cukla obsahem.
        Třídu sundá Intro hned po doběhnutí revealu, pak se scroll vrátí. */
-    #main-header.header-revealing .menu-scroll {
+    #main-header.header-revealing {
         overflow: hidden;
     }
 

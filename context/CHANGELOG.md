@@ -2,6 +2,32 @@
 
 ## 2026-08-02
 
+### Dotazník: volba „Jiné" u otázky na příjezd
+
+- Otázka **„Kdy přijedeš?"** má třetí možnost **„Jiné" s volným textem**. Dvojice „v den svatby / v pátek" nepokrývala odchylky typu jiného času příjezdu, které stejně dorazily jako poznámka jinde ve formuláři.
+- Šlo čistě o data v `dotaznik.astro` — `Questionnaire`, `QuestionElement` ani odesílání se neměnily, follow-up s `textarea` u `single-choice` už mechanika uměla.
+- V listu Odpovědi tím přibude sloupec **`prijezd-e0-jine-s0`**; `vytvorVyhodnoceni` je psané na konkrétní klíče, takže tuhle odpověď zatím nevypisuje.
+
+### Ubytování: obsah nezajíždí pod BackButton
+
+- Sekce má od `lg` levý padding **`calc(var(--spacing-backbtn) + var(--spacing-gutter))`**, vpravo zůstává samotný `gutter`. Fixní lišta BackButtonu překrývala levý okraj stránky a u široké mřížky domů (`max-w-[104rem]`) se pod ni schovával krajní sloupec. Obsah se teď centruje do prostoru napravo od lišty.
+- Šířka lišty dostala token **`--spacing-backbtn: 10rem`** a `BackButton` ji bere přes `lg:w-backbtn` místo `lg:w-40` — jinak by odsazení stránky a šířka lišty žily každá vlastním životem.
+- Prefix `lg:` proto, že pod tímhle breakpointem je BackButton horní lišta a boční odsazení by bylo jen ubranou šířkou.
+
+### Svatební den: srdce v podpisu
+
+- Srdce za „-- Gabča a Standa" spadlo na vlastní řádek, protože **Tailwind preflight dává `svg { display: block }`**. `inline-block align-middle` ho vrací do textového řádku, `ml-tight` drží mezeru od textu.
+- Velikost je `h-[3em]`, tedy výrazně nad výškou písma — jde o závěrečnou ozdobu, ne o interpunkci.
+
+### Header: klas ve scrollovacím toku
+
+- `GrainIcon` visel na `absolute bottom-2`, kotvil se tedy k `<main>`: seděl u spodku okna a se scrollem panelu se nehýbal, takže v landscape překrýval poslední položku menu. Nově je v normálním toku (`mt-section shrink-0`) — díky `mb-auto` na obalu menu drží stejnou pozici u spodku panelu, ale při přetečení se odscrolluje spolu s položkami.
+- Tím odpadlo pravidlo `@media (max-height: 700px) and (orientation: landscape)`, které klasu jen vyhrazovalo místo přes `padding-bottom`.
+
+### Svatební den: popisky tras běžným písmem
+
+- „Trasa A / Trasa B" nad vloženými mapami měly `font-heading text-2xl` (Parisienne) a konkurovaly tím sekčním nadpisům. Nově `text-paragraph font-medium text-accent`, tedy stejné písmo jako okolní odstavce. Zároveň menší stupeň — bezpatkové písmo je při stejné velikosti opticky výrazně větší než Parisienne.
+
 ### Dotazník: značení povinných polí
 
 - Nad formulářem je legenda **„* - označuje povinná pole"** jako samostatný odstavec oddělený `mt-block`. Hvězdička je `text-red-600` a o stupeň větší (`text-xl`), aby se v běžném textu neztratila.
