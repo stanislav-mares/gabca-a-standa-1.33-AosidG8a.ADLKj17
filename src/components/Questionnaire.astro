@@ -151,9 +151,13 @@ const buttonClass =
     // Do formuláře je skládá skryté pole jako text oddělený čárkou — stejný
     // tvar, jaký posílal dřívější jediný textový input, takže se kvůli
     // proměnnému počtu osob nemusí měnit tabulka ani Apps Script.
+    // Čárka je vyhrazený oddělovač jmen a Vyhodnocení podle ní počítá osoby
+    // (co input, to jeden člověk) — uvnitř jména by jednoho hosta rozdělila na
+    // dva. Čistí se rovnou tady, ne až u `join`, takže se čárka nedostane ani
+    // do jmenných checklistů a `names-change`, které z `readNames` vychází.
     const readNames = (list: HTMLElement): string[] =>
       Array.from(list.querySelectorAll<HTMLInputElement>("[data-name-input]"))
-        .map((input) => input.value.trim())
+        .map((input) => input.value.replace(/,/g, " ").trim().replace(/\s+/g, " "))
         .filter(Boolean);
 
     const syncNameList = (list: HTMLElement) => {

@@ -17,6 +17,9 @@
 
 - `personCount` počítá jména **výhradně podle čárek**. Normalizace `" a "`, středníku a nového řádku na čárku byla pozůstatkem doby, kdy jména chodila z jednoho volného textového pole — „Marie a Jan Novákovi" v jednom inputu vycházelo jako dvě osoby. Formulář má dnes jeden řádek na osobu a spojuje je čárkou (`readNames(…).join(", ")`); stejný předpoklad má i rozebírání hodnoty zpátky do řádků a jmenných checklistů.
 - Propisuje se to i do jmenných checklistů (`sleep-e0-ano-s0`, `strava-e0-*`, `porce-e0-*`), které jména přebírají ze stejných inputů.
+- Druhá půlka téhož: čárka je nově vyhrazená **jen** jako oddělovač — `readNames` ji v každém jménu nahradí mezerou a srazí zdvojené mezery, takže „Novák, Jan" v jednom inputu je jeden člověk, ne dva. Bez toho by počítání podle čárek platilo jen do prvního hosta, který si jméno napíše s čárkou.
+- Čistí se přímo v `readNames`, ne až u `join(", ")` — ze stejné funkce berou hodnoty i jmenné checklisty a event `names-change`, takže se čárka nedostane do dat žádnou cestou. Do inputu si host pořád může napsat, co chce; mění se jen odeslaná hodnota.
+- Platí pro nová odeslání, už uložené odpovědi zůstávají v listu tak, jak dorazily. Vzorce navíc žijí v tabulce, ne ve skriptu — dokud se `questionnaire-endpoint.gs` nepřepastuje do Apps Scriptu a nespustí `vytvorVyhodnoceni`, počítá list dál po staru.
 
 ### Svatební den: barevná paleta
 
