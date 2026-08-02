@@ -9,7 +9,7 @@ import { slideTransition } from "../utils/transitions";
 const heading = "Ubytování";
 
 const intro = [
-    "Odvoz na ubytování zajištěn",
+    "Odvoz na ubytování zajištěn.",
     "Ubytování je bez snídaně. V neděli možnost potkat se opět na Farním dvoře, případně se vydat rovnou domů. Na základě dotazníku budou rozděleny ubytovací kapacity.",
     "Rozvoz domů nezajišťujeme.",
 ];
@@ -21,13 +21,13 @@ const houses = [
         name: "Farní dvůr",
         address: "Uhřínov 1, 516 01 Liberk – Uhřínov, Česko",
         mapUrl: "https://mapy.com/s/puzenurocu",
-        info: "Ubytování je uhrazeno v ceně pronájmu. Nemusíte si tak s tímto dělat starost s jeho placením.",
+        info: "Ubytování je uhrazeno v ceně pronájmu areálu. Nemusíte si tak s tímto dělat starost.",
         guests: ["Host 1"],
     },
     {
         name: "Chata Liebich",
         address: "Deštné v Orlických horách 143, 517 91 Deštné v Orlických horách",
-        mapUrl: "https://mapy.com/s/hecudelasa",
+        mapUrl: "https://mapy.com/s/nuvukalopu",
         info: "Cena 560 Kč za osobu a noc.",
         guests: ["Host 2"],
     },
@@ -47,7 +47,9 @@ const houses = [
         transition:animate={slideTransition}
         transition:name="main-panel"
     >
-        <section class="flex flex-col items-center px-gutter pb-[50vh]">
+        <section
+            class="flex flex-col items-center px-gutter pb-[50vh] lg:pl-[calc(var(--spacing-backbtn)+var(--spacing-gutter))]"
+        >
             <PageHeading text={heading} class="mb-heading" />
             <div
                 class="w-full max-w-3xl flex flex-col gap-block mb-section"
@@ -81,8 +83,8 @@ const houses = [
             >
                 {houses.map((house) => <HouseColumn {...house} />)}
             </div>
+            <GrainIcon />
         </section>
-        <GrainIcon />
 
         <BackButton />
     </main>

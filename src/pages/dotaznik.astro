@@ -23,10 +23,10 @@ const questions: Question[] = [
         elements: [
             {
                 type: "name-list",
-                label: "Jméno a příjmení",
+                label: "Jméno",
                 description:
                     "Pokud vyplňuješ za rodinu / pár, přidej tlačítkem + řádek pro každého z nich.",
-                placeholder: "Jan Novák",
+                placeholder: "Standa",
                 required: true,
             },
             {
@@ -102,6 +102,19 @@ const questions: Question[] = [
                         followUp: {
                             heading: "Pokud to máte na svatební místo daleko nebo chcete pomoct se svatebními přípravami, můžete využít příjezdu již v pátek.",
                             elements: [],
+                        },
+                    },
+                    {
+                        value: "jine",
+                        label: "Jiné",
+                        followUp: {
+                            elements: [
+                                {
+                                    type: "textarea",
+                                    label: "",
+                                    placeholder: "Upřesnění příjezdu...",
+                                },
+                            ],
                         },
                     },
                 ],

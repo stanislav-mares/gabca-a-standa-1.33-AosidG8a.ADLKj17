@@ -119,6 +119,7 @@
     --spacing-block:   clamp(1rem, 0.85rem + 0.6vw, 1.5rem);    /* mezi odstavci a bloky       */
     --spacing-cluster: clamp(1.25rem, 0.85rem + 1.6vw, 3.5rem); /* stupeň pod gutterem         */
     --spacing-tight:   clamp(0.5rem, 0.4rem + 0.4vw, 0.75rem);  /* drobné vnitřní mezery       */
+    --spacing-backbtn: 10rem;                                   /* šířka postranní lišty BackButtonu (lg+) */
 }
 
 /*.colors  {
@@ -243,7 +244,8 @@
 
 /* Scrollbar panelu se během slide přechodu vezl spolu se stránkou.
    Třídu `.vt-running` nasazuje Layout.astro po dobu view transition. */
-html.vt-running main {
+html.vt-running main,
+html.vt-running #main-header {
     overflow-y: hidden;
 }
 
