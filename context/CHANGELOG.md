@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-04
+
+### Ubytování: nadpis „Hosté:" v domečku
+
+- Seznam ubytovaných dostal nad sebou nadpis **`Hosté:`** ve stejném stylu jako název domu (`font-heading`, `text-ink`), jen o stupeň menší a **bez podtržení** — `<hr>` hned nad ním jednu linku už nese, druhá by se s ní tloukla.
+- Kvůli tomu přibyl token **`--text-subheading-sm: clamp(1.5rem, 1.15rem + 1vw, 2.5rem)`**, tedy ~60 % `--text-subheading` a stejně fluidní. Pevná utilita (`text-3xl`) by z rytmu vypadla — `text-subheading` roste až kolem 2530 px a podnadpis musí růst s ním.
+- Odstup `mt-block` odlepuje nadpis od linky, seznam jmen si svůj `mt-block` drží dál.
+
 ## 2026-08-02
 
 ### Landscape na telefonu: panel i intro se vejdou

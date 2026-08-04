@@ -140,6 +140,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
 
         const logoWrap = introOverlay.querySelector<HTMLElement>(".intro-logo");
         const headerPanel = document.getElementById("main-header");
+        const headerLogo = document.getElementById("header-logo");
         let animating = false;
         let revealRun = 0;
 
@@ -195,6 +196,20 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             });
         };
 
+        // Konec fade headerového loga (1.2s delay + 0.3s) — teprve tehdy je pod
+        // letícím logem plnohodnotná náhrada. Letící logo je `fixed`, takže na
+        // scrollujícím panelu (nízké okno) headerové odjede nahoru a ono zůstane
+        // stát jako druhé; po dosednutí ho proto zhasneme. Prolne se stávajícím
+        // přechodem `.intro-logo`, aby nebyl znát rozdíl v ostrosti rastru mezi
+        // škálovaným a nativně vykresleným logem.
+        const hideFlownLogo = (e: TransitionEvent) => {
+            if (e.propertyName !== "opacity" || e.target !== headerLogo) return;
+            headerLogo?.removeEventListener("transitionend", hideFlownLogo);
+            // Mezitím mohl proběhnout návrat do intra — tam logo naopak potřebujeme
+            if (logoWrap && introOverlay.classList.contains("intro-leaving"))
+                logoWrap.style.opacity = "0";
+        };
+
         const enterMain = () => {
             if (animating || introOverlay.classList.contains("intro-leaving"))
                 return;
@@ -203,6 +218,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             document.removeEventListener("keydown", onKeydown);
 
             if (logoWrap) logoWrap.style.transform = flightTransform(false);
+            headerLogo?.addEventListener("transitionend", hideFlownLogo);
             // header-revealing jen tady: postupný náběh obsahu patří k příchodu
             // z Intra, ne k refreshi ani návratu z podstránky (viz Header.astro)
             headerPanel?.classList.add("header-entered", "header-revealing");
@@ -216,7 +232,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             animating = true;
 
             if (logoWrap) {
-                // Po refreshi v menu je intro logo schované (viz skipIntro) —
+                // Intro logo je po dosednutí (i po refreshi v menu) schované —
                 // vrať mu viditelnost, ať může odletět zpátky.
                 logoWrap.style.opacity = "";
                 // Posaď logo bez animace na aktuální pozici headerového
@@ -251,7 +267,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             const animated = [
                 headerPanel,
                 document.getElementById("header-logo-btn"),
-                document.getElementById("header-logo"),
+                headerLogo,
                 logoWrap,
                 ...introOverlay.querySelectorAll<HTMLElement>(
                     ".intro-bg, .intro-enter",
@@ -293,21 +309,6 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             .getElementById("header-logo-btn")
             ?.addEventListener("click", backToIntro);
 
-        // Po resize okna se posune header i jeho logo — usazené intro
-        // logo drží svou starou (px) pozici, takže by se od headerového
-        // odtrhlo a vypadalo jako druhé, duplicitní logo. Přilepíme ho
-        // zpátky bez animace.
-        const onResize = () => {
-            if (!logoWrap || !introOverlay.classList.contains("intro-leaving"))
-                return;
-            const prevTransition = logoWrap.style.transition;
-            logoWrap.style.transition = "none";
-            logoWrap.style.transform = flightTransform(true);
-            void logoWrap.offsetHeight;
-            logoWrap.style.transition = prevTransition;
-        };
-        window.addEventListener("resize", onResize);
-
         if (sessionStorage.getItem("intro-seen")) {
             skipIntro();
         } else {
@@ -315,7 +316,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
         }
 
         cleanup = () => {
-            window.removeEventListener("resize", onResize);
+            headerLogo?.removeEventListener("transitionend", hideFlownLogo);
             document.removeEventListener("keydown", onKeydown);
         };
     }

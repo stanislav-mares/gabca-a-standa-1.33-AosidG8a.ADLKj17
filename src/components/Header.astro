@@ -11,10 +11,17 @@ import podnadpis from "../assets/podnadpis.png";
 {/* Scrolluje celý panel, ne jen menu. Na nízkém okně (telefon na šířku) se
     logo s podnadpisem do výšky nevejde a dřív ukrojilo místo menu až na nulu —
     položky pak nešlo vůbec zobrazit. Takhle si každý blok drží svou velikost
-    a při přetečení se panel prostě odscrolluje. */}
+    a při přetečení se panel prostě odscrolluje.
+
+    Scroll je ale záchranná brzda pro opravdu nízká okna, ne běžný stav: každý
+    svislý rozměr uvnitř panelu se odvozuje od šířky (`vw` škály), takže na FHD
+    vycházel pořád stejně — obsah měřil 994 px a do maximalizovaného okna
+    (~880–940 px viewportu) se nevešel. Proto má každý `svh` strop; ten se
+    uplatní jen tam, kde je okno na svou šířku nízké, a na vysokém okně je
+    neviditelný, protože volné místo stejně rozdělují auto-marginy níž. */}
 <header
     id="main-header"
-    class="h-full flex flex-col items-center justify-start content-center w-full p-cluster bg-surface overflow-y-auto overscroll-contain"
+    class="h-full flex flex-col items-center justify-start content-center w-full px-cluster py-[min(var(--spacing-cluster),3.5svh)] bg-surface overflow-y-auto overscroll-contain"
 >
             {/* mt-auto tady a mb-auto na obalu menu: volné místo se rozdělí
                 na půl nad logo a pod menu, takže je celá skupina svisle na
@@ -34,10 +41,13 @@ import podnadpis from "../assets/podnadpis.png";
                         {/* Fluidní strop drží od FHD nahoru konstantních 13.7 %
                             šířky okna, takže proporce vypadá stejně na FHD, 2K
                             i 4K; nad 4K se růst zastaví. Pod FHD strop nezasahuje
-                            a rozhoduje maxWidth. */}
+                            a rozhoduje maxWidth. Výškový strop je 26svh: logo je
+                            největší blok panelu, takže se na nízkém okně krátí
+                            jako první (dřív tu bylo 50svh, což na FHD nikdy
+                            nezasáhlo — 468 px proti 263 px z šířkového stropu). */}
                         <Logo
                             width={840}
-                            maxHeight="min(50svh, clamp(263px, 13.7vw, 525px))"
+                            maxHeight="min(26svh, clamp(263px, 13.7vw, 525px))"
                             maxWidth="50%"
                         />
                     </div>
@@ -50,7 +60,7 @@ import podnadpis from "../assets/podnadpis.png";
                         src={podnadpis}
                         alt="Gabča & Standa — 26. září 2026"
                         loading="eager"
-                        class="w-full max-w-[clamp(511px,26.6vw,1020px)] mx-auto h-auto py-cluster"
+                        class="w-full max-w-[clamp(511px,26.6vw,1020px)] mx-auto h-auto py-[min(var(--spacing-cluster),3svh)]"
                         data-reveal
                         style="--reveal-delay: 1.3s"
                     />
@@ -66,7 +76,7 @@ import podnadpis from "../assets/podnadpis.png";
             {/* V toku, ne `absolute`: díky `mb-auto` na obalu menu zůstane
                 u spodku panelu, ale při přetečení se odscrolluje spolu
                 s položkami menu místo aby je překryla. */}
-            <GrainIcon class="mt-section shrink-0" />
+            <GrainIcon class="mt-[min(var(--spacing-section),4svh)] shrink-0" />
 
     <!-- <div class="flex justify-center items-end"> -->
         <!-- <Logo width="160" height="160" layout="constrained" /> -->

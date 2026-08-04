@@ -79,6 +79,7 @@ const linkClass =
         {/* Linka navazuje na boční rám domu — barvu i tloušťku bere
             z `currentColor` stejně jako `border-x`/`border-b`. */}
         <hr class="-mx-block border-t border-current" />
+        <h3 class="font-heading text-subheading-sm text-ink mt-block">Hosté:</h3>
         <ul class="flex flex-col gap-tight font-body text-lg text-text mt-block">
             {guests.map((guest) => <li data-guest>{guest}</li>)}
         </ul>

@@ -6,78 +6,86 @@ import PageHeading from "../components/PageHeading.astro";
 import { slideTransition } from "../utils/transitions";
 
 const heading = "Náš příběh";
-const textContent = [
+
+interface StorySection {
+    /** Kotva sekce – bez mezer, aby šla použít v URL. */
+    id: string;
+    year: string;
+    paragraphs: string[];
+}
+
+const textContent: StorySection[] = [
     {
+        id: "2014",
         year: "2014",
-        content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." Section 1.10.32
-        of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC "Sed ut perspiciatis unde omnis
-        iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque
-        ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam
-        est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam
-        eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad
-        minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid
-        ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit
-        esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
-        pariatur?" 1914 translation by H. Rackham "But I must explain to you how all this mistaken`
-
+        paragraphs: [
+            `Náš příběh začíná před 12 lety… I když jsme to od sebe měli, co by kamenem dohodil, skoro
+            jsme nevěděli, že ten druhý vůbec existuje. Až volejbalový kurt zařídil, že jsme se setkali
+            na jednom místě. I když už si nikdo moc nepamatuje, jak se tam vlastně Gabča ocitla,
+            najednou zkrátka stála na hřišti. Do volejbalové party zapadla takřka okamžitě a stali jsme
+            se dobrými přáteli.`,
+            `Až po nějakém čase, na táboráku v Horní Čermné, Standa s Gabčou v průběhu večera zjistili,
+            že by mezi nimi mohlo být i něco více. Za několik dalších měsíců se společně domluvili, že
+            to tedy spolu zkusí. Ale bylo to váhavé rozhodnutí, jelikož v tu dobu každý studoval na
+            opačném konci republiky. Jisté nebylo nic.`,
+        ],
     },
 
     {
-        year: "2015",
-        content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." Section 1.10.32
-        of "de Finibus Bonorum et Malorum", written by Cicero in 45 BC "Sed ut perspiciatis unde omnis
-        iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque
-        ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam
-        est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam`,
+        id: "2015-2017",
+        year: "2015 – 2017",
+        paragraphs: [
+            `První roky byly hlavně v duchu studia a poznávání se navzájem. Času spolu jsme neměli tolik
+            a tak jsme dost komunikovali pouze přes telefon. Nicméně jak už to v začátcích bývá, měli
+            jsme nové růžové brýle a to nám pomáhalo to odloučení trochu vyvažovat. Osobně jsme se
+            vídali většinou jen o víkendu. Chodili jsme na procházky, zábavy, plesy a taky jezdili na
+            výlety – třeba na Moravu.`,
+            `Jednou dostal Standa skvělý nápad, že navštíví Gabču na kolejích v Brně. Zdálo se to jako
+            parádní plán – projít se po Brně, dát si dobrou večeři a druhý den jet společně domu. Druhý
+            den jsme se ale ocitli v kanceláři ředitelky a Gabče hrozilo vyloučení z kolejí. Co se
+            stalo, ptáte se? Standa byl označen za ilegálního nocležníka, který pobývá na kolejích již
+            několik měsíců. Důkaz byl jasný – jeden kartáček v koupelně navíc :D… Nakonec se vše
+            vysvětlilo a dobře to dopadlo.`,
+            `Ještě ten rok Standa daroval Gabče k Vánocům krátkou báseň. To ještě netušil, že se z toho
+            stane tradice na další desetiletí.`,
+        ],
     },
 
     {
-        year: "2016",
-        content: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis
-        unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam,
-        eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt
-        explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.`,
+        id: "2017-2018",
+        year: "2017 – 2018",
+        paragraphs: [
+            `V tomto roce Gabča ukončila bakalářské studium. Standa udělal velký krok a vzal ji na
+            společnou dovolenou na kolách s kamarády. Na kemp Jitřenka a zážitky nikdy nezapomeneme.`,
+            `Po vztahu na dálku uzrál čas zkusit si společné bydlení. Standa ukončil studium v Liberci
+            a svolil k přestěhování za Gabčou do Brna. Napsali na první inzerát, který splňoval
+            podmínky, zašli na prohlídku, podepsali smlouvu a v září se stěhovali. Měli jsme velké
+            štěstí, že narazili na moc fajn pronajímatele, u kterých jsme bydleli v rodinném domě.`,
+            `Další rok Standa úspěšně odpromoval a našel si práci v místě. Čas utekl jako voda a byly
+            Vánoce. Standa dostal od Gabči poukaz na první společnou zimní dovolenou v Krkonoších. Jupí.
+            Tvrdil totiž, že umí lyžovat, tak se Gabča chtěla přesvědčit :))`,
+        ],
     },
 
     {
-        year: "2017",
-        content: `Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-        sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat
-        voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit
-        laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit
-        qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum
-        fugiat quo voluptas nulla pariatur? At vero eos et accusamus et iusto odio dignissimos ducimus
-        qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-        excepturi sint occaecati cupiditate non provident.`,
-    },
-
-    {
-        year: "2018",
-        content: `Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis
-        est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis
-        voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis
-        debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae
-        non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis
-        voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. On the
-        other hand, we denounce with righteous indignation and dislike men who are so beguiled and
-        demoralized by the charms of pleasure of the moment.`,
+        id: "2019",
+        year: "2019",
+        paragraphs: [
+            `Standa se rozjíždí ze sjezdovky téměř „šusem", chce se ukázat. Jeho krasojízda trvá asi tak
+            osm vteřin než končí v závěji. Dlouho jsme se tak nenasmáli. Další jízdy byly už ale lepší,
+            tak si alespoň trochu spravil reputaci. Dovolená to byla moc fajn a oba si ji užili…`,
+            `Po dlouhém zvažování Gabča rozhodla přihlásit se Erasmus (studijní pobyt) v zahraničí.
+            Zanedlouho dostala vyjádření a s napětím očekávala, co se skrývá uvnitř obálky. „Byla jste
+            přijata ke studiu ve Finsku – město Rovaniemi." Oba jsme měli velikou radost, ale zároveň
+            jsme se báli, jak nám další odloučení prověří vztah.`,
+            `Gabča vzala situaci zodpovědně a Standovi k jeho narozeninám dala kuchařku „Sám doma
+            a hladový", aby mohl rozšířit své kuchařské umění a přečkal kruté časy. Bohužel knihu sice
+            otevřel, ale nic z ní neuvařil, pouze párek na obalu knihy, který už ale k receptům
+            nepatřil :D.`,
+            `Ještě než Gabča odjela, stihli také první společnou letní dovolenou v Bulharsku, kterou si
+            moc užili… V prosinci se Gabča vrátila a Standa na ní již čekal u brány na letišti
+            s květinami a cedulkou, aby věděla, ke komu se hlásit, kdyby ho náhodou nepoznala.`,
+        ],
     },
 ];
 ---

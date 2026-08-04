@@ -102,6 +102,8 @@
        „Továrníkova vila". Strop dřív seděl na 2xl (1536 px), jenže tím nad
        tímhle breakpointem přestal růst; teď doběhne až kolem 2530 px. */
     --text-subheading: clamp(2.5rem, 1.9rem + 1.67vw, 4.25rem);  /* section headings (h2) — fluidní */
+    /* Menší sourozenec h2 (~60 %) — roste stejně, jen o stupeň níž. */
+    --text-subheading-sm: clamp(1.5rem, 1.15rem + 1vw, 2.5rem);  /* podnadpisy (h3) — fluidní */
     --text-title:   3rem;     /* was text-5xl (page heads) */
     --text-display: 4.5rem;   /* was text-7xl              */
     --text-hero:    clamp(3rem, 10vw, 6rem);  /* „Vstoupit" — fluidní (bylo 6rem) */
