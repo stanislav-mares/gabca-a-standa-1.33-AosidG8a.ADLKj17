@@ -10,14 +10,15 @@ const heading = "Náš příběh";
 interface StorySection {
     /** Kotva sekce – bez mezer, aby šla použít v URL. */
     id: string;
-    year: string;
+    /** Jeden rok, nebo rozpětí – to se od 2xl vysází pod sebe. */
+    years: [string] | [string, string];
     paragraphs: string[];
 }
 
 const textContent: StorySection[] = [
     {
         id: "2014",
-        year: "2014",
+        years: ["2014"],
         paragraphs: [
             `Náš příběh začíná před 12 lety… I když jsme to od sebe měli, co by kamenem dohodil, skoro
             jsme nevěděli, že ten druhý vůbec existuje. Až volejbalový kurt zařídil, že jsme se setkali
@@ -33,7 +34,7 @@ const textContent: StorySection[] = [
 
     {
         id: "2015-2017",
-        year: "2015 – 2017",
+        years: ["2015", "2017"],
         paragraphs: [
             `První roky byly hlavně v duchu studia a poznávání se navzájem. Času spolu jsme neměli tolik
             a tak jsme dost komunikovali pouze přes telefon. Nicméně jak už to v začátcích bývá, měli
@@ -53,7 +54,7 @@ const textContent: StorySection[] = [
 
     {
         id: "2017-2018",
-        year: "2017 – 2018",
+        years: ["2017", "2018"],
         paragraphs: [
             `V tomto roce Gabča ukončila bakalářské studium. Standa udělal velký krok a vzal ji na
             společnou dovolenou na kolách s kamarády. Na kemp Jitřenka a zážitky nikdy nezapomeneme.`,
@@ -69,7 +70,7 @@ const textContent: StorySection[] = [
 
     {
         id: "2019",
-        year: "2019",
+        years: ["2019"],
         paragraphs: [
             `Standa se rozjíždí ze sjezdovky téměř „šusem", chce se ukázat. Jeho krasojízda trvá asi tak
             osm vteřin než končí v závěji. Dlouho jsme se tak nenasmáli. Další jízdy byly už ale lepší,
@@ -87,6 +88,20 @@ const textContent: StorySection[] = [
             s květinami a cedulkou, aby věděla, ke komu se hlásit, kdyby ho náhodou nepoznala.`,
         ],
     },
+
+    {
+        id: "2020-2021",
+        years: ["2020", "2021"],
+        paragraphs: [
+            `Období covidu, roušek a omezení cestování. I tak jsme ale v létě 2020 vyrazili na dovolenou
+            na Šumavu s partou kamarádů. Hodně jsme během covidu sportovali – běhy v roušce po Brně byly
+            náročné. Gabča v létě úspěšně zakončila inženýrské studium a nastoupila do práce.`,
+            `Další rok jsme opět vyrazili s partou kamarádů na kola, tentokrát do Jeseníků, a společně
+            jsme pokračovali v tradici dovolených u moře – vydali se poznat Řecko, ostrov Korfu.`,
+            `Skoro každý víkend nás to táhlo z Brna zpět domů. Pomalu začala vznikat myšlenka, že se
+            jednou nadobro vrátíme domů – že život ve městě je sice fajn, ale nic pro nás :)`,
+        ],
+    },
 ];
 ---
 
@@ -102,7 +117,7 @@ const textContent: StorySection[] = [
                 {
                     textContent.map((item, i) => (
                         <div
-                            id={item.year}
+                            id={item.id}
                             data-story-section
                             class="scroll-mt-top w-full max-w-3xl mx-auto 2xl:max-w-none 2xl:grid 2xl:grid-cols-[1fr_minmax(0,48rem)_1fr] 2xl:gap-x-section"
                             data-reveal
@@ -118,11 +133,24 @@ const textContent: StorySection[] = [
                                         : "2xl:col-start-3 2xl:text-left",
                                 ]}
                             >
-                                {item.year}
+                                {item.years.length === 2 ? (
+                                    // Do 2xl rozpětí na řádku (nedělitelné mezery kolem
+                                    // pomlčky), od 2xl pod sebe – jinak by se do
+                                    // postranního sloupce nevešlo.
+                                    <span class="2xl:inline-flex 2xl:flex-col 2xl:items-center 2xl:leading-[1.05]">
+                                        <span>{item.years[0]}</span>
+                                        <span class="2xl:text-[0.5em]">&nbsp;–&nbsp;</span>
+                                        <span>{item.years[1]}</span>
+                                    </span>
+                                ) : (
+                                    item.years[0]
+                                )}
                             </h2>
-                            <p class="paragraph 2xl:col-start-2 2xl:row-start-1">
-                                {item.content}
-                            </p>
+                            <div class="flex flex-col gap-block 2xl:col-start-2 2xl:row-start-1">
+                                {item.paragraphs.map((text) => (
+                                    <p class="paragraph">{text}</p>
+                                ))}
+                            </div>
                         </div>
                     ))
                 }

@@ -2,6 +2,13 @@
 
 ## 2026-08-04
 
+### Náš příběh: skutečný text a sazba roků
+
+- `textContent` dostal typované rozhraní **`StorySection`** (`id`, `years`, `paragraphs`) a lorem ipsum nahradil skutečný text od 2014 po 2019. Typografie sjednocená se zbytkem webu — české uvozovky, `…`, `–`.
+- `content: string` se rozpadl na **`paragraphs: string[]`**, vykreslené jako `<p class="paragraph">` na odstavec ve společném obalu `flex flex-col gap-block`. Delší roky (2019 má čtyři odstavce) byly jinak jedna zeď textu; obal si nese pozici v gridu (`2xl:col-start-2 2xl:row-start-1`), takže rok vedle textu sedí dál.
+- Kotva sekce je nově **vlastní `id`** (`2015-2017`) místo roku — u rozpětí by `id={item.year}` obsahovalo mezery.
+- Rozpětí let je **dvojice `years: [string] | [string, string]`**, ne řetězec s pomlčkou. Do 2xl se sází na řádek (nedělitelné mezery kolem pomlčky), od 2xl **pod sebe** (`2xl:inline-flex 2xl:flex-col 2xl:items-center`, pomlčka v `2xl:text-[0.5em]`) — „2015 – 2017" v `text-8xl` se do postranního sloupce nevejde.
+
 ### Ubytování: nadpis „Hosté:" v domečku
 
 - Seznam ubytovaných dostal nad sebou nadpis **`Hosté:`** ve stejném stylu jako název domu (`font-heading`, `text-ink`), jen o stupeň menší a **bez podtržení** — `<hr>` hned nad ním jednu linku už nese, druhá by se s ní tloukla.
