@@ -2,6 +2,24 @@
 
 ## 2026-08-04
 
+### Header: panel na FHD nescrolluje
+
+- Všechny svislé rozměry panelu se odvozovaly ze šířky (`vw` škály), takže na 1920 px vycházel obsah pořád na **994 px** — do maximalizovaného okna (~880–940 px viewportu) se nevešel a panel scrolloval. Jediný výškový strop (`50svh` u loga) se na FHD neuplatnil, 468 px proti 263 px ze šířkového stropu.
+- Každý svislý rozměr proto dostal `svh` strop: padding panelu `py-[min(var(--spacing-cluster),3.5svh)]`, logo `maxHeight="min(26svh, clamp(263px, 13.7vw, 525px))"`, podnadpis `py-[min(var(--spacing-cluster),3svh)]`, klas `mt-[min(var(--spacing-section),4svh)]`.
+- Strop zabírá jen tam, kde je okno na svou šířku nízké. Na vysokém okně je neviditelný — volné místo stejně rozdělují `mt-auto`/`mb-auto`, takže se mění mezery, ne pozice bloků. Bez scrollu ověřeno na 2560×1300, 1920×860 až 1080, 1600×900, 1536×864, 1440×900, 1280×800 i 1024×768.
+- Pod ~800 px výšky viewportu panel scrolluje dál — drží to menu, jehož strop `clamp(2.25rem, 1.875vw, 4.5rem)` má podlahu 36 px, takže 5 položek × 61.5 px se nezmenší. Scroll je tam záměrná pojistka z landscape úprav.
+
+### Intro: letící logo po dosednutí zhasne
+
+- Po přeletu zůstávalo intro logo (`fixed`) natrvalo viset na pozici headerového. Na scrollujícím panelu headerové logo odjelo nahoru a fixní intro logo zůstalo stát — **vypadalo to jako dvě loga**.
+- Zhasnutí se váže na `transitionend` u **`#header-logo`** (jeho fade má delay 1.2 s, končí v 1.5 s), tedy až je pod letícím logem plnohodnotná náhrada. Prolne se stávajícím přechodem `.intro-logo`, aby nebyl znát rozdíl v ostrosti rastru mezi škálovaným a nativně vykresleným logem; guard na `intro-leaving` ošetří návrat do intra dřív, než fade doběhne.
+- Tím zanikl `onResize`, který usazené logo po resize okna přilepoval zpátky na header — zhasnuté logo nemá co držet a `backToIntro()` si transform stejně přepočítává v okamžiku kliknutí.
+
+### Náš příběh: rok 2020–2021
+
+- Nová sekce (kotva `2020-2021`) — covid a roušky, Šumava s partou kamarádů, Gabčino dokončené inženýrské studium, kola v Jeseníkách, Korfu a sílící myšlenka na návrat z Brna domů. Tři odstavce, aby držela rytmus ostatních roků.
+- Smajlík sjednocen na textový `:)` podle zbytku stránky.
+
 ### Náš příběh: skutečný text a sazba roků
 
 - `textContent` dostal typované rozhraní **`StorySection`** (`id`, `years`, `paragraphs`) a lorem ipsum nahradil skutečný text od 2014 po 2019. Typografie sjednocená se zbytkem webu — české uvozovky, `…`, `–`.
