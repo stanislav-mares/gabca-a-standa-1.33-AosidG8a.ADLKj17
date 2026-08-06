@@ -33,6 +33,14 @@ const photos = await getGalleryPhotosWithLightbox();
                 {
                     photos.map((photo, index) => {
                         const landscape = photo.image.width > photo.image.height;
+                        // Fallback `src` u <Image> jinak vyjde z rozměrů zdroje,
+                        // takže by ke každé fotce přibyla varianta v plném
+                        // rozlišení. Prohlížeč si stejně vybírá ze `srcset` —
+                        // stačí největší šířka, kterou tam nabízíme.
+                        const fallbackWidth = landscape ? 1600 : 800;
+                        const fallbackHeight = Math.round(
+                            (photo.image.height / photo.image.width) * fallbackWidth,
+                        );
                         return (
                             <a
                                 href={photo.lightbox.src}
@@ -51,6 +59,8 @@ const photos = await getGalleryPhotosWithLightbox();
                                 <Image
                                     src={photo.image}
                                     alt=""
+                                    width={fallbackWidth}
+                                    height={fallbackHeight}
                                     widths={landscape ? [800, 1600] : [400, 800]}
                                     sizes={
                                         landscape

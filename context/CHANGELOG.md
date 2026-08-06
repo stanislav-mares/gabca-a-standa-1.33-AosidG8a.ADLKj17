@@ -2,6 +2,25 @@
 
 ## 2026-08-06
 
+### Obrázky: zdroje zmenšené na web
+
+- Nový **`scripts/optimize-images.mjs`** (`npm run images:optimize`, umí i `--dry-run`) zmenšuje delší hranu na **2560 px** a ukládá JPEG q82 (mozjpeg). V repu ležely originály z foťáku, 4000–5712 px a 3–11 MB kus, přestože Astro z nich dělá maximálně 2000 px do lightboxu a 1600 px do mřížky — **`src/assets` spadlo z 233 MB na 44 MB**.
+- Hotové soubory se značí do **EXIF tagu `Software`** a další běh je přeskočí. Bez značky by opakované spuštění pořád dokola rekomprimovalo a sbíralo generační ztrátu; heuristika „bajtů na pixel" tohle nerozsoudila spolehlivě.
+- Rotace se **zapéká do pixelů** (`sharp.rotate()`): 30 fotek v galerii má EXIF orientaci ≠ 1 a Astro je při zpracování otáčí. Bez zapečení by `landscape` detekce ve fotogalerii četla u těchto fotek obrácené rozměry.
+- **EXIF zůstává** (`withExifMerge`) kvůli `npm run gallery:dates` — ověřeno, že datum pořízení jde po přeuložení pořád přečíst u 72 ze 73 fotek jako dřív.
+- `podnadpis.png` 820 → 15 KB, mapa parkoviště 192 → 84 KB. SVG projelo jednorázově svgo, které v `node_modules` už je s Astrem, takže kvůli tomu nepřibyla závislost: `logo.svg` 33 → 15,7 KB, `grain.svg` 29 → 20 KB, favicon 749 → 644 B.
+- Zjištění k zapamatování: **`src/data/gallery-dates.json` je zčásti psaný ručně** — dvě fotky bez EXIFu v něm mají `2022-00-00T00:00:00`, což skript sám nevyrobí (vlastní normalizace by nulový měsíc zahodila). Regenerace od nuly ty hodnoty ztratí, proto se soubor po experimentu vrátil z gitu.
+
+### Build: `dist` bez neodkazovaných obrázků
+
+- Integrace **`prune-unreferenced-assets`** v `astro.config.mjs` po buildu projde textové výstupy a smaže obrázky, na které se v nich neodkazuje. Vite emituje do `_astro/` i originály — import obrázku je pro něj odkaz na soubor, i když stránky používají jen varianty z `<Image>`. Dělalo to **40,8 MB, které si žádný prohlížeč nevyžádá** a přesto se nahrávaly na Pages.
+- `<Image>` v mřížce fotogalerie dostal explicitní **`width`/`height`** (1600 landscape, 800 portrét). Fallback `src` jinak vychází z rozměrů zdroje, takže ke každé fotce vznikala varianta v plném rozlišení — dalších 9 MB, které prohlížeč kvůli `srcset` nikdy nesáhne.
+- Dohromady **`dist` 312 MB → 51 MB**. Ověřeno protisměrně: všech 248 odkazů ve výstupu má svůj soubor, nic nechybí a nic nepřebývá; mřížka má dál 22 landscape buněk a pořadí fotek je shodné s buildem před zásahem.
+
+### Úklid `src/assets`
+
+- Smazáno **23 souborů (5,6 MB)**, které kód nikde neimportoval — varianty loga (`logo2`–`logo9`, `logo-edit`, `logo-test`, `logo-bez-pozadi`, `logo-new`), `test.png`, `GS1.png`, `podnadpis.svg` a staré úpravy fotek (`IMG_7878-jas/-gray/-jas-upravene`, `IMG_1717`, `IMG_1953`, `dkr-1766`). V historii gitu zůstávají.
+
 ### Náš příběh: rok 2023
 
 - Sloučená sekce **`2022-2023`** dostala dva odstavce navíc — docházející trpělivost s pendlováním mezi Brnem a Čermnou a první nápady a varianty půdorysů domečku; pak letní Turecko kousek od Side, srpnová kola do Beskyd a podzimní Budapešť vlakem s Radkou a Mariánem.
