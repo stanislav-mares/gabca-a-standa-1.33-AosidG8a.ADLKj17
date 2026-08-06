@@ -2,6 +2,14 @@
 
 ## 2026-08-06
 
+### Náš příběh: rok 2026 a sazba odstavců
+
+- Nová sekce **`2026`** uzavírá příběh — plánování svatby i stavby, červencová Svratka ve složení MTGSRMBDSTAB, srpnová kola do Deštného v Orlických horách a rozloučení „Těšíme se, doufáme, že vy také :)". Index 8 je sudý, takže rok padl vlevo a střídání stran i `--reveal-delay` se dopočítaly samy.
+- Text sjednocen se zbytkem stránky: `Orlikých` → **Orlických**, doplněné čárky, emoji `🙂` nahrazeno textovým `:)`. Zkratka MTGSRMBDSTAB zůstala nerozepsaná, vysvětlená je výš v sekci 2022–2023.
+- Poslední odstavec roku 2025 teď končí u hledání místa na veselku — odhalení Farního dvora a data se odsud vypustilo, protože o svatebním místě u Deštného mluví nová sekce 2026. Obojí zůstává na stránce `svatebni-den`.
+- Odstavce se sázejí **do bloku** (`text-justify hyphens-auto`). Dělení slov obstará `<html lang="cs">` z `Layout.astro`; bez něj by v úzkém mobilním sloupci vznikaly mezi slovy díry. Zarovnání sedí na `<p>` téhle stránky, ne na sdílené třídě `.paragraph`, kterou používají i `ubytovani`, `dotaznik` a `svatebni-den`.
+- Rok v postranním sloupci zmenšen na **`2xl:text-7xl`** (z `text-8xl`, 6 → 4,5 rem). Nižší stupně zůstaly beze změny — pod `2xl` nadpis stojí nad odstavci, ne po straně.
+
 ### Favicon z hlavního loga
 
 - `public/favicon.svg` je nově **hlavní logo** (`src/assets/logo-obili.svg`) místo staršího „horského" tvaru. Minifikováno svgo z 31,8 na **9,0 kB** — kromě `--precision=2` se zahodily i zbytkové Inkscape styly (`baseline-shift`, `font-family`, `paint-order`), které v rasterizovaném faviconu nic nedělají.

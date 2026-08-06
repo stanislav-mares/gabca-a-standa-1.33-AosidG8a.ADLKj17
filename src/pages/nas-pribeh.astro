@@ -170,12 +170,22 @@ const textContent: StorySection[] = [
             země, skrývající mnoho pokladů.`,
             `A jeden takový také cestoval s námi. Když se dovolená chýlila ke konci, vyjeli jsme si na
             nedalekou pláž – Bantam Beach, kde 3. 9. Standa požádal Gabču o ruku. Hurá! Svatba? Bude! Jak
-            jsme se vrátili domů, začalo hledání správného místa na veselku. A jedno takové jsme objevili
-            u Velké Deštné (ale nebojte, bude hezky ;) Místo se jmenuje Farní Dvůr v nedaleké vesničce
-            Uhřínov. A svatbu jsme naplánovali na 26. 9. 2026.`,
+            jsme se vrátili domů, začalo hledání správného místa na veselku.`,
             `Na podzim jsme ještě stihli s kamarády Honzou a Pájou navštívit město lásky – Paříž. Viděli
             jsme známá místa jako Montmartre, zámek Versailles a nesměla chybět Eiffelova věž. A taky
             jsme se hodně nasmáli. To bylo zakončení.`,
+        ],
+    },
+
+    {
+        id: "2026",
+        years: ["2026"],
+        paragraphs: [
+            `Začátek roku se nesl v duchu plánování nejenom svatby, ale i stavby.`,
+            `V červenci jsme vyrazili na prodloužený víkend do Svratky ve složení MTGSRMBDSTAB a v srpnu
+            s partou kamarádů na dovolenou na kolách do Deštného v Orlických horách. Kousek od Deštného
+            se nachází i naše svatební místo, kde se za několik týdnů potkáme.`,
+            `Těšíme se, doufáme, že vy také :)`,
         ],
     },
 ];
@@ -201,7 +211,7 @@ const textContent: StorySection[] = [
                         >
                             <h2
                                 class:list={[
-                                    "story-year font-heading text-4xl md:text-6xl 2xl:text-8xl mb-block 2xl:mb-0",
+                                    "story-year font-heading text-4xl md:text-6xl 2xl:text-7xl mb-block 2xl:mb-0",
                                     "text-text opacity-25 transition-opacity duration-500",
                                     "2xl:row-start-1 2xl:self-center",
                                     i % 2 === 0
@@ -224,7 +234,7 @@ const textContent: StorySection[] = [
                             </h2>
                             <div class="flex flex-col gap-block 2xl:col-start-2 2xl:row-start-1">
                                 {item.paragraphs.map((text) => (
-                                    <p class="paragraph">{text}</p>
+                                    <p class="paragraph text-justify hyphens-auto">{text}</p>
                                 ))}
                             </div>
                         </div>
