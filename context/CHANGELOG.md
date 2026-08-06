@@ -2,6 +2,13 @@
 
 ## 2026-08-06
 
+### Náš příběh: rok 2023
+
+- Sloučená sekce **`2022-2023`** dostala dva odstavce navíc — docházející trpělivost s pendlováním mezi Brnem a Čermnou a první nápady a varianty půdorysů domečku; pak letní Turecko kousek od Side, srpnová kola do Beskyd a podzimní Budapešť vlakem s Radkou a Mariánem.
+- Roky zůstaly **sloučené** (kotva `2022-2023` beze změny). Rozdělení na `2022` a `2023` by si vyžádalo přerozdělit stávající odstavce a u podzimních výletů (Krkonoše, Hochschwab) není jasné, do kterého roku patří.
+- Beskydy jsou teď v sekci dvakrát **záměrně** — jde o dvě různé cesty, nová zmínka je proto „opět do Beskyd".
+- Text srovnán se zbytkem stránky: `DČ` → **Čermnou** (stejně jako v prvním odstavci sekce), `Radu` → **Radkou**; opraveno `vznikali` → `vznikaly` a `jsem se vydali` → `jsme se vydali`.
+
 ### Náš příběh: roky 2022–2025
 
 - Do `textContent` přibyly tři sekce — **`2022-2023`**, **`2024`** a **`2025`** —, takže příběh nekončí covidem, ale dojde až k zásnubám a datu svatby (Koh Samui 3. 9. 2025, Farní Dvůr v Uhřínově, 26. 9. 2026).
