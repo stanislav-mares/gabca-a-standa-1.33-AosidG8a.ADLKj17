@@ -2,6 +2,14 @@
 
 ## 2026-08-06
 
+### Favicon z hlavního loga
+
+- `public/favicon.svg` je nově **hlavní logo** (`src/assets/logo-obili.svg`) místo staršího „horského" tvaru. Minifikováno svgo z 31,8 na **9,0 kB** — kromě `--precision=2` se zahodily i zbytkové Inkscape styly (`baseline-shift`, `font-family`, `paint-order`), které v rasterizovaném faviconu nic nedělají.
+- Barvy řídí inline `<style>` přes třídy `.ink` / `.grain`, protože zdroj měl fill zapsaný v `style` atributech a černé tahy neměly fill vůbec (dědily default). Pod `@media (prefers-color-scheme:dark)` se černá mění na krémovou `#f5e2c1` a hnědý klas na světlejší `#e4baa4` — na tmavém pruhu prohlížeče by původní černý monogram zmizel.
+- `public/favicon.ico` přegenerováno z téhož loga (vrstvy 16/32/48 px, průhledné pozadí), aby fallback nezůstal na starém tvaru. **Dark-mode variantu ICO neumí**, ale moderní prohlížeče berou SVG, takže jde jen o zálohu.
+- `viewBox` se neořezával — `inkscape --query` ukázal bounding box `0,0 → 90,5 × 90,5`, tedy přesně shodný s viewBoxem; kroužek se okrajů dotýká sám a žádný bílý okraj k odstranění nebyl.
+- `Layout.astro` beze změny, oba `<link rel="icon">` už na tyto soubory mířily.
+
 ### Logo a klas: barevné varianty
 
 - `Logo.astro` importuje nově **`logo-obili.svg`** a `GrainIcon.astro` **`grain-barevne.svg`** — klas v logu i samostatná ikona jsou hnědé (`#7b5139`) místo černé. Obě grafiky jdou přes `<Image>`, tedy jako `<img>`, kde barvu nejde dobarvit z CSS — musí být zapečená ve zdroji, proto samostatné soubory místo přepínání třídou.
