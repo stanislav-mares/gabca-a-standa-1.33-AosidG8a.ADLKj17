@@ -2,6 +2,13 @@
 
 ## 2026-08-06
 
+### Logo a klas: barevné varianty
+
+- `Logo.astro` importuje nově **`logo-obili.svg`** a `GrainIcon.astro` **`grain-barevne.svg`** — klas v logu i samostatná ikona jsou hnědé (`#7b5139`) místo černé. Obě grafiky jdou přes `<Image>`, tedy jako `<img>`, kde barvu nejde dobarvit z CSS — musí být zapečená ve zdroji, proto samostatné soubory místo přepínání třídou.
+- Původní `logo.svg` má klas přebarvený na krémovou (`#f4e4b1`). Nikde se neimportuje, leží zatím jako druhá varianta.
+- Rozměry i `viewBox` zůstaly shodné (logo `90.503×90.503`, klas `720×1024`), takže dopočet výšky v `Logo.astro` i poměr stran v `GrainIcon.astro` platí beze změny.
+- Nové soubory jsou nezminifikovaný výstup Inkscape (`logo-obili.svg` 32,5 kB proti 15,7 kB u minifikovaného `logo.svg`, `grain-barevne.svg` 28,8 kB proti 20 kB u `grain.svg`) a `grain.svg` zůstává v repu bez odkazu — obojí vědomě odloženo na příště.
+
 ### Obrázky: zdroje zmenšené na web
 
 - Nový **`scripts/optimize-images.mjs`** (`npm run images:optimize`, umí i `--dry-run`) zmenšuje delší hranu na **2560 px** a ukládá JPEG q82 (mozjpeg). V repu ležely originály z foťáku, 4000–5712 px a 3–11 MB kus, přestože Astro z nich dělá maximálně 2000 px do lightboxu a 1600 px do mřížky — **`src/assets` spadlo z 233 MB na 44 MB**.
