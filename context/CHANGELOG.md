@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-08-06
+
+### Náš příběh: roky 2022–2025
+
+- Do `textContent` přibyly tři sekce — **`2022-2023`**, **`2024`** a **`2025`** —, takže příběh nekončí covidem, ale dojde až k zásnubám a datu svatby (Koh Samui 3. 9. 2025, Farní Dvůr v Uhřínově, 26. 9. 2026).
+- Každý rok rozdělen do 3–5 odstavců podle rytmu starších sekcí; typografie sjednocena se zbytkem stránky (`–`, „české uvozovky"). Opraveny překlepy ve vlastních jménech — Tower Bridge, Montmartre, Versailles, Eiffelova věž, Fuerteventura.
+- Rodinná zkratka **MTGSRMBDSTAB** je hned za sebou rozepsaná v závorce — dvanáct písmen samo o sobě nikomu mimo rodinu nic neřekne.
+- Sekce 2022–2023 vložena **před** 2024, čímž se posunula parita indexů: strany roků se u pozdějších sekcí prohodily (2022–2023 vpravo, 2024 vlevo, 2025 vpravo). Střídání i `--reveal-delay` se počítají z indexu, takže si to layout přerovnal sám.
+
 ## 2026-08-04
 
 ### Header: panel na FHD nescrolluje
