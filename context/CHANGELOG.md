@@ -1,5 +1,28 @@
 # Changelog
 
+## 2026-08-08
+
+### Svatební den: paleta jako klikací obrázek
+
+- Vzorník barev v sekci **Dresscode** se otevírá v PhotoSwipe stejně jako plánek parkoviště — obalen `data-lightbox` a `<a>` s `data-pswp-width/height` ze sdíleného `getLightboxSource`. Třídy šířky nese odkaz, `<Image>` má `w-full`, takže vzhled zůstal beze změny; rámeček `rounded-lg border` z parkoviště se nepřebíral, na vzorníku barev by rušil.
+- Paleta se dál renderuje **vlastní větví** vedle `section.image`. Sjednocení do jednoho pole by si vyžádalo volitelné `class`/`widths`/`sizes`/`framed` v rozhraní — víc kódu než ušetřené duplicity.
+- Smazána nepoužívaná konstanta `palette` (pole hexů) — vzorník je obrázek, pole se nikde nerenderovalo.
+
+### Menu: hover ve svatební šampani
+
+- Nový token **`--color-hover-dark: #e0c08c`** (→ utilita `text-hover-dark`), položky menu na hover přecházejí na něj místo na `text-ink`. Původní `--color-hover` (`#f6e0af`) měnit nešlo — jinde slouží jako podklad `bg-hover` a jako text by na bílém panelu zanikl.
+
+### Přechod stránek: rychlejší na mobilu na výšku
+
+- V `@media (orientation: portrait) and (max-width: 767px)` zkrácen slide panelu na **0.75 s** (jinde zůstává 1.2 s). Pravidlo stojí **mimo `@layer`**: `DURATION` z `utils/transitions.ts` Astro zapéká do inline `<style>` uvnitř `@layer astro`, na build-time hodnotu media query nedosáhne a nevrstvené CSS ji přebije bez ohledu na pořadí.
+- Zkrácení kryje i `[data-astro-transition-fallback]` selektory, tedy prohlížeče bez View Transitions API.
+- `--reveal-delay` obsahu **záměrně beze změny** — delaye jsou naladěné na 1.2 s a stejný mechanismus pohání i menu na úvodní stránce, kde navazuje na let loga, ne na slide stránky.
+
+### Dotazník: fokus a šeď upřesnění
+
+- Tlačítka formuláře přišla o `focus:ring-2 focus:ring-offset-2 focus:ring-gray-900` — černý prstenec zůstával kolem tlačítka po kliknutí myší.
+- Follow-up upřesnění (`followUp.heading`) mají místo `font-medium text-gray-800` stejnou šeď jako ostatní popisky, `text-sm text-gray-500`. `mb-block` z `descriptionClass` se nepřebíralo, odsazení uvnitř follow-upu drží `gap-block` na rodiči.
+
 ## 2026-08-06
 
 ### Náš příběh: rok 2026 a sazba odstavců
