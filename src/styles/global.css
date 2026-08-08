@@ -86,6 +86,8 @@
     --color-surface: #ffffff;  /* panel background   → bg-surface  */
     --color-accent:  #84543e;  /* highlight / brand accent → text-accent */
     --color-hover:   #f6e0af;  /* interactive hover state  → text-hover  */
+    /* Tmavší šampaň — text-hover je na bílém panelu nečitelný */
+    --color-hover-dark: #e0c08c; /* hover text on light bg → text-hover-dark */
     --color-ink:     #84543e;  /* primary text  → text-ink    */
     --color-muted:   #4b402d;  /* secondary text → text-muted */
     --color-text:    #000000;  /* body text (odstavce) → text-text */

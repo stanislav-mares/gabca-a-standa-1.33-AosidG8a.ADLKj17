@@ -31,8 +31,7 @@ const routes: Route[] = [
     { label: "Trasa B", embedUrl: "https://mapy.com/s/jerefahuco" },
 ];
 
-/** Svatební paleta — shodná s `.colors` v global.css. */
-const palette = ["#f7d596", "#e4baa4", "#f5e2c1", "#faeddc", "#734d29"];
+const paletaLightbox = await getLightboxSource(paleta);
 
 const linkClass =
     "underline decoration-accent underline-offset-4 hover:bg-hover transition-colors";
@@ -215,13 +214,24 @@ const sections: Section[] = [
                             )}
 
                             {section.palette && (
-                                <Image
-                                    src={paleta}
-                                    alt="Barevná paleta"
-                                    widths={[320, 560, 800, 1120]}
-                                    sizes="(min-width: 768px) 560px, 90vw"
-                                    class="w-[90%] sm:w-[80%] md:w-[72%] h-auto mx-auto"
-                                />
+                                <div data-lightbox>
+                                    <a
+                                        href={paletaLightbox.src}
+                                        data-pswp-width={paletaLightbox.width}
+                                        data-pswp-height={paletaLightbox.height}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        class="block w-[90%] sm:w-[80%] md:w-[72%] mx-auto cursor-zoom-in"
+                                    >
+                                        <Image
+                                            src={paleta}
+                                            alt="Barevná paleta"
+                                            widths={[320, 560, 800, 1120]}
+                                            sizes="(min-width: 768px) 560px, 90vw"
+                                            class="w-full h-auto"
+                                        />
+                                    </a>
+                                </div>
                             )}
                         </section>
                     ))
