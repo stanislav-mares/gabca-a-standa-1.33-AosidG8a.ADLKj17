@@ -260,3 +260,20 @@ html.vt-running #main-header {
 main.overflow-y-auto {
     scrollbar-gutter: stable;
 }
+
+/* Kratší slide na telefonu na výšku. Délku jinak drží `DURATION` v
+   `utils/transitions.ts`, jenže tu Astro zapéká do inline `<style>` uvnitř
+   `@layer astro` — build-time hodnota, na kterou media query nedosáhne.
+   Nevrstvené pravidlo ji přebije. Na landscape a desktopu zůstává 1.2s. */
+@media (orientation: portrait) and (max-width: 767px) {
+    ::view-transition-old(main-panel),
+    ::view-transition-new(main-panel) {
+        animation-duration: 0.75s;
+    }
+
+    /* Záložní animace pro prohlížeče bez View Transitions API */
+    [data-astro-transition-fallback] [data-astro-transition-scope],
+    [data-astro-transition-fallback][data-astro-transition-scope] {
+        animation-duration: 0.75s;
+    }
+}
