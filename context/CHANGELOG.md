@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-08-09
+
+### Přechod stránek: výkon na slabších zařízeních
+
+- **Root se přestal snímkovat** — `:root { view-transition-name: none }` místo dosavadního `::view-transition-old/new(root) { animation: none }`. Vypnutá animace snímky nezruší: prohlížeč obě celoobrazovkové textury v device pixelech (na telefonu jednotky až desítky MB) stejně vyrobí a drží po celý přechod, jen s nimi nehýbe. Mimo `<main>` je přitom jen fixní fotka pozadí, na všech stránkách stejná a nehybná — vizuálně tedy nulový rozdíl.
+- Dlaždice fotogalerie dostaly **`[content-visibility:auto]`**, takže se mřížka 77 fotek v živém `::view-transition-new` nemaluje celá po dobu slidu. `contain-intrinsic-size` netřeba — výšku dopočítá `aspect-*` ze šířky sloupce, stejně u přeskočeného i vykresleného obsahu, takže se layout nehne.
+- Nová konstanta **`REVEAL_COUNT = 12`** ve `fotogalerie.astro`: `data-reveal` nese jen prvních 12 dlaždic místo všech 77. Každá s revealem je vlastní kompozitní vrstva a tolik jich běželo přes slide naráz.
+
+### Přechod stránek: časování revealu
+
+- Reveal se nově počítá **relativně ke slidu**, ne absolutním časem. Přibyly `--slide-duration` (1.2 s, v portrait mobilu 0.75 s) a **`--slide-settle`** (0.7 — podíl slidu, po kterém se reveal rozjíždí); `animation-delay` je `calc(--slide-duration * --slide-settle + --reveal-offset)`. Stránky tak zadávají jen pořadí v kaskádě přes `--reveal-offset`, ne absolutní okamžik.
+- Tím padá výhrada ze 7. 8., že delaye jsou naladěné na 1,2 s a zkrácení slidu na mobilu se jich nesmí dotknout — kaskáda se teď posune s ním sama (start 0,53 s proti 0,84 s na desktopu).
+- **`--reveal-delay` zůstal jako absolutní override** pro `Header.astro` a `Menu.astro`. Ty se odpichují od vjezdu panelu po kliknutí na „Vstoupit", ne od slidu, takže posun o jeho délku by je rozhodil.
+- Kaskády utaženy zhruba na 60 %: `nas-pribeh` 0,12 → 0,07 s, `svatebni-den` 0,1 → 0,06 s (strop 1,4 → 0,4 s), `ubytovani` na 0/0,08/0,14/0,22 s, `dotaznik` na 0/0,08 s, galerie 0,06 → 0,04 s. Výchozí `--reveal-duration` 0,7 → 0,8 s, galerie zůstala na 1,1 s.
+
 ## 2026-08-08
 
 ### Svatební den: paleta jako klikací obrázek

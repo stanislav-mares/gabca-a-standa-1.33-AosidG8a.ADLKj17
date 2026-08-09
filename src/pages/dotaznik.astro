@@ -436,11 +436,11 @@ const questions: Question[] = [
         <section class="flex flex-col items-center px-gutter">
             <PageHeading text={heading} />
             <div class="w-full max-w-3xl pt-heading">
-                <div data-reveal style="--reveal-delay: 0.7s">
+                <div data-reveal style="--reveal-offset: 0s">
                     <p class="paragraph">{intro}</p>
                     <p class="paragraph mt-block" set:html={requiredLegend} />
                 </div>
-                <div class="pt-section pb-[50vh]" data-reveal style="--reveal-delay: 0.85s">
+                <div class="pt-section pb-[50vh]" data-reveal style="--reveal-offset: 0.08s">
                     <Questionnaire questions={questions} showAll />
                     <GrainIcon />
                 </div>

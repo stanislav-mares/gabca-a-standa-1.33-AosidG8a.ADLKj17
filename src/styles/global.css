@@ -194,19 +194,29 @@
         }
     }
 
-    /* Root = všechno mimo `main`, tedy hlavně fotka pozadí. Ta je na všech
-       stránkách stejná, takže tu není co prolínat — výchozí crossfade UA jen
-       skládá dva snímky přes celý viewport a bere výkon slidu. Vypnutím zůstane
-       pozadí staticky stát, což je přesně dojem, který chceme. */
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-        animation: none;
+    /* Root = všechno mimo `main`, tedy jen fotka pozadí. Ta je na všech
+       stránkách stejná, takže tu není co prolínat.
+       Zrušit `view-transition-name`, ne jen animaci pseudo-elementů: jinak si
+       prohlížeč obě celoobrazovkové textury (v device pixelech, na telefonu
+       jednotky až desítky MB) stejně vyrobí a drží po celý přechod — jen s
+       nimi nehýbe. Bez jména se root nesnímkuje vůbec a pozadí zůstává živé
+       v DOM, kde stejně staticky stojí. */
+    :root {
+        view-transition-name: none;
     }
 
-    /* Postupné vynořování obsahu po slide přechodu. Animace startuje vložením
-       prvku do DOM (= swap stránky), tedy na začátku 1.2s slidu — proto ten
-       delay: obsah se má vynořovat, až panel dosedá, ne přes jeho pohyb.
-       Dvě nesladěné pohybové vrstvy přes sebe působí neklidně. */
+    /* Postupné vynořování obsahu při slide přechodu. Animace startuje vložením
+       prvku do DOM (= swap stránky), tedy na začátku slidu — kdy se obsah
+       reálně rozsvítí, řídí delay níž.
+
+       Stránky neurčují absolutní zpoždění, ale `--reveal-offset` = odstup od
+       startu revealu (`--slide-duration * --slide-settle`), tedy jen pořadí
+       v kaskádě. Kratší slide na mobilu tak posune celou kaskádu s sebou.
+
+       `--reveal-delay` zůstává jako absolutní override pro prvky, které na
+       slidu nevisí: header a menu na úvodní stránce se odpichují od vjezdu
+       panelu po kliknutí na „Vstoupit" (viz Header.astro), takže by je posun
+       o délku slidu rozhodil. */
     @keyframes reveal-fade-up {
         from {
             opacity: 0;
@@ -218,9 +228,33 @@
         }
     }
 
+    :root {
+        /* Musí sedět s `DURATION` v `utils/transitions.ts` — tu hodnotu Astro
+           zapéká do inline `<style>`, odkud na ni CSS nedosáhne. */
+        --slide-duration: 1.2s;
+
+        /* Podíl slidu, po kterém se rozjíždí reveal obsahu — jediné místo,
+           kde se ladí vztah obou pohybových vrstev.
+           Nízké hodnoty: obsah najíždí souběžně s panelem. Reveal je za jeho
+           pohybu vidět (živý `::view-transition-new`) a obsah se veze s ním,
+           takže ho pozice panelu mimo viewport neschová.
+           Vysoké hodnoty: dvě oddělené fáze — panel dojíždí plynule, takže
+           než se obsah rozsvítí, je opticky už na místě. Při `1` reveal
+           začíná až po slidu.
+           Nahoru je to zároveň úleva pro slabší zařízení: čím vyšší, tím míň
+           se obě vrstvy perou o snímky. */
+        --slide-settle: 0.7;
+    }
+
     [data-reveal] {
-        animation: reveal-fade-up 0.7s ease-out both;
-        animation-delay: var(--reveal-delay, 0.7s);
+        animation: reveal-fade-up var(--reveal-duration, 0.8s) ease-out both;
+        animation-delay: var(
+            --reveal-delay,
+            calc(
+                var(--slide-duration) * var(--slide-settle) +
+                    var(--reveal-offset, 0s)
+            )
+        );
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -266,6 +300,10 @@ main.overflow-y-auto {
    `@layer astro` — build-time hodnota, na kterou media query nedosáhne.
    Nevrstvené pravidlo ji přebije. Na landscape a desktopu zůstává 1.2s. */
 @media (orientation: portrait) and (max-width: 767px) {
+    :root {
+        --slide-duration: 0.75s;
+    }
+
     ::view-transition-old(main-panel),
     ::view-transition-new(main-panel) {
         animation-duration: 0.75s;

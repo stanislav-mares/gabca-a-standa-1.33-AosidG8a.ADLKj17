@@ -149,7 +149,7 @@ const sections: Section[] = [
                         <section
                             class="flex flex-col gap-block"
                             data-reveal
-                            style={`--reveal-delay: ${Math.min(0.7 + i * 0.1, 1.4)}s`}
+                            style={`--reveal-offset: ${Math.min(i * 0.06, 0.4).toFixed(2)}s`}
                         >
                             {section.heading && (
                                 <h2 class="font-heading text-subheading text-accent">

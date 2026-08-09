@@ -47,6 +47,23 @@ import mainPhoto from "../assets/dkr-1795.jpg";
         <slot />
 
         <script>
+            // Service worker (dist/sw.js vzniká při buildu, viz astro.config.mjs)
+            // drží skořápku webu v cache, aby stránka nerozsypala layout, když
+            // GitHub Pages nedosáhne. V dev režimu se neregistruje — soubor tam
+            // neexistuje a cachovat rozpracované assety je jen na škodu.
+            if ("serviceWorker" in navigator && import.meta.env.PROD) {
+                // Až po `load`: registrace jinak soupeří o linku s obrázky
+                // a fonty, které uživatel na první stránce reálně vidí.
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker
+                        .register(`${import.meta.env.BASE_URL}sw.js`)
+                        .catch(() => {
+                            // Offline first load nebo zakázané SW: web funguje
+                            // dál jako dosud, jen bez cache.
+                        });
+                });
+            }
+
             // Scrollbar panelu se během slide přechodu vezl spolu se stránkou.
             // Třídu nasazujeme už v before-preparation, tedy dřív, než si view
             // transition udělá snímek odcházející stránky — scrollbar tak zmizí

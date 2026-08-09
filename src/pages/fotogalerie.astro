@@ -9,6 +9,11 @@ import { getGalleryPhotosWithLightbox } from "../utils/gallery";
 
 const heading = "Fotogalerie";
 const photos = await getGalleryPhotosWithLightbox();
+
+// Vynořovat se má jen to, co uživatel po dosednutí panelu opravdu vidí. Každá
+// dlaždice s `data-reveal` je vlastní kompozitní vrstva a u 77 fotek jich
+// tolik běželo přes slide naráz — na slabším telefonu se to pozná.
+const REVEAL_COUNT = 12;
 ---
 
 <Layout>
@@ -41,20 +46,28 @@ const photos = await getGalleryPhotosWithLightbox();
                         const fallbackHeight = Math.round(
                             (photo.image.height / photo.image.width) * fallbackWidth,
                         );
+                        const revealed = index < REVEAL_COUNT;
                         return (
                             <a
                                 href={photo.lightbox.src}
                                 data-pswp-width={photo.lightbox.width}
                                 data-pswp-height={photo.lightbox.height}
                                 data-cropped="true"
-                                target="_blank"
-                                rel="noreferrer"
                                 class:list={[
                                     "block overflow-hidden rounded-lg",
                                     landscape ? "col-span-2 aspect-[3/2]" : "aspect-[3/4]",
+                                    // Mimo viewport se dlaždice vůbec nemaluje. Rozměr tím
+                                    // netrpí: šířku určuje sloupec mřížky a výšku z ní
+                                    // dopočítá `aspect-*`, takže přeskočený obsah zabírá
+                                    // stejné místo jako vykreslený a nic neposkakuje.
+                                    "[content-visibility:auto]",
                                 ]}
-                                data-reveal
-                                style={`--reveal-delay: ${Math.min(0.7 + index * 0.06, 1.2)}s`}
+                                data-reveal={revealed ? true : undefined}
+                                style={
+                                    revealed
+                                        ? `--reveal-offset: ${(index * 0.04).toFixed(2)}s; --reveal-duration: 1.1s`
+                                        : undefined
+                                }
                             >
                                 <Image
                                     src={photo.image}
@@ -84,6 +97,7 @@ const photos = await getGalleryPhotosWithLightbox();
 
 <script>
     import PhotoSwipeLightbox from "photoswipe/lightbox";
+    import PhotoSwipe from "photoswipe";
     import "photoswipe/style.css";
 
     let lightbox: PhotoSwipeLightbox | undefined;
@@ -94,7 +108,12 @@ const photos = await getGalleryPhotosWithLightbox();
         lightbox = new PhotoSwipeLightbox({
             gallery: "#galerie",
             children: "a",
-            pswpModule: () => import("photoswipe"),
+            // Statický import, ne `() => import("photoswipe")`: dynamický
+            // import z jádra dělá samostatný chunk, který se stahuje až na
+            // klik. Offline (nebo při jakémkoli výpadku toho requestu) se
+            // lightbox neotevřel a prohlížeč místo něj následoval `href`
+            // dlaždice. Takhle jádro přijde rovnou se stránkou.
+            pswpModule: PhotoSwipe,
         });
         lightbox.init();
     });
