@@ -313,6 +313,7 @@ function vytvorVyhodnoceni() {
         ["gin-tonic", "Gin-tonic"],
         ["aperol", "Aperol"],
         ["rum-cola", "Rum s colou"],
+        ["frisco", "Frisco"],
       ],
     },
     {
