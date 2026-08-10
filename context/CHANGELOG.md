@@ -2,6 +2,14 @@
 
 ## 2026-08-10
 
+### Hlavní menu: ikona klasů v kaskádě náběhu
+
+- `GrainIcon` na spodku panelu v `Header.astro` dostal **`data-reveal`** s `--reveal-delay: 1.85s`. Dosud naskočil rovnou s vjezdem panelu; teď navazuje na poslední položku menu (ta startuje v 1,77 s = `1.45 + 4 × 0.08`) stejným krokem 0,08 s. Ikona zůstává u spodku panelu, kde ji drží `mb-auto` na obalu menu — do `Menu.astro` se nestěhovala, uvnitř vycentrované skupiny by se odlepila ode dna.
+- Absolutní **`--reveal-delay`**, ne `--reveal-offset`: na úvodní stránce se kaskáda odpichuje od kliknutí na „Vstoupit", ne od slidu — stejně jako položky menu a podnadpis.
+- `Props` v `GrainIcon.astro` nově rozšiřuje **`HTMLAttributes<"div">`** a zbylé atributy se spreadují na kořenový `<div>`. Komponenta dosud přijímala jen `class`, takže `data-reveal` ani `style` na ni nešlo předat. Obalit ji v Headeru do wrapperu nebyla cesta — `mt-*` a `shrink-0` patří přímo na ten flex item.
+- Vedlejší důsledek: `header-revealing` spadne o 0,08 s později, protože `endRevealWhenDone()` čeká na doběhnutí všech animací v panelu a ikona je nově mezi nimi. Panel tak drží `overflow: hidden` o tu chvíli déle, což je žádoucí — reveal ikonu posouvá o `1rem` dolů a na nízkém okně by jinak probliknul scrollbar.
+- Smazán mrtvý import `GrainIcon` v `Menu.astro` — zbytek po přesunu ikony do Headeru v commitu `0423665`.
+
 ### Fotogalerie: reveal se řezal uprostřed řádku
 
 - `REVEAL_COUNT` se počítal po dlaždicích, jenže landscape fotka zabírá `col-span-2`. Prvních 12 dlaždic dělalo 17 buněk, což není násobek 2, 4 ani 6 — poslední řádek revealované oblasti se proto rozpadl na vynořující se a napevno stojící dlaždice. Na mobilu i na 2xl to byla jedna fotka, na `md` tři.

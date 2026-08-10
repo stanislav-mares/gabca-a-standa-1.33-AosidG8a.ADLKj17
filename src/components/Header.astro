@@ -76,7 +76,14 @@ import podnadpis from "../assets/podnadpis.png";
             {/* V toku, ne `absolute`: díky `mb-auto` na obalu menu zůstane
                 u spodku panelu, ale při přetečení se odscrolluje spolu
                 s položkami menu místo aby je překryla. */}
-            <GrainIcon class="mt-[min(var(--spacing-section),4svh)] shrink-0" />
+            {/* Poslední v kaskádě náběhu: položky menu jedou po 0.08s a ta
+                poslední startuje v 1.77s (viz Menu.astro), ikona tedy
+                navazuje stejným krokem. */}
+            <GrainIcon
+                class="mt-[min(var(--spacing-section),4svh)] shrink-0"
+                data-reveal
+                style="--reveal-delay: 1.85s"
+            />
 
     <!-- <div class="flex justify-center items-end"> -->
         <!-- <Logo width="160" height="160" layout="constrained" /> -->

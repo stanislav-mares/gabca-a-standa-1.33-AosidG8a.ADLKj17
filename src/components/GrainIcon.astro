@@ -1,24 +1,28 @@
 ---
 import { Image } from "astro:assets";
+import type { HTMLAttributes } from "astro/types";
 import grain from "../assets/grain.svg";
 
-interface Props {
-    /** Rozestupy okolo ikony. Výchozí hodnota sedí na patičku podstránek —
-     *  ikona odděluje konec obsahu, takže drží `--spacing-section` jako
-     *  ostatní předěly. Na stránkách, jejichž kontejner má `gap-section`,
-     *  ten odstup dodává rovnou mřížka a předává se jen `mb-section`,
-     *  jinak by se sčítaly. V Headeru je rozestup vlastní (`shrink-0`). */
-    class?: string;
-}
+/** `class` řídí rozestupy okolo ikony. Výchozí hodnota sedí na patičku
+ *  podstránek — ikona odděluje konec obsahu, takže drží `--spacing-section`
+ *  jako ostatní předěly. Na stránkách, jejichž kontejner má `gap-section`,
+ *  ten odstup dodává rovnou mřížka a předává se jen `mb-section`, jinak by
+ *  se sčítaly. V Headeru je rozestup vlastní (`shrink-0`).
+ *
+ *  Zbytek atributů jde na kořenový `<div>` — kvůli `data-reveal` a
+ *  `--reveal-delay` ve `style`, kterými se ikona zapojuje do kaskády
+ *  náběhu. Wrapper navíc by nešel: `mt-*`/`shrink-0` patří přímo na
+ *  ten flex item. */
+interface Props extends HTMLAttributes<"div"> {}
 
-const { class: className = "mt-section mb-section" } = Astro.props;
+const { class: className = "mt-section mb-section", ...rest } = Astro.props;
 
 // Ryze dekorativní prvek — pro čtečky neexistuje (aria-hidden + prázdný alt).
 // `<Image>` místo inline SVG: soubor má 29 kB a je na sedmi stránkách, takže
 // se vyplatí ho mít jako jeden cachovaný požadavek místo sedmi kopií v HTML.
 ---
 
-<div class:list={["flex justify-center", className]} aria-hidden="true">
+<div class:list={["flex justify-center", className]} aria-hidden="true" {...rest}>
     {/* Rozměry v atributech drží poměr 720:1024 a odpovídají největší
         vykreslené velikosti; nahoru se stejně škáluje vektor, takže se
         nemá co rozmazat. Samotnou velikost řídí třídy. */}
