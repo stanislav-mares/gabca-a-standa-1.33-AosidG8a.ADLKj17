@@ -167,8 +167,7 @@ const cormorant = {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://stanislav-mares.github.io',
-  base: '/gabca-a-standa-1.33-AosidG8a.ADLKj17/',
+  base: '/',
   // Web má 7 stránek — předtáhnout je všechny stojí pár kB a `loader`
   // v Layout.astro pak doběhne dřív, než fade loga a menu
   prefetch: {
