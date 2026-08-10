@@ -44,3 +44,32 @@ export async function getGalleryPhotosWithLightbox(): Promise<GalleryPhoto[]> {
         })),
     );
 }
+
+/** Počty sloupců mozaiky napříč breakpointy — viz `grid-cols-*` ve fotogalerii. */
+const GALLERY_COLUMNS = [2, 4, 6];
+
+/**
+ * Kolik prvních dlaždic smí dostat `data-reveal`, aby řez padl na konec řádku.
+ *
+ * Reveal se počítá po dlaždicích, jenže landscape fotka zabírá dvě buňky
+ * (`col-span-2`). Když počet buněk nevyjde na celé řádky, poslední řádek se
+ * rozdělí: část se vynoří a zbytek vedle ní stojí od prvního snímku napevno.
+ * Hledáme proto nejmenší `k >= minimum`, u kterého je obsazení dělitelné všemi
+ * počty sloupců naráz — jedno číslo musí sednout na mobil i na 2xl.
+ *
+ * Natvrdo zapsaná hodnota by platila jen pro současnou sadu fotek; přidání
+ * jediné landscape fotky mezi první dvacítku by šev vrátilo zpátky.
+ */
+export function getRowAlignedRevealCount(
+    photos: GalleryPhoto[],
+    minimum: number,
+): number {
+    let cells = 0;
+    for (let k = 0; k < photos.length; k++) {
+        cells += photos[k].image.width > photos[k].image.height ? 2 : 1;
+        if (k + 1 >= minimum && GALLERY_COLUMNS.every((c) => cells % c === 0)) {
+            return k + 1;
+        }
+    }
+    return photos.length;
+}

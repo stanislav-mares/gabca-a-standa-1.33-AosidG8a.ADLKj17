@@ -5,7 +5,10 @@ import BackButton from "../components/BackButton.astro";
 import GrainIcon from "../components/GrainIcon.astro";
 import PageHeading from "../components/PageHeading.astro";
 import { slideTransition } from "../utils/transitions";
-import { getGalleryPhotosWithLightbox } from "../utils/gallery";
+import {
+    getGalleryPhotosWithLightbox,
+    getRowAlignedRevealCount,
+} from "../utils/gallery";
 
 const heading = "Fotogalerie";
 const photos = await getGalleryPhotosWithLightbox();
@@ -13,7 +16,11 @@ const photos = await getGalleryPhotosWithLightbox();
 // Vynořovat se má jen to, co uživatel po dosednutí panelu opravdu vidí. Každá
 // dlaždice s `data-reveal` je vlastní kompozitní vrstva a u 77 fotek jich
 // tolik běželo přes slide naráz — na slabším telefonu se to pozná.
-const REVEAL_COUNT = 12;
+//
+// Dvanáct je jen spodní hranice: skutečný počet dopočítá util tak, aby řez
+// padl na konec řádku mřížky, jinak se poslední řádek rozdělí na vynořující
+// se a napevno stojící dlaždice.
+const REVEAL_COUNT = getRowAlignedRevealCount(photos, 12);
 ---
 
 <Layout>
