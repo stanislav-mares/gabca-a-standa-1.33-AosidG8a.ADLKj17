@@ -2,6 +2,27 @@
 
 ## 2026-08-10
 
+### Fotogalerie: reveal se řezal uprostřed řádku
+
+- `REVEAL_COUNT` se počítal po dlaždicích, jenže landscape fotka zabírá `col-span-2`. Prvních 12 dlaždic dělalo 17 buněk, což není násobek 2, 4 ani 6 — poslední řádek revealované oblasti se proto rozpadl na vynořující se a napevno stojící dlaždice. Na mobilu i na 2xl to byla jedna fotka, na `md` tři.
+- Nová **`getRowAlignedRevealCount(photos, minimum)`** v `utils/gallery.ts` hledá nejmenší počet dlaždic nad hranicí, jehož obsazení buněk je dělitelné všemi počty sloupců naráz. Pro současnou sadu vychází **19** (24 buněk = 12/6/4 řádků). Natvrdo zapsané číslo by platilo jen do první přidané landscape fotky mezi první dvacítkou.
+- Kompozitních vrstev je tím 19 místo 12; proti původním 77 zůstává většina úspory z 9. 8. Řez zvlášť pro každý breakpoint (media query vypínající animaci zbytku) by šel dodělat, kdyby to na slabším telefonu bylo znát.
+
+### Nasazení: web míří na vlastní doménu
+
+- `base` v `astro.config.mjs` z tajné cesty `/gabca-a-standa-1.33-…/` na **`/`**, klíč `site` odstraněn. Nic v šablonách se měnit nemuselo — všechna místa čtou cestu z `import.meta.env.BASE_URL` a `generateServiceWorker()` si ji bere z `config.base`, takže se `BASE = "/"` propsalo i do precache v `sw.js`.
+- `site` **není pro build povinný** — v projektu ho nic nečte (žádná sitemap integrace, `Astro.site` ani canonical). Pozor ale na rozdíl mezi vypuštěným klíčem a prázdným řetězcem: `site: ''` shodí build na `Invalid URL`, protože Astro i prázdnou hodnotu prohání přes `new URL()`.
+- Zbývá mimo repo: custom doména v Settings → Pages a DNS (apex `A` na `185.199.108-111.153`, `www` `CNAME`). Bez toho by Pages servírovaly z `/<název-repa>/` a `base: '/'` by odkazy rozbil.
+
+### Favicon z nového loga a title stránky
+
+- `public/favicon.svg` je nově **věrný přepis `logo-new.svg`** — prsten, klasový věnec, monogram G&S černě, srdíčko `#f5dfae`. Dosavadní favicon vycházel ze starší podoby loga, tedy jiného středu a bez klasů.
+- Pozadí je **bílý obdélník přes celý viewBox**, ne průhledné. S ním padla i dosavadní větev `.ink` / `.grain` pod `@media (prefers-color-scheme:dark)` — na bílé ploše nemá co přepínat a černý monogram na tmavém pruhu prohlížeče nezmizí.
+- Cesty se ze zdroje přenášely **i s vlastním `transform`**: písmena `G` a `S` nesou `matrix(1.4295…)`, bez něj monogram sedne o kus jinam než zbytek kresby. Inkscape vrstva `backup path` (`display:none`) se vynechala.
+- Souřadnice zaokrouhleny na 2 desetinná místa a výstup projet `svgo --multipass` — z 226 kB zdroje **67,7 kB** (22 kB po gzipu). Proti originálu vychází render v 512 px na 2 % RMSE, tedy rozdíl jen v antialiasingu.
+- `public/favicon.ico` přegenerováno z téže SVG (16/32/48 px, bílé pozadí, 7,4 kB). V 16 px se klasový věnec slévá do šedi — vědomá cena za věrnost logu, kterou nevykoupí ani zesílení tahů.
+- `<title>` v `Layout.astro` je nově **„Svatba Gabča & Standa"** (zapsáno s `&amp;`) místo `S & G`. Title žije jen v layoutu, takže se změna propsala na všech 6 stránek.
+
 ### Svatební den: Dresscode bez vzorníku barev
 
 - Ze sekce **Dresscode** zmizel obrázek barevné palety. Se sedmiměsíčním předstihem před svatbou by konkrétní vzorník hosty svazoval víc, než je záměr — barvy dál popisuje text.
