@@ -309,7 +309,7 @@ function vytvorVyhodnoceni() {
       options: [
         ["pivo", "Pivo"],
         ["vino", "Víno"],
-        ["sampus", "Šampus"],
+        ["sampus", "Šampaňské"],
         ["gin-tonic", "Gin-tonic"],
         ["aperol", "Aperol"],
         ["rum-cola", "Rum s colou"],
