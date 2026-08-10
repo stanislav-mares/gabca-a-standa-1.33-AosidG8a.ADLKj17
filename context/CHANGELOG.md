@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-10
+
+### Svatební den: Dresscode bez vzorníku barev
+
+- Ze sekce **Dresscode** zmizel obrázek barevné palety. Se sedmiměsíčním předstihem před svatbou by konkrétní vzorník hosty svazoval víc, než je záměr — barvy dál popisuje text.
+- Odstraněna celá infrastruktura kolem něj: vlastní větev `{section.palette && …}` v šabloně, pole `palette?: boolean` v `interface Section`, `paletaLightbox` i import obrázku. Zdrojový soubor `src/assets/barevna-paleta-cut.jpg` smazán. `getLightboxSource` zůstává — používá ho plánek parkoviště.
+- Poslední odstavec přeformulován na **„Určitě netrváme na tom, abyste se do těchto barev ladili!"**. Původní znění nabízelo sladění s námi jako přání a teprve pak ho mírnilo; bez vzorníku by ta pobídka vyznívala silněji, než měla.
+
 ## 2026-08-09
 
 ### Přechod stránek: výkon na slabších zařízeních

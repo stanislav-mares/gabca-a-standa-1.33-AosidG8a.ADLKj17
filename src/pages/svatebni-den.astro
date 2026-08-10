@@ -8,7 +8,6 @@ import PageHeading from "../components/PageHeading.astro";
 import { slideTransition } from "../utils/transitions";
 import { getLightboxSource, type LightboxSource } from "../utils/lightbox";
 import parkovisteMapa from "../assets/parkoviste-farni-dvur.png";
-import paleta from "../assets/barevna-paleta-cut.jpg";
 
 const base = import.meta.env.BASE_URL;
 const heading = "Svatební den";
@@ -31,8 +30,6 @@ const routes: Route[] = [
     { label: "Trasa B", embedUrl: "https://mapy.com/s/jerefahuco" },
 ];
 
-const paletaLightbox = await getLightboxSource(paleta);
-
 const linkClass =
     "underline decoration-accent underline-offset-4 hover:bg-hover transition-colors";
 
@@ -48,8 +45,6 @@ interface Section {
     map?: boolean;
     /** Vloží mapy doporučených příjezdových tras. */
     routes?: boolean;
-    /** Vloží vzorky svatebních barev. */
-    palette?: boolean;
     /** Statický obrázek pod odstavci (např. plánek parkování), zvětšitelný. */
     image?: { src: ImageMetadata; alt: string; lightbox: LightboxSource };
 }
@@ -68,10 +63,9 @@ const sections: Section[] = [
         heading: "Dresscode",
         paragraphs: [
             "Budeme rádi, když zvolíte společenský oděv a pohodlnou obuv. Obřad se bude konat venku na travnatém paloučku.",
-            "Naše svatba bude laděna do přírodních barev a odstínů hnědé, máslově žluté, šampaň a béžové.  Bílou barvu prosíme přenechte nevěstě.",
-            "Pokud byste se chtěli sladit s námi, bude to krásné. <strong>Ale určitě na tom netrváme!</strong> Nejdůležitější pro nás je, abyste se cítili pohodlně a den si s námi užili!"
+            "Naše svatba bude laděna do přírodních barev, odstínů hnědé, máslově žluté, šampaň a béžové.  Bílou barvu prosíme přenechte nevěstě.",
+            "<strong>Určitě netrváme na tom, abyste se do těchto barev ladili!</strong> Nejdůležitější pro nás je, abyste se cítili pohodlně a den si s námi užili!"
         ],
-        palette: true,
     },
     {
         heading: "Svatební dary",
@@ -208,27 +202,6 @@ const sections: Section[] = [
                                             src={section.image.src}
                                             alt={section.image.alt}
                                             class="w-full"
-                                        />
-                                    </a>
-                                </div>
-                            )}
-
-                            {section.palette && (
-                                <div data-lightbox>
-                                    <a
-                                        href={paletaLightbox.src}
-                                        data-pswp-width={paletaLightbox.width}
-                                        data-pswp-height={paletaLightbox.height}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        class="block w-[90%] sm:w-[80%] md:w-[72%] mx-auto cursor-zoom-in"
-                                    >
-                                        <Image
-                                            src={paleta}
-                                            alt="Barevná paleta"
-                                            widths={[320, 560, 800, 1120]}
-                                            sizes="(min-width: 768px) 560px, 90vw"
-                                            class="w-full h-auto"
                                         />
                                     </a>
                                 </div>
