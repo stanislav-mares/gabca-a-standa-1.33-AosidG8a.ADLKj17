@@ -172,6 +172,7 @@ const choiceRequired = required && !isMulti ? true : undefined;
                 name={isMulti ? `${name}-${opt.value}` : name}
                 value={opt.value}
                 class="size-4 accent-accent"
+                checked={opt.checked}
                 required={choiceRequired}
                 data-followup={
                   opt.followUp ? `${name}-${opt.value}-followup` : undefined

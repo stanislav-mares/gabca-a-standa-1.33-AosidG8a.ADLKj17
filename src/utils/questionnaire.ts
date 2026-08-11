@@ -33,6 +33,8 @@ export interface Option {
   label: string;
   /** Podotázka, která se zobrazí po vybrání této možnosti. */
   followUp?: SubQuestion;
+  /** Možnost je vybraná už po načtení stránky (rozepsaný koncept má přednost). */
+  checked?: boolean;
   /**
    * Vybráním této možnosti dotazník končí – následující otázky se skryjí
    * a odesílací tlačítko se přejmenuje. Zbytek dotazníku pro takového hosta
