@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-08-12
+
+### Dotazník: odeslání hlásilo chybu u odpovědi, která se zapsala
+
+- Apps Script zapíše řádek **dřív, než odešle odpověď**, a POST na `/exec` navíc končí přesměrováním na `script.googleusercontent.com`. Cokoli selhalo na téhle zpáteční cestě — uspaný mobil, transientní HTML chybová stránka místo JSON — vypadalo v prohlížeči jako neúspěch, ačkoli odpověď v tabulce byla. Host ji po hlášce odeslal znovu a vznikl druhý řádek.
+- Odeslání je nově **idempotentní**: klient přibalí `submissionId`, `appendSubmission_` v `questionnaire-endpoint.gs` podle něj najde řádek (`findRowById_` čte jen sloupec `_id` od řádku 3) a **přepíše ho celý** místo přidání dalšího. Ne přeskočení — host mohl mezi pokusy odpověď ještě upravit a platí ta poslední; časové razítko proto nese čas posledního zápisu.
+- ID cestuje jako **běžná položka `answers`** (`_id` / „ID odeslání"), takže si sloupec založí týmž mechanismem jako kterákoli otázka a `vytvorVyhodnoceni` se ho nedotkne. Řádky zapsané před nasazením mají buňku prázdnou a napárovat se nedají.
+- `getSubmissionId()` v `questionnaire-draft.ts` drží ID pod vlastním klíčem `svatba-dotaznik-odeslani-v1`, ne v draftu: `readDraft()` skládá mapu pokaždé znovu z polí formuláře, takže cokoli navíc by první stisk klávesy přepsal. Vzniká líně až při odeslání, `clearDraft()` maže obojí. `randomId()` má pro nezabezpečený kontext náhradu za `crypto.randomUUID` — dev server otevřený z mobilu po LAN adrese ho nemá a odeslání by spadlo rovnou na výjimce.
+- `submitQuestionnaire` opakuje pokus **3× s prodlevou 1,5 s** (jeden pokus vyčleněn do `postAnswers`), tělo serializuje jen jednou, aby všechny pokusy nesly totéž ID. Chyba se ohlásí až po posledním — hláška tak zmizí z případů, které se vyřeší samy.
+- `lock.waitLock` v `doPost` se přesunul **dovnitř `try`** a povolil na 30 s. Dosud vypršení zámku při souběžných odesláních propadlo ven jako HTML chyba 500, kterou klient neumí rozparsovat.
+- Chybová hláška v `Questionnaire.astro` nově **„Nepodařilo se odeslat. Prosím zkuste to ještě jednou."**
+
 ## 2026-08-10
 
 ### Hlavní menu: ikona klasů v kaskádě náběhu

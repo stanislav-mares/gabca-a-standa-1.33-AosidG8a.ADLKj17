@@ -8,6 +8,7 @@
  * prvek otázky = `${q.id}-e${j}`, možnost multi-choice = `${name}-${opt.value}`,
  * prvek podotázky = `${name}-${opt.value}-s${k}`.
  */
+import { getSubmissionId } from "./questionnaire-draft";
 import type { Element, Question } from "./questionnaire";
 
 /** Popis jednoho pole formuláře pro převod na sloupec tabulky. */
@@ -124,17 +125,19 @@ export function collectAnswers(
   return answers;
 }
 
-/** Odešle odpovědi na endpoint; při jakémkoli neúspěchu vyhodí chybu. */
-export async function submitQuestionnaire(
-  form: HTMLFormElement,
-  meta: FieldMetaMap,
-  endpoint: string,
-): Promise<void> {
+/** Kolik pokusů se vyčerpá, než se ohlásí chyba. */
+const ATTEMPTS = 3;
+const RETRY_DELAY_MS = 1500;
+
+const wait = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+async function postAnswers(endpoint: string, body: string): Promise<void> {
   const response = await fetch(endpoint, {
     method: "POST",
     // Řetězcové tělo = "simple request" (text/plain) bez CORS preflightu,
     // který by Apps Script neuměl obsloužit.
-    body: JSON.stringify({ answers: collectAnswers(form, meta) }),
+    body,
   });
   if (!response.ok) {
     throw new Error(`Endpoint vrátil HTTP ${response.status}`);
@@ -142,5 +145,36 @@ export async function submitQuestionnaire(
   const result = (await response.json()) as { ok: boolean; error?: string };
   if (!result.ok) {
     throw new Error(result.error ?? "Zápis do tabulky se nepovedl.");
+  }
+}
+
+/**
+ * Odešle odpovědi na endpoint; chybu vyhodí teprve po vyčerpání pokusů.
+ *
+ * Opakovat je bezpečné: Apps Script zapíše řádek dřív, než odešle odpověď,
+ * takže selhání na zpáteční cestě (přesměrování na googleusercontent.com,
+ * uspaný mobil) nerozezná od skutečně neúspěšného zápisu nikdo – ani klient.
+ * Podle `submissionId` proto server řádek přepíše, místo aby přidal duplicitu.
+ * Tělo se skládá jen jednou, aby všechny pokusy nesly totéž ID.
+ */
+export async function submitQuestionnaire(
+  form: HTMLFormElement,
+  meta: FieldMetaMap,
+  endpoint: string,
+): Promise<void> {
+  const body = JSON.stringify({
+    submissionId: getSubmissionId(),
+    answers: collectAnswers(form, meta),
+  });
+
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      await postAnswers(endpoint, body);
+      return;
+    } catch (err) {
+      if (attempt === ATTEMPTS) throw err;
+      console.warn(`Odeslání selhalo (pokus ${attempt}), zkouším znovu.`, err);
+      await wait(RETRY_DELAY_MS);
+    }
   }
 }

@@ -5,11 +5,18 @@
  * přímo v cílovém Sheetu. Nasazuje se jako webová aplikace, viz README/chat.
  *
  * Očekávaný POST (Content-Type: text/plain, tělo JSON):
- *   { "answers": [ { "key": "...", "label": "...", "value": "..." }, ... ] }
+ *   { "submissionId": "...",
+ *     "answers": [ { "key": "...", "label": "...", "value": "..." }, ... ] }
  *
  * List „Odpovědi": řádek 1 = technické klíče (podle nich se párují sloupce),
  * řádek 2 = lidské popisky, data od řádku 3. Klíč, který ještě nemá sloupec,
  * se automaticky přidá na konec – změny otázek na webu tedy nic nerozbijí.
+ *
+ * `submissionId` dělá ze zápisu upsert: řádek se stejným ID se přepíše, místo
+ * aby přibyl další. Prohlížeč totiž o úspěchu neví jistě – skript zapíše řádek
+ * a teprve pak posílá odpověď, takže výpadek na zpáteční cestě (přesměrování
+ * na googleusercontent.com, uspaný mobil) vypadá jako chyba u úspěšného
+ * zápisu. Klient smí opakovat, aniž by tím vyrobil duplicitu.
  *
  * Funkce `vytvorVyhodnoceni` se spouští ručně z editoru a (znovu)vygeneruje
  * list „Vyhodnocení" se souhrnnými vzorci.
@@ -18,21 +25,24 @@
 const SHEET_NAME = "Odpovědi";
 const SUMMARY_SHEET_NAME = "Vyhodnocení";
 const TIMESTAMP_KEY = "_odeslano";
+const ID_KEY = "_id";
 
 function doGet() {
   return ContentService.createTextOutput("Endpoint dotazníku běží.");
 }
 
 function doPost(e) {
-  // Zámek kvůli souběžným odesláním – přidávání sloupců nesmí běžet 2× naráz.
+  // Zámek kvůli souběžným odesláním – hledání řádku podle ID i přidávání
+  // sloupců nesmí běžet 2× naráz. `waitLock` je uvnitř `try` schválně: když
+  // vyprší, má klient dostat JSON s chybou, ne HTML stránku s chybou 500.
   const lock = LockService.getScriptLock();
-  lock.waitLock(10000);
   try {
+    lock.waitLock(30000);
     const payload = JSON.parse(e.postData.contents);
     if (!Array.isArray(payload.answers) || payload.answers.length === 0) {
       throw new Error("Chybí pole answers.");
     }
-    appendSubmission_(payload.answers);
+    appendSubmission_(payload.answers, payload.submissionId);
     return jsonResponse_({ ok: true });
   } catch (err) {
     return jsonResponse_({ ok: false, error: String(err) });
@@ -41,8 +51,16 @@ function doPost(e) {
   }
 }
 
-function appendSubmission_(answers) {
+function appendSubmission_(answers, submissionId) {
   const sheet = getOrCreateSheet_();
+
+  // ID jde do řádku jako obyčejná odpověď, takže si sloupec založí stejnou
+  // cestou jako kterákoli otázka a nepotřebuje vlastní obsluhu.
+  const entries = submissionId
+    ? answers.concat([
+        { key: ID_KEY, label: "ID odeslání", value: submissionId },
+      ])
+    : answers;
 
   let width = sheet.getLastColumn();
   const keys = sheet.getRange(1, 1, 1, width).getValues()[0];
@@ -51,7 +69,7 @@ function appendSubmission_(answers) {
     if (key !== "") colByKey[key] = i;
   });
 
-  answers.forEach((answer) => {
+  entries.forEach((answer) => {
     if (colByKey[answer.key] !== undefined) return;
     colByKey[answer.key] = width;
     sheet.getRange(1, width + 1).setValue(answer.key);
@@ -60,11 +78,38 @@ function appendSubmission_(answers) {
   });
 
   const row = new Array(width).fill("");
+  // Čas posledního zápisu – u přepsaného řádku tedy čas opakovaného odeslání.
   row[colByKey[TIMESTAMP_KEY]] = new Date();
-  answers.forEach((answer) => {
+  entries.forEach((answer) => {
     row[colByKey[answer.key]] = answer.value;
   });
-  sheet.appendRow(row);
+
+  // Opakované odeslání přepíše celý původní řádek: host mohl mezi pokusy
+  // odpověď ještě upravit a platí to, co poslal naposledy.
+  const existingRow = submissionId
+    ? findRowById_(sheet, colByKey[ID_KEY], submissionId)
+    : 0;
+  if (existingRow) {
+    sheet.getRange(existingRow, 1, 1, width).setValues([row]);
+  } else {
+    sheet.appendRow(row);
+  }
+}
+
+/**
+ * Číslo řádku s daným ID odeslání, nebo 0 když takový není. Sloupec s ID
+ * vzniká až s prvním odesláním, které ho nese – u prázdné tabulky (a u dat
+ * zapsaných starší verzí skriptu) se prostě nic nenajde.
+ */
+function findRowById_(sheet, col, submissionId) {
+  const lastRow = sheet.getLastRow();
+  if (col === undefined || lastRow < 3) return 0;
+
+  const values = sheet.getRange(3, col + 1, lastRow - 2, 1).getValues();
+  for (let i = 0; i < values.length; i += 1) {
+    if (String(values[i][0]) === submissionId) return i + 3;
+  }
+  return 0;
 }
 
 function getOrCreateSheet_() {
