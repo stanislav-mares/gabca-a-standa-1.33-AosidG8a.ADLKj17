@@ -40,7 +40,7 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
             <Logo width={1200} size="var(--intro-logo)" />
         </div>
         <button
-            class="intro-enter font-alexbrush text-hero text-text/35 hover:text-text cursor-pointer"
+            class="intro-enter font-alexbrush text-hero text-text cursor-pointer"
             aria-label="Vstoupit na web">Vstoupit</button
         >
     </div>
@@ -104,12 +104,23 @@ import introBackground from "../assets/dkr-1795-bw.jpg";
     .intro-logo {
         transition:
             transform 1.2s ease-in-out,
-            opacity 1.2s ease-in-out;
+            opacity 0.4s ease-in-out;
     }
 
-    /* Odlétající logo nemizí, jen lehce zprůhlední a „usadí se" na panelu */
+    /* Přelet nad „Vstoupit" rozsvítí i logo. Logo je v DOM před tlačítkem,
+       takže na to sourozenecký selektor nestačí — bere se přes rodiče. */
+    .intro-group:has(.intro-enter:hover) .intro-logo {
+        opacity: 0.55;
+    }
+
+    /* Odlétající logo nemizí, jen lehce zprůhlední a „usadí se" na panelu.
+       Delší přechod opacity patří k odletu (a k pozdějšímu zhasnutí po
+       dosednutí), ne k svižnému zvýraznění při přeletu. */
     #intro-overlay.intro-leaving .intro-logo {
         opacity: 0.8;
+        transition:
+            transform 1.2s ease-in-out,
+            opacity 1.2s ease-in-out;
     }
 
     /* Text mizí rychleji než zbytek overlaye (1.2s crossfade);

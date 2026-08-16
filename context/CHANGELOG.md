@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-08-16
+
+### Intro: tlačítko „Vstoupit" a přelet nad ním
+
+- Tlačítko „Vstoupit" už není ztlumené — `text-text/35 hover:text-text` → `text-text`. Zvýraznění při přeletu se tím přesunulo z textu na logo.
+- Přelet nad tlačítkem rozsvítí **logo z `0.35` na `0.55`** přes `.intro-group:has(.intro-enter:hover) .intro-logo`. Logo je v DOM před tlačítkem, takže sourozenecký selektor nestačí a stav se bere přes společného rodiče.
+- Přechod opacity v `.intro-logo` zkrácen na **`0.4s`**, aby zvýraznění reagovalo svižně; původních `1.2s` je vráceno uvnitř `#intro-overlay.intro-leaving .intro-logo`, kam patří — k odletu loga na panel a k jeho zhasnutí po dosednutí. ID v tom selektoru zároveň přebíjí hover pravidlo, kdyby kurzor při odletu zůstal na tlačítku.
+
 ## 2026-08-12
 
 ### Dotazník: odeslání hlásilo chybu u odpovědi, která se zapsala
