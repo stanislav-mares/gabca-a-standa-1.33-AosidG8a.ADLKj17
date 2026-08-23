@@ -1,15 +1,20 @@
 ---
+interface MapLink {
+    label: string;
+    url: string;
+}
+
 interface Props {
     name: string;
-    /** Odkaz na mapu; dokud je prázdný, řádek s mapou se nevykreslí. */
-    mapUrl?: string;
+    /** Odkazy na mapy; dokud je pole prázdné, řádek s mapou se nevykreslí. */
+    maps?: MapLink[];
     address?: string;
     /** Text pod adresou — cena za osobu nebo poznámka k platbě. */
     info?: string;
     guests: string[];
 }
 
-const { name, mapUrl, address, info, guests } = Astro.props;
+const { name, maps = [], address, info, guests } = Astro.props;
 
 const linkClass =
     "underline decoration-accent underline-offset-4 hover:bg-hover transition-colors";
@@ -47,24 +52,29 @@ const linkClass =
                 {name}
             </h2>
             {
-                (mapUrl || address || info) && (
+                (maps.length > 0 || address || info) && (
                     <ul class="list-disc pl-[1.25em] space-y-tight font-body text-body text-text text-left">
                         {address && (
                             <li>
                                 <strong>Adresa:</strong> {address}
                             </li>
                         )}
-                        {mapUrl && (
+                        {maps.length > 0 && (
                             <li>
                                 <strong>Mapa:</strong>{" "}
-                                <a
-                                    href={mapUrl}
-                                    target="_blank"
-                                    rel="noopener"
-                                    class={linkClass}
-                                >
-                                    Ukázat na mapě
-                                </a>
+                                {maps.map((map, index) => (
+                                    <>
+                                        {index > 0 && " · "}
+                                        <a
+                                            href={map.url}
+                                            target="_blank"
+                                            rel="noopener"
+                                            class={linkClass}
+                                        >
+                                            {map.label}
+                                        </a>
+                                    </>
+                                ))}
                             </li>
                         )}
                         {info && (
