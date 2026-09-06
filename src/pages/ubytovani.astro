@@ -2,7 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
 import GrainIcon from "../components/GrainIcon.astro";
-import HouseColumn from "../components/HouseColumn.astro";
+import GuestIcon from "../components/GuestIcon.astro";
+import HouseColumn, { type Guest } from "../components/HouseColumn.astro";
 import PageHeading from "../components/PageHeading.astro";
 import { slideTransition } from "../utils/transitions";
 
@@ -19,13 +20,18 @@ const intro = [
 // Konfigurace ubytování — hosty stačí doplnit/upravit tady.
 // `maps` jsou sdílecí odkazy z mapy.com, stejně jako trasy na `svatebni-den`;
 // u Liebicha přibývá i Google, protože obě mapy vedou dům pod jiným číslem.
-const houses = [
+const houses: { name: string; address: string; maps: { label: string; url: string }[]; info: string; guests: Guest[] }[] = [
     {
         name: "Farní dvůr",
         address: "Uhřínov 1, 516 01 Liberk – Uhřínov, Česko",
         maps: [{ label: "mapy.cz", url: "https://mapy.com/s/puzenurocu" }],
         info: "Ubytování je uhrazeno v ceně pronájmu areálu. Nemusíte si tak s tímto dělat starost.",
-        guests: ["Gabča a Standa (novomanželský pokoj)"],
+        guests: [
+            {
+                name: "Gabča a Standa",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 1 }],
+            },
+        ],
     },
     {
         name: "Chata Liebich",
@@ -35,14 +41,14 @@ const houses = [
             { label: "google mapy", url: "https://maps.app.goo.gl/6aGiS1GTy7fay3SRA" },
         ],
         info: "Cena 560 Kč za osobu a noc. ",
-        guests: ["..."],
+        guests: [{ name: "...", icons: [] }],
     },
     {
         name: "Továrníkova vila",
         address: "Skuhrov nad Bělou 93, 517 03 Skuhrov nad Bělou, Česko",
         maps: [{ label: "mapy.cz", url: "https://mapy.com/s/kubumorabu" }],
         info: "Cena 540 Kč za osobu a noc.",
-        guests: ["..."],
+        guests: [{ name: "...", icons: [] }],
     },
 ];
 ---
@@ -71,7 +77,7 @@ const houses = [
             >
                 Kde spím?
             </h2>
-            <div class="w-full max-w-[104rem] mb-section 2xl:grid 2xl:grid-cols-3 2xl:gap-section">
+            <div class="w-full max-w-[104rem] mb-block 2xl:grid 2xl:grid-cols-3 2xl:gap-section">
                 <input
                     type="text"
                     id="guest-search"
@@ -82,6 +88,32 @@ const houses = [
                     style="--reveal-offset: 0.14s"
                 />
             </div>
+            <ul
+                class="grid grid-cols-[auto_1fr] items-center justify-items-center gap-x-tight gap-y-tight max-w-sm font-body text-body text-text mb-section"
+                data-reveal
+                style="--reveal-offset: 0.18s"
+            >
+                {/* `contents` zruší box `<li>`, takže jeho děti (ikona + text) jdou
+                    přímo do gridu — sloupec ikon má pak společnou pevnou šířku a
+                    různě velké ikony (např. menší pokoj) se v něm vycentrují, takže
+                    drží pod sebou. */}
+                <li class="contents">
+                    <GuestIcon type="postel" class="text-[2em]" />
+                    <span class="justify-self-start">Postel – Farní dvůr / Chata Liebich</span>
+                </li>
+                <li class="contents">
+                    <GuestIcon type="karimatka" class="text-[2em]" />
+                    <span class="justify-self-start">Karimatka / matrace – Farní dvůr (s sebou: karimatku, polštář, deku)</span>
+                </li>
+                <li class="contents">
+                    <GuestIcon type="stan" class="text-[2em]" />
+                    <span class="justify-self-start">Vlastní stan / karavan</span>
+                </li>
+                <li class="contents">
+                    <GuestIcon type="pokoj" class="text-[1.6em]" />
+                    <span class="justify-self-start">Číslo pokoje</span>
+                </li>
+            </ul>
             <div
                 class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-section w-full max-w-[104rem] items-start [&>:last-child]:md:max-2xl:col-span-2 [&>:last-child]:md:max-2xl:w-[calc(50%_-_var(--spacing-section)/2)] [&>:last-child]:md:max-2xl:justify-self-center"
                 data-reveal
@@ -115,7 +147,12 @@ const houses = [
             house,
             guests: Array.from(
                 house.querySelectorAll<HTMLElement>("[data-guest]"),
-            ).map((item) => ({ item, search: normalize(item.textContent ?? "") })),
+            ).map((item) => {
+                // Hledá se jen podle jména, ne podle textu ikonky pokoje
+                // (číslo/otazník by jinak filtr zkreslovalo).
+                const nameEl = item.querySelector<HTMLElement>("[data-guest-name]");
+                return { item, search: normalize((nameEl ?? item).textContent ?? "") };
+            }),
         }));
 
         const applyFilter = () => {

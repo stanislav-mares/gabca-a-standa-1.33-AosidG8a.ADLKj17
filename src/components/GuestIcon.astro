@@ -1,0 +1,72 @@
+---
+import type { GuestIconData } from "./HouseColumn.astro";
+
+interface Props extends GuestIconData {
+    /** Řídí velikost ikony — nastavuje `font-size` na kořenovém `<span>`, ze
+     *  kterého si čtverec (`w-[1em] h-[1em]`) i vnitřní otazník/číslo berou
+     *  svůj `em`, takže rostou proporčně spolu z jednoho místa. */
+    class?: string;
+}
+
+const { type, number, class: className = "text-[1.3em]" } = Astro.props;
+---
+
+{/* Sada čtyř drobných liniových ikon vedle jména hosta — sdílí styl s šipkou
+    v BackButtonu (tenká linka, currentColor, bez výplně). */}
+<span
+    class:list={["inline-flex items-center justify-center shrink-0 w-[1em] h-[1em] align-[-0.15em]", className]}
+    aria-hidden="true"
+>
+    {
+        type === "postel" && (
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-full h-full"
+            >
+                <path d="M2 4v16" />
+                <path d="M2 8h18a2 2 0 0 1 2 2v10" />
+                <path d="M2 17h20" />
+                <path d="M6 8v9" />
+            </svg>
+        )
+    }
+    {
+        type === "karimatka" && (
+            // Vektorizováno z `assets/sleeping-pad.png` (potrace, linky zesílené
+            // dilatací před trasováním) — `fill`, ne `stroke`, jde o vyplněný tvar.
+            <svg viewBox="0 0 229.954 148.827" fill="currentColor" class="w-full h-auto">
+                <path d="M85.854 1.153c-9.7 3.7-8.6 2.7-54.5 47.6-25.5 24.9-28 28.1-30.3 38.8-1.6 7.5-1.4 20.7.4 27.7 3.5 13.3 11.9 23.4 24.4 29.4l7.6 3.6 61 .3 60.9.3 37.3-37.3c33-33 37.3-37.6 37.3-40.4v-3.1l-21.2-.6c-11.6-.4-31.5-.7-44.2-.7s-24.8-.3-26.9-.6l-3.7-.7 1.9-3.1c6-9.7 6.9-30 1.9-40.8-3.4-7.4-11.2-15.2-18.6-18.6-5-2.3-7.1-2.7-17.7-2.9-8.3-.2-13.1.2-15.6 1.1m24.7 12.8c10.5 4.8 18.4 16.2 18.4 26.4 0 8.9-4.1 14.9-24.2 35.3l-17.7 18-1.1-5.1c-3.6-16.9-18.4-30.1-35.3-31.7l-7-.6 21-20.1c11.5-11.1 22.4-20.9 24.1-21.8 7.4-3.8 14.2-3.9 21.8-.4m-55.8 57.3c2.8 1.3 5.2 2.6 5.2 2.8s-2.6-.5-5.7-1.6c-7.4-2.5-18.2-1.9-24.8 1.3-6.2 3-12.2 10.1-14.1 16.8-1.6 5.4-1.6 17.8 0 22.7.3 1.1-.1.4-1-1.5-2.5-5.2-2.9-13.7-1-20.3 1.2-4.2 3-7.1 7.3-11.7 6.2-6.8 8.8-8.4 16.5-10.4 6.2-1.7 10.4-1.2 17.6 1.9m136.7 7.5h14l-29.5 29.5-29.5 29.6-52-.3c-51.4-.3-52.1-.3-57.5-2.6-3-1.2-6.6-3.1-8-4.3-2.2-1.8-2-1.8 2 .3s5.9 2.3 17.5 2.3c19.8 0 20.1-.2 50.1-31.1l23.9-24.7 27.5.6c15.1.4 33.8.7 41.5.7m-118.5 11.8c1.1 2.9 2 6.7 2 8.4 0 7.7-8.7 18.2-17.7 21.2-13 4.5-25-1.1-29.8-13.8-1.5-4-1.6-5.3-.6-8.7 1.6-5.4 7.3-11.4 12.7-13.5 4.1-1.6 4.7-1.6 8.9 0 11.1 4.3 13.6 16.4 4.3 21.2-2.9 1.5-3.2 1.5-5.7-.3-2.4-1.8-5.3-6.5-6.5-10.6-.7-2.4-10.1-2.5-11-.1-1.8 4.7.4 13.1 4.7 18.1 4.1 4.7 8.2 6.3 15.9 6.3 8 0 14-2.8 17.6-8.3 2.5-3.7 2.7-4.9 2.7-13.6 0-7.3-.4-10.4-1.8-13.1l-1.8-3.5 2 2.5c1.2 1.4 3 4.9 4.1 7.8" />
+            </svg>
+        )
+    }
+    {
+        type === "stan" && (
+            <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="w-full h-full"
+            >
+                <path d="M3.5 20 12 4" />
+                <path d="M20.5 20 12 4" />
+                <path d="M15 20 12 14.5 9 20" />
+                <path d="M2 20h20" />
+            </svg>
+        )
+    }
+    {
+        type === "pokoj" && (
+            <span class="flex items-center justify-center w-full h-full rounded-[0.15em] border-2 border-current text-[0.72em] leading-none font-body">
+                {number ?? "?"}
+            </span>
+        )
+    }
+</span>

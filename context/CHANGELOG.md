@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-06
+
+### Ubytování: ikony u hostů a legenda „Kde spím?"
+
+- **Datový model hostů** změněn ze `string[]` na `Guest[]` (`{ name, icons }`) v `HouseColumn.astro` — každý host může mít víc ikon najednou (spací místo + volitelně číslo pokoje), místo jednoho textového řádku.
+- Nová komponenta `GuestIcon.astro` vykresluje čtyři typy ikon: **postel**, **karimatka**, **stan** a **pokoj** (čtvereček s otazníkem, nebo s konkrétním — i dvojcifernou — číslem, když je pokoj přiřazený). Velikost řídí jediný `class` prop nastavující `font-size` na kořenovém prvku, takže ikona i vnitřní text (u „pokoje") rostou proporčně z jednoho místa.
+- Ikona **karimatky** je vektorizovaná z `assets/sleeping-pad.png`: linky byly nejdřív morfologicky rozšířené (dilatace), pak převedené na SVG přes `potrace` a doladené `svgo` — místo rastrového obrázku je to teď `fill="currentColor"` tvar, který reaguje na barvu okolního textu stejně jako ostatní ikony.
+- Pod input „Kde spím?" přibyla **legenda** se čtyřmi řádky (Postel, Karimatka, Stan, Číslo pokoje) — vysvětluje význam ikon nezávisle na konkrétních datech hostů. Legenda běží na CSS gridu (`<li class="contents">`), aby se ikony různé velikosti (menší ikona pokoje) vizuálně vycentrovaly ve společném sloupci a držely přesně pod sebou.
+- Vyhledávací filtr hostů zúžen na `[data-guest-name]`, aby text/číslo uvnitř ikony pokoje neovlivňoval hledání podle jména.
+- Standa a Gabča mají přiřazenou postel a číslo pokoje `1`.
+
 ## 2026-08-16
 
 ### Intro: tlačítko „Vstoupit" a přelet nad ním

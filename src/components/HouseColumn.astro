@@ -1,7 +1,23 @@
 ---
+import GuestIcon from "./GuestIcon.astro";
+
 interface MapLink {
     label: string;
     url: string;
+}
+
+/** Ikona spacího místa, nebo ikona pokoje s volitelným číslem — bez čísla
+ *  se v `GuestIcon` zobrazí otazník. `number` dává smysl jen u "pokoj". */
+export interface GuestIconData {
+    type: "postel" | "karimatka" | "stan" | "pokoj";
+    number?: number;
+}
+
+export interface Guest {
+    name: string;
+    /** Ikonka pokoje se přidává jen tehdy, když je k hostovi přiřazená —
+     *  jinak se u něj vůbec nezobrazí. */
+    icons: GuestIconData[];
 }
 
 interface Props {
@@ -11,7 +27,7 @@ interface Props {
     address?: string;
     /** Text pod adresou — cena za osobu nebo poznámka k platbě. */
     info?: string;
-    guests: string[];
+    guests: Guest[];
 }
 
 const { name, maps = [], address, info, guests } = Astro.props;
@@ -91,7 +107,12 @@ const linkClass =
         <hr class="-mx-block border-t border-current" />
         <h3 class="font-heading text-subheading-sm text-ink mt-block">Hosté:</h3>
         <ul class="flex flex-col gap-tight font-body text-lg text-text mt-block">
-            {guests.map((guest) => <li data-guest>{guest}</li>)}
+            {guests.map((guest) => (
+                <li data-guest class="flex items-center justify-center gap-tight">
+                    {guest.icons.map((icon) => <GuestIcon {...icon} />)}
+                    <span data-guest-name>{guest.name}</span>
+                </li>
+            ))}
         </ul>
     </div>
 </div>
