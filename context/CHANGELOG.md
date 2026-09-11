@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-11
+
+### Ubytování: hosté po pokojích, poznámka k hostovi, přehledná legenda
+
+- **Hosté doplněni do dat** — Farní dvůr (pokoje 1–11, včetně karimatek u dětí) a Chata Liebich (ložnice 1–4 + Fanda na rozkládacím gauči v obýváku). Továrníkova vila zůstala s `guests: []` — díky existující logice vyhledávacího filtru se tak automaticky zobrazí stejně jako dům bez shody při hledání (ztlumený/skrytý), bez potřeby placeholder textu.
+- **Nové pole `Guest.note` + komponenta `GuestNote.astro`** — ikonka „i" v kolečku vedle jména hosta; poznámka se zobrazí v bublině čistě přes CSS (`group-hover`/`group-focus`), bez JS, a je přístupná i z klávesnice (`tabindex`, `aria-label`). Box ikonky má stejnou šířku jako ostatní ikony (kvůli zarovnání ve sloupci), viditelné kolečko je uvnitř úmyslně o něco menší (80 %), aby vypadalo drobnější, aniž by to posunulo sousední ikony.
+- **Seznam hostů v `HouseColumn.astro` přepsán na CSS grid** (`grid-cols-[auto_auto]`, `<li class="contents">`) — ikony i jména jsou teď u všech hostů v domě zarovnané pod sebou bez ohledu na počet ikon u konkrétního hosta. Jméno má explicitní `text-left`, protože zděděné `text-center` z karty domu centrovalo jednotlivé řádky zalomeného dlouhého jména.
+- **Legenda „Kde spím?" doplněna a přeuspořádána** — poznámka ke karimatce ("s sebou: karimatku, polštář, deku") je teď na vlastním řádku za pomlčkou místo v závorce; číslo pokoje má pod hlavním popiskem tabulku se sloupci **č. / umístění / koupelna** (rozpis budov Farního dvora a Chaty Liebich); přibyl řádek s ukázkou ikonky poznámky.
+- **Drobné zarovnávací opravy** — ikonka pokoje v legendě má `self-start`, aby držela u první řádky víceřádkového textu, ne uprostřed celého bloku; rozsahy čísel pokojů (`10–11`) mají `whitespace-nowrap`, aby se na malých displejích nezalomily uprostřed pomlčky (`10-` / `11`); velikost ikonky poznámky doladěna, aby seděla vedle ostatních ikon v legendě i u hosta.
+- **`global.css`** — nevrstvené pravidlo `[data-guest].hidden { display: none; }` řeší kolizi Tailwindí `.hidden` s `.contents` (stejná specificita ve stejné vrstvě), které `li[data-guest]` používá pro zarovnání do gridu; bez toho by vyhledávací filtr hostů mohl řádky schovávat nespolehlivě.
+
 ## 2026-09-06
 
 ### Ubytování: ikony u hostů a legenda „Kde spím?"
