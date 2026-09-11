@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import BackButton from "../components/BackButton.astro";
 import GrainIcon from "../components/GrainIcon.astro";
 import GuestIcon from "../components/GuestIcon.astro";
+import GuestNote from "../components/GuestNote.astro";
 import HouseColumn, { type Guest } from "../components/HouseColumn.astro";
 import PageHeading from "../components/PageHeading.astro";
 import { slideTransition } from "../utils/transitions";
@@ -31,6 +32,70 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                 name: "Gabča a Standa",
                 icons: [{ type: "postel" }, { type: "pokoj", number: 1 }],
             },
+            {
+                name: "Mamka, Tatka, Radka, Marián",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 2 }],
+            },
+            {
+                name: "Pirklovi, Steidlovi, Růžičkovi + děti",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 3 }],
+            },
+            {
+                name: "Anežka, Jindra, Jitka, Tomáš, Petra, Pavel, Pavla, Lída, Honza",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 4 }],
+            },
+            {
+                name: "Henrika (mimi), Vilém, Adam, Nela",
+                icons: [{ type: "karimatka" }, { type: "pokoj", number: 4 }],
+            },
+            {
+                name: "Honza",
+                icons: [{ type: "karimatka" }, { type: "pokoj", number: 4 }],
+            },
+            {
+                name: "Matěj, Dan, Tonda, Domča",
+                icons: [{ type: "karimatka" }, { type: "pokoj", number: 4 }],
+            },
+            {
+                name: "Káťa, Jirka, Elenka",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 5 }],
+            },
+            {
+                name: "Martin, Dáša, Klárka, Zdenek",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 5 }],
+            },
+            {
+                name: "Milada, Jirka, Jitka, Vlastík, Pejsek",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 6 }],
+            },
+            {
+                name: "Teta a Strejda",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 7 }],
+            },
+            {
+                name: "Babička a Děda",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 8 }],
+            },
+            {
+                name: "Kamča, Martin, Pája, Pepa",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 9 }],
+            },
+            {
+                name: "Dáša, Pepa, Věrka",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 10 }],
+            },
+            {
+                name: "Verča",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 10 }],
+            },
+            {
+                name: "David",
+                icons: [{ type: "karimatka" }, { type: "pokoj", number: 10 }],
+            },
+            {
+                name: "Filip + Sandra + Beník + mimi Max",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 11 }],
+            },
         ],
     },
     {
@@ -41,14 +106,36 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
             { label: "google mapy", url: "https://maps.app.goo.gl/6aGiS1GTy7fay3SRA" },
         ],
         info: "Cena 560 Kč za osobu a noc. ",
-        guests: [{ name: "...", icons: [] }],
+        guests: [
+            {
+                name: "Marta, Petr, Míša",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 1 }],
+            },
+            {
+                name: "Petr, Jana",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 2 }],
+            },
+            {
+                name: "Ivet, Soňa",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 3 }],
+            },
+            {
+                name: "David, Kamča",
+                icons: [{ type: "postel" }, { type: "pokoj", number: 4 }],
+            },
+            {
+                name: "Fanda",
+                icons: [{ type: "postel" }],
+                note: "Obývací pokoj – rozkládací gauč",
+            },
+        ],
     },
     {
         name: "Továrníkova vila",
         address: "Skuhrov nad Bělou 93, 517 03 Skuhrov nad Bělou, Česko",
         maps: [{ label: "mapy.cz", url: "https://mapy.com/s/kubumorabu" }],
         info: "Cena 540 Kč za osobu a noc.",
-        guests: [{ name: "...", icons: [] }],
+        guests: [],
     },
 ];
 ---
@@ -89,7 +176,7 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                 />
             </div>
             <ul
-                class="grid grid-cols-[auto_1fr] items-center justify-items-center gap-x-tight gap-y-tight max-w-sm font-body text-body text-text mb-section"
+                class="grid grid-cols-[auto_1fr] items-center justify-items-center gap-x-tight gap-y-tight max-w-lg font-body text-body text-text mb-section"
                 data-reveal
                 style="--reveal-offset: 0.18s"
             >
@@ -103,15 +190,58 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                 </li>
                 <li class="contents">
                     <GuestIcon type="karimatka" class="text-[2em]" />
-                    <span class="justify-self-start">Karimatka / matrace – Farní dvůr (s sebou: karimatku, polštář, deku)</span>
+                    <span class="justify-self-start">
+                        <span class="block">Karimatka / matrace – Farní dvůr</span>
+                        <span class="block">– s sebou: karimatku, polštář, deku</span>
+                    </span>
                 </li>
                 <li class="contents">
                     <GuestIcon type="stan" class="text-[2em]" />
                     <span class="justify-self-start">Vlastní stan / karavan</span>
                 </li>
                 <li class="contents">
-                    <GuestIcon type="pokoj" class="text-[1.6em]" />
-                    <span class="justify-self-start">Číslo pokoje</span>
+                    <GuestIcon type="pokoj" class="self-start text-[1.6em]" />
+                    <div class="justify-self-start">
+                        <span class="block mb-tight">Číslo pokoje</span>
+                        <table class="border-collapse text-left text-sm">
+                            <thead>
+                                <tr class="border-b border-current/40">
+                                    <th class="pr-tight py-1 font-medium text-ink">č.</th>
+                                    <th class="pr-tight py-1 font-medium text-ink">umístění</th>
+                                    <th class="py-1 font-medium text-ink">koupelna</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-current/10">
+                                    <td class="pr-tight py-1 whitespace-nowrap">1–6</td>
+                                    <td class="pr-tight py-1">Farní dvůr – hlavní budova</td>
+                                    <td class="py-1">vlastní</td>
+                                </tr>
+                                <tr class="border-b border-current/10">
+                                    <td class="pr-tight py-1 whitespace-nowrap">7–9</td>
+                                    <td class="pr-tight py-1">Farní dvůr – stodola – domeček</td>
+                                    <td class="py-1">sdílená</td>
+                                </tr>
+                                <tr class="border-b border-current/10">
+                                    <td class="pr-tight py-1 whitespace-nowrap">10–11</td>
+                                    <td class="pr-tight py-1">Farní dvůr – stodola – domeček</td>
+                                    <td class="py-1">sdílená</td>
+                                </tr>
+                                <tr>
+                                    <td class="pr-tight py-1 whitespace-nowrap">1–4</td>
+                                    <td class="pr-tight py-1">Chata Liebich</td>
+                                    <td class="py-1">sdílená</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+                <li class="contents">
+                    <GuestNote note="Ukázka poznámky – stejně se zobrazí u konkrétního hosta." class="text-[1.8em]" />
+                    <span class="justify-self-start">
+                        <span class="block">Poznámka</span>
+                        <span class="block">– po navedení myši / kliknutí zobrazí doplňující informaci</span>
+                    </span>
                 </li>
             </ul>
             <div

@@ -1,5 +1,6 @@
 ---
 import GuestIcon from "./GuestIcon.astro";
+import GuestNote from "./GuestNote.astro";
 
 interface MapLink {
     label: string;
@@ -18,6 +19,8 @@ export interface Guest {
     /** Ikonka pokoje se přidává jen tehdy, když je k hostovi přiřazená —
      *  jinak se u něj vůbec nezobrazí. */
     icons: GuestIconData[];
+    /** Poznámka k hostovi — zobrazí se v bublině po najetí/fokusu na ikonku „i“. */
+    note?: string;
 }
 
 interface Props {
@@ -106,11 +109,19 @@ const linkClass =
             z `currentColor` stejně jako `border-x`/`border-b`. */}
         <hr class="-mx-block border-t border-current" />
         <h3 class="font-heading text-subheading-sm text-ink mt-block">Hosté:</h3>
-        <ul class="flex flex-col gap-tight font-body text-lg text-text mt-block">
+        {/* Stejný `contents` trik jako u legendy výš ("Kde spím?"): `<li>` se
+            zruší a jeho dvě děti (ikony, jméno) jdou přímo do gridu, takže
+            sloupec ikon i sloupec jmen drží společnou šířku napříc všemi
+            řádky a jsou pod sebou zarovnané, i když se počet/šířka ikon u
+            jednotlivých hostů liší. */}
+        <ul class="grid grid-cols-[auto_auto] items-center gap-tight font-body text-lg text-text mt-block mx-auto w-fit">
             {guests.map((guest) => (
-                <li data-guest class="flex items-center justify-center gap-tight">
-                    {guest.icons.map((icon) => <GuestIcon {...icon} />)}
-                    <span data-guest-name>{guest.name}</span>
+                <li data-guest class="contents">
+                    <span class="flex items-center justify-end gap-tight">
+                        {guest.icons.map((icon) => <GuestIcon {...icon} />)}
+                        {guest.note && <GuestNote note={guest.note} />}
+                    </span>
+                    <span data-guest-name class="justify-self-start text-left">{guest.name}</span>
                 </li>
             ))}
         </ul>
