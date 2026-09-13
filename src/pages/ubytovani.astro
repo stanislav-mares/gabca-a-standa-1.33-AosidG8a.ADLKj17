@@ -38,11 +38,11 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                 icons: [{ type: "postel" }, { type: "pokoj", number: 2 }],
             },
             {
-                name: "Saša, Milan, Saška, Honza Růžička, Venča",
+                name: "Saša, Milan, Saška, Honza R., Venča",
                 icons: [{ type: "postel" }, { type: "pokoj", number: 3 }],
             },
             {
-                name: "Honza Steidl, Norinka, Deborka, Sašenka, Honzík",
+                name: "Honza S., Norinka, Deborka, Sašenka, Honzík",
                 icons: [{ type: "karimatka" }, { type: "pokoj", number: 3 }],
             },
             {
@@ -63,7 +63,7 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                 icons: [{ type: "postel" }, { type: "pokoj", number: 5 }],
             },
             {
-                name: "Zdenek",
+                name: "Zdeněk",
                 icons: [{ type: "karimatka" }, { type: "pokoj", number: 5 }],
             },
             {
@@ -79,8 +79,12 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                 icons: [{ type: "postel" }, { type: "pokoj", number: 8 }],
             },
             {
-                name: "Kamča, Martin, Pája, Pepa",
+                name: "Kamča, Pája, Pepa",
                 icons: [{ type: "postel" }, { type: "pokoj", number: 9 }],
+            },
+            {
+                name: "Martin",
+                icons: [{ type: "karimatka" }, { type: "pokoj", number: 9 }],
             },
             {
                 name: "Dáša, Pepa ml., Věrka, Verča",
@@ -150,7 +154,7 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
         transition:name="main-panel"
     >
         <section
-            class="relative z-20 flex flex-col items-center px-gutter pb-[50vh] lg:pl-[calc(var(--spacing-backbtn)+var(--spacing-gutter))]"
+            class="flex flex-col items-center px-gutter pb-[50vh] lg:pl-[calc(var(--spacing-backbtn)+var(--spacing-gutter))]"
         >
             <PageHeading text={heading} class="mb-heading" />
             <div

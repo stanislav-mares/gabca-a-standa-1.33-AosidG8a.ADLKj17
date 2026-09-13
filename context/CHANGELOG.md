@@ -13,6 +13,14 @@
 - **Nový host „Ježkovi“** (ikona stanu, bez čísla pokoje) přidaný do Farního dvora.
 - **Chata Liebich — nový prop `outdatedInfo` na `HouseColumn`**: původní cena se vykreslí přeškrtnutě (`line-through opacity-60`) nad novou informací „I ubytování zde je uhrazeno. Nemusíte si tak s tímto dělat starost.“
 
+### Ubytování: oprava zakrytého tooltipu za back buttonem
+
+- **`relative z-20` na `<section>` (viz výš) rozbilo klikání na `BackButton`** — zvýšený stacking context nadzvedl neviditelnou (ale klikatelnou) plochu celé stránky nad něj, takže mu bral kliky. Vráceno do původního stavu; `BackButton` mezitím dostal explicitní `z-30` a tooltip bubliny (`GuestIcon`, `GuestNote`) `z-40` jako rezervu — bezpečné, protože mají `pointer-events-none`.
+- **Skutečná příčina původního problému (tooltip pod tlačítkem)**: mřížka domečků nese `data-reveal`, jehož vstupní animace končí na `transform: translateY(0)` — i nulový posun ale podle CSS specifikace zakládá vlastní stacking context, který „uvězní“ každého potomka se `z-index` (včetně tooltipu) bez ohledu na to, jak vysoké číslo dostane — proto ani `z-40` samo o sobě nestačilo.
+- **Zjednodušení místo boje se stacking contextem**: tooltip u `GuestIcon` je teď **vždy** ukotvený k levému okraji ikony a otevírá se nahoru a doprava, bez ohledu na šířku obrazovky (dřív se od `lg` přepnul na vycentrované chování). Díky tomu nikdy nezasahuje směrem k levému sloupci s `BackButton`em a celý problém odpadá bez potřeby JS.
+- **Tooltip pokoje** dostal na začátek slovo „pokoj“ („pokoj č. 3 – …“ místo jen „č. 3 – …“).
+- **Drobné úpravy jmen hostů na Farním dvoře** — příjmení zkrácená na iniciálu („Honza R.“, „Honza S.“), doplněná diakritika („Zdeněk“), Martin vyčleněn z „Kamča, Martin, Pája, Pepa“ do vlastního řádku s karimatkou a číslem pokoje 9.
+
 ## 2026-09-11
 
 ### Ubytování: hosté po pokojích, poznámka k hostovi, přehledná legenda
