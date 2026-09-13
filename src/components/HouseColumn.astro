@@ -30,10 +30,13 @@ interface Props {
     address?: string;
     /** Text pod adresou — cena za osobu nebo poznámka k platbě. */
     info?: string;
+    /** Zastaralá informace o ceně — zobrazí se přeškrtnutě nad `info`, když se
+     *  podmínky změní (např. ubytování je nakonec také uhrazené). */
+    outdatedInfo?: string;
     guests: Guest[];
 }
 
-const { name, maps = [], address, info, guests } = Astro.props;
+const { name, maps = [], address, info, outdatedInfo, guests } = Astro.props;
 
 const linkClass =
     "underline decoration-accent underline-offset-4 hover:bg-hover transition-colors";
@@ -71,7 +74,7 @@ const linkClass =
                 {name}
             </h2>
             {
-                (maps.length > 0 || address || info) && (
+                (maps.length > 0 || address || info || outdatedInfo) && (
                     <ul class="list-disc pl-[1.25em] space-y-tight font-body text-body text-text text-left">
                         {address && (
                             <li>
@@ -96,6 +99,11 @@ const linkClass =
                                 ))}
                             </li>
                         )}
+                        {outdatedInfo && (
+                            <li class="line-through opacity-60">
+                                <strong>Cena:</strong> {outdatedInfo}
+                            </li>
+                        )}
                         {info && (
                             <li>
                                 <strong>Cena:</strong> {info}
@@ -110,20 +118,28 @@ const linkClass =
         <hr class="-mx-block border-t border-current" />
         <h3 class="font-heading text-subheading-sm text-ink mt-block">Hosté:</h3>
         {/* Stejný `contents` trik jako u legendy výš ("Kde spím?"): `<li>` se
-            zruší a jeho dvě děti (ikony, jméno) jdou přímo do gridu, takže
-            sloupec ikon i sloupec jmen drží společnou šířku napříc všemi
-            řádky a jsou pod sebou zarovnané, i když se počet/šířka ikon u
-            jednotlivých hostů liší. */}
-        <ul class="grid grid-cols-[auto_auto] items-center gap-tight font-body text-lg text-text mt-block mx-auto w-fit">
-            {guests.map((guest) => (
-                <li data-guest class="contents">
-                    <span class="flex items-center justify-end gap-tight">
-                        {guest.icons.map((icon) => <GuestIcon {...icon} />)}
-                        {guest.note && <GuestNote note={guest.note} />}
-                    </span>
-                    <span data-guest-name class="justify-self-start text-left">{guest.name}</span>
-                </li>
-            ))}
+            zruší a jeho děti jdou přímo do gridu se třemi sloupci — spací ikona
+            / "extra" (pokoj až/nebo poznámka) / jméno. Spací ikona má vlastní
+            pevný sloupec, takže drží stejnou pozici u všech hostů bez ohledu
+            na to, jestli mají číslo pokoje/poznámku. Pokoj a poznámka jsou
+            naopak spolu v jednom flex bloku bez mezery navíc, když jedno z
+            nich chybí — kdyby měly vlastní pevné sloupce každá zvlášť, host bez
+            čísla pokoje (jen s poznámkou) by měl „íčko“ zbytečně daleko od ikony. */}
+        <ul class="grid grid-cols-[auto_auto_auto] items-center gap-tight font-body text-lg text-text mt-block w-fit md:mx-auto">
+            {guests.map((guest) => {
+                const sleepIcon = guest.icons.find((icon) => icon.type !== "pokoj");
+                const roomIcon = guest.icons.find((icon) => icon.type === "pokoj");
+                return (
+                    <li data-guest class="contents">
+                        {sleepIcon ? <GuestIcon {...sleepIcon} house={name} /> : <span aria-hidden="true" />}
+                        <span class="flex items-center gap-tight">
+                            {roomIcon && <GuestIcon {...roomIcon} house={name} />}
+                            {guest.note && <GuestNote note={guest.note} />}
+                        </span>
+                        <span data-guest-name class="justify-self-start text-left">{guest.name}</span>
+                    </li>
+                );
+            })}
         </ul>
     </div>
 </div>

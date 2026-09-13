@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-09-13
+
+### Ubytování: popup s vysvětlivkami, tooltip u ikon, zarovnání hostů
+
+- **Legenda „Kde spím?“ nahrazena popupem** — místo statického seznamu pod nadpisem je teď jen odkaz-tlačítko **„Vysvětlivky k ikonám“**, které otevře nativní `<dialog id="icon-legend-dialog">` se stejným obsahem. Zavírání řeší křížek, klik mimo obsah (na `<dialog>` mimo jeho potomky) a nativně klávesa Esc — čistě přes `HTMLDialogElement.showModal()`/`close()`, bez knihovny. Nad legendou/tooltipy je nově odstavec „Pro bližší informace se podívej na Vysvětlivky k ikonám nebo klikni na příslušnou ikonu u řádku s tvým jménem.“, kde odkaz otevírá stejný popup.
+- **Nová komponenta `IconExplanation.astro`** — jediný zdroj textu vysvětlivek pro postel/karimatku/stan/pokoj, sdílí ho legenda v popupu i tooltip bublina u každé konkrétní ikony, takže popisky nejsou nikde zdvojené. Text ke karimatce doplněn o „a ručník“; řádek „Poznámka“ v legendě přišel o popisný podtext (zůstal jen název).
+- **`GuestIcon.astro` dostal tooltip bublinu** stejným mechanismem jako „íčko“ u `GuestNote` (`tabindex` + `group-hover`/`group-focus`) — na desktopu hover (s kurzorem `cursor-help`), na mobilu klik/dotyk přes fokus. Nový prop `tooltip` (výchozí `true`) tooltip celý vypne — použitý u ikon v popup legendě, kde by byl matoucí duplicit vůči textu hned vedle.
+- **Poloha bubliny**: na mobilu (do `lg`) je ukotvená k levému okraji ikony a otevírá se nahoru a doprava, aby se neřízla o okraj displeje; od `lg` se vrací vycentrované chování. `<section>` na stránce dostal `relative z-20`, aby bublina spolehlivě vykreslovala **nad** `BackButton`em (`<aside>` bez vlastního `z-index`), ne pod ním.
+- **Ikona pokoje**: tooltip u konkrétního hosta ukáže jen jeden řádek s přesným umístěním a koupelnou pro jeho číslo (např. „č. 3 – Farní dvůr – hlavní budova – koupelna: vlastní“) místo celé tabulky — ta zůstává jen v obecné legendě (bez `number`/`house` se původní tabulka vykreslí beze změny). Čísla pokojů se mezi domy opakují (1–4 má Farní dvůr i Chata Liebich), proto `GuestIcon`/`HouseColumn` předává i `house` a hledá se podle dvojice dům+číslo. Stejně tak ikona postele nově ukáže konkrétní dům („Postel – Chata Liebich“) místo obecného výčtu.
+- **Zarovnání hostů v `HouseColumn.astro` přepsané na 3 pevné sloupce** — spací ikona / „extra“ (pokoj až/nebo poznámka, spolu v jednom flex bloku) / jméno. Spací ikona tak drží stejnou pozici u všech hostů bez ohledu na počet dalších ikon (původně jeden flexibilní sloupec ikon posouval jediný typ ikony k okraji, když chybělo číslo pokoje). Seznam hostů je na mobilu (`< md`) zarovnaný doleva, od `md` výš zůstává vycentrovaný (`md:mx-auto`) — stejně pro všechny domy.
+- **Nový host „Ježkovi“** (ikona stanu, bez čísla pokoje) přidaný do Farního dvora.
+- **Chata Liebich — nový prop `outdatedInfo` na `HouseColumn`**: původní cena se vykreslí přeškrtnutě (`line-through opacity-60`) nad novou informací „I ubytování zde je uhrazeno. Nemusíte si tak s tímto dělat starost.“
+
 ## 2026-09-11
 
 ### Ubytování: hosté po pokojích, poznámka k hostovi, přehledná legenda

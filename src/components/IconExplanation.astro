@@ -1,0 +1,85 @@
+---
+import type { GuestIconData } from "./HouseColumn.astro";
+
+interface Props {
+    type: GuestIconData["type"];
+    /** Konkrétní číslo pokoje u typu "pokoj" — spolu s `house` dovolí dohledat
+     *  přesné umístění/koupelnu jen pro tenhle jeden pokoj (jeden řádek místo
+     *  celé tabulky). Bez nich (např. ukázková ikona v legendě) se vykreslí
+     *  obecná tabulka se všemi rozpětími. */
+    number?: number;
+    house?: string;
+}
+
+const { type, number, house } = Astro.props;
+
+// Čísla pokojů se mezi domy opakují (1–4 má jak Farní dvůr, tak Chata
+// Liebich), proto se hledá podle dvojice dům+číslo, ne jen podle čísla.
+const roomRanges: { house: string; from: number; to: number; location: string; bathroom: string }[] = [
+    { house: "Farní dvůr", from: 1, to: 6, location: "Farní dvůr – hlavní budova", bathroom: "vlastní" },
+    { house: "Farní dvůr", from: 7, to: 9, location: "Farní dvůr – stodola", bathroom: "sdílená" },
+    { house: "Farní dvůr", from: 10, to: 11, location: "Farní dvůr – stodola", bathroom: "sdílená" },
+    { house: "Chata Liebich", from: 1, to: 4, location: "Chata Liebich", bathroom: "sdílená" },
+];
+
+const roomInfo =
+    type === "pokoj" && house && number !== undefined
+        ? roomRanges.find((range) => range.house === house && number >= range.from && number <= range.to)
+        : undefined;
+---
+
+{/* Jediný zdroj textu vysvětlivek k ikonám — sdílí ho legenda v popupu
+    („Vysvětlivky k ikonám") i tooltip bublina na každé konkrétní ikoně
+    v GuestIcon.astro, takže popisky nikde nejedou zdvojeně. */}
+{type === "postel" && (house ? `Postel – ${house}` : "Postel – Farní dvůr / Chata Liebich")}
+{
+    type === "karimatka" && (
+        <>
+            <span class="block">Karimatka / matrace – Farní dvůr</span>
+            <span class="block">– s sebou: karimatku, polštář, deku a ručník</span>
+        </>
+    )
+}
+{type === "stan" && "Vlastní stan / karavan"}
+{
+    type === "pokoj" && (
+        roomInfo ? (
+            <span class="block">č. {number} – {roomInfo.location} – koupelna: {roomInfo.bathroom}</span>
+        ) : (
+            <>
+                <span class="block mb-tight">Číslo pokoje</span>
+                <table class="border-collapse text-left text-sm">
+                    <thead>
+                        <tr class="border-b border-current/40">
+                            <th class="pr-tight py-1 font-medium text-ink">č.</th>
+                            <th class="pr-tight py-1 font-medium text-ink">umístění</th>
+                            <th class="py-1 font-medium text-ink">koupelna</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-current/10">
+                            <td class="pr-tight py-1 whitespace-nowrap">1–6</td>
+                            <td class="pr-tight py-1">Farní dvůr – hlavní budova</td>
+                            <td class="py-1">vlastní</td>
+                        </tr>
+                        <tr class="border-b border-current/10">
+                            <td class="pr-tight py-1 whitespace-nowrap">7–9</td>
+                            <td class="pr-tight py-1">Farní dvůr – stodola</td>
+                            <td class="py-1">sdílená</td>
+                        </tr>
+                        <tr class="border-b border-current/10">
+                            <td class="pr-tight py-1 whitespace-nowrap">10–11</td>
+                            <td class="pr-tight py-1">Farní dvůr – stodola</td>
+                            <td class="py-1">sdílená</td>
+                        </tr>
+                        <tr>
+                            <td class="pr-tight py-1 whitespace-nowrap">1–4</td>
+                            <td class="pr-tight py-1">Chata Liebich</td>
+                            <td class="py-1">sdílená</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </>
+        )
+    )
+}

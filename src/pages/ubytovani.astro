@@ -4,6 +4,7 @@ import BackButton from "../components/BackButton.astro";
 import GrainIcon from "../components/GrainIcon.astro";
 import GuestIcon from "../components/GuestIcon.astro";
 import GuestNote from "../components/GuestNote.astro";
+import IconExplanation from "../components/IconExplanation.astro";
 import HouseColumn, { type Guest } from "../components/HouseColumn.astro";
 import PageHeading from "../components/PageHeading.astro";
 import { slideTransition } from "../utils/transitions";
@@ -21,7 +22,7 @@ const intro = [
 // Konfigurace ubytování — hosty stačí doplnit/upravit tady.
 // `maps` jsou sdílecí odkazy z mapy.com, stejně jako trasy na `svatebni-den`;
 // u Liebicha přibývá i Google, protože obě mapy vedou dům pod jiným číslem.
-const houses: { name: string; address: string; maps: { label: string; url: string }[]; info: string; guests: Guest[] }[] = [
+const houses: { name: string; address: string; maps: { label: string; url: string }[]; info: string; outdatedInfo?: string; guests: Guest[] }[] = [
     {
         name: "Farní dvůr",
         address: "Uhřínov 1, 516 01 Liberk – Uhřínov, Česko",
@@ -90,8 +91,12 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                 icons: [{ type: "karimatka" }, { type: "pokoj", number: 10 }],
             },
             {
-                name: "Filip, Sandra + Ben, Max",
+                name: "Filip, Sandra + Ben + Max",
                 icons: [{ type: "postel" }, { type: "pokoj", number: 11 }],
+            },
+            {
+                name: "Ježkovi",
+                icons: [{ type: "stan" }],
             },
         ],
     },
@@ -102,7 +107,8 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
             { label: "mapy.cz", url: "https://mapy.com/s/nuvukalopu" },
             { label: "google mapy", url: "https://maps.app.goo.gl/6aGiS1GTy7fay3SRA" },
         ],
-        info: "Cena 560 Kč za osobu a noc. ",
+        outdatedInfo: "560 Kč za osobu a noc.",
+        info: "I ubytování zde je uhrazeno. Nemusíte si tak s tímto dělat starost.",
         guests: [
             {
                 name: "Marta, Petr, Míša",
@@ -113,11 +119,11 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                 icons: [{ type: "postel" }, { type: "pokoj", number: 2 }],
             },
             {
-                name: "Ivet, Soňa",
+                name: "David, Kamča",
                 icons: [{ type: "postel" }, { type: "pokoj", number: 3 }],
             },
             {
-                name: "David, Kamča",
+                name: "Ivet, Soňa",
                 icons: [{ type: "postel" }, { type: "pokoj", number: 4 }],
             },
             {
@@ -144,7 +150,7 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
         transition:name="main-panel"
     >
         <section
-            class="flex flex-col items-center px-gutter pb-[50vh] lg:pl-[calc(var(--spacing-backbtn)+var(--spacing-gutter))]"
+            class="relative z-20 flex flex-col items-center px-gutter pb-[50vh] lg:pl-[calc(var(--spacing-backbtn)+var(--spacing-gutter))]"
         >
             <PageHeading text={heading} class="mb-heading" />
             <div
@@ -172,75 +178,63 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
                     style="--reveal-offset: 0.14s"
                 />
             </div>
-            <ul
-                class="grid grid-cols-[auto_1fr] items-center justify-items-center gap-x-tight gap-y-tight max-w-lg font-body text-body text-text mb-section"
+            <p
+                class="max-w-md text-center font-body text-body text-text mb-section"
                 data-reveal
                 style="--reveal-offset: 0.18s"
             >
-                {/* `contents` zruší box `<li>`, takže jeho děti (ikona + text) jdou
-                    přímo do gridu — sloupec ikon má pak společnou pevnou šířku a
-                    různě velké ikony (např. menší pokoj) se v něm vycentrují, takže
-                    drží pod sebou. */}
-                <li class="contents">
-                    <GuestIcon type="postel" class="text-[2em]" />
-                    <span class="justify-self-start">Postel – Farní dvůr / Chata Liebich</span>
-                </li>
-                <li class="contents">
-                    <GuestIcon type="karimatka" class="text-[2em]" />
-                    <span class="justify-self-start">
-                        <span class="block">Karimatka / matrace – Farní dvůr</span>
-                        <span class="block">– s sebou: karimatku, polštář, deku</span>
-                    </span>
-                </li>
-                <li class="contents">
-                    <GuestIcon type="stan" class="text-[2em]" />
-                    <span class="justify-self-start">Vlastní stan / karavan</span>
-                </li>
-                <li class="contents">
-                    <GuestIcon type="pokoj" class="self-start text-[1.6em]" />
-                    <div class="justify-self-start">
-                        <span class="block mb-tight">Číslo pokoje</span>
-                        <table class="border-collapse text-left text-sm">
-                            <thead>
-                                <tr class="border-b border-current/40">
-                                    <th class="pr-tight py-1 font-medium text-ink">č.</th>
-                                    <th class="pr-tight py-1 font-medium text-ink">umístění</th>
-                                    <th class="py-1 font-medium text-ink">koupelna</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-b border-current/10">
-                                    <td class="pr-tight py-1 whitespace-nowrap">1–6</td>
-                                    <td class="pr-tight py-1">Farní dvůr – hlavní budova</td>
-                                    <td class="py-1">vlastní</td>
-                                </tr>
-                                <tr class="border-b border-current/10">
-                                    <td class="pr-tight py-1 whitespace-nowrap">7–9</td>
-                                    <td class="pr-tight py-1">Farní dvůr – stodola – domeček</td>
-                                    <td class="py-1">sdílená</td>
-                                </tr>
-                                <tr class="border-b border-current/10">
-                                    <td class="pr-tight py-1 whitespace-nowrap">10–11</td>
-                                    <td class="pr-tight py-1">Farní dvůr – stodola – domeček</td>
-                                    <td class="py-1">sdílená</td>
-                                </tr>
-                                <tr>
-                                    <td class="pr-tight py-1 whitespace-nowrap">1–4</td>
-                                    <td class="pr-tight py-1">Chata Liebich</td>
-                                    <td class="py-1">sdílená</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </li>
-                <li class="contents">
-                    <GuestNote note="Ukázka poznámky – stejně se zobrazí u konkrétního hosta." class="text-[1.8em]" />
-                    <span class="justify-self-start">
-                        <span class="block">Poznámka</span>
-                        <span class="block">– po navedení myši / kliknutí zobrazí doplňující informaci</span>
-                    </span>
-                </li>
-            </ul>
+                Pro bližší informace se podívej na{" "}
+                <button
+                    type="button"
+                    data-legend-open
+                    class="underline decoration-accent underline-offset-4 hover:bg-hover transition-colors cursor-pointer"
+                >
+                    Vysvětlivky k ikonám
+                </button>{" "}
+                nebo klikni na příslušnou ikonu u řádku s tvým jménem.
+            </p>
+            <dialog
+                id="icon-legend-dialog"
+                class="fixed inset-0 m-auto h-fit max-h-[85vh] w-[calc(100%-2*var(--spacing-gutter))] max-w-lg overflow-y-auto rounded-lg border-0 bg-surface p-block text-text shadow-xl backdrop:bg-ink/50"
+            >
+                <div class="flex items-center justify-between gap-block mb-block">
+                    <h3 class="font-heading text-subheading-sm text-accent">Vysvětlivky k ikonám</h3>
+                    <button
+                        type="button"
+                        data-legend-close
+                        aria-label="Zavřít"
+                        class="shrink-0 text-2xl leading-none text-ink hover:text-accent transition-colors cursor-pointer"
+                    >
+                        &times;
+                    </button>
+                </div>
+                <ul class="grid grid-cols-[auto_1fr] items-center justify-items-center gap-x-tight gap-y-tight font-body text-body text-text">
+                    {/* `contents` zruší box `<li>`, takže jeho děti (ikona + text) jdou
+                        přímo do gridu — sloupec ikon má pak společnou pevnou šířku a
+                        různě velké ikony (např. menší pokoj) se v něm vycentrují, takže
+                        drží pod sebou. */}
+                    <li class="contents">
+                        <GuestIcon type="postel" class="text-[2em]" tooltip={false} />
+                        <span class="justify-self-start"><IconExplanation type="postel" /></span>
+                    </li>
+                    <li class="contents">
+                        <GuestIcon type="karimatka" class="text-[2em]" tooltip={false} />
+                        <span class="justify-self-start"><IconExplanation type="karimatka" /></span>
+                    </li>
+                    <li class="contents">
+                        <GuestIcon type="stan" class="text-[2em]" tooltip={false} />
+                        <span class="justify-self-start"><IconExplanation type="stan" /></span>
+                    </li>
+                    <li class="contents">
+                        <GuestIcon type="pokoj" class="self-start text-[1.6em]" tooltip={false} />
+                        <div class="justify-self-start"><IconExplanation type="pokoj" /></div>
+                    </li>
+                    <li class="contents">
+                        <GuestNote note="Ukázka poznámky – stejně se zobrazí u konkrétního hosta." class="text-[1.8em]" />
+                        <span class="justify-self-start">Poznámka</span>
+                    </li>
+                </ul>
+            </dialog>
             <div
                 class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-section w-full max-w-[104rem] items-start [&>:last-child]:md:max-2xl:col-span-2 [&>:last-child]:md:max-2xl:w-[calc(50%_-_var(--spacing-section)/2)] [&>:last-child]:md:max-2xl:justify-self-center"
                 data-reveal
@@ -302,4 +296,25 @@ const houses: { name: string; address: string; maps: { label: string; url: strin
     }
 
     document.addEventListener("astro:page-load", initGuestFilter);
+
+    function initIconLegendDialog() {
+        const dialog = document.getElementById("icon-legend-dialog");
+        if (!(dialog instanceof HTMLDialogElement)) return;
+
+        document
+            .querySelector("[data-legend-open]")
+            ?.addEventListener("click", () => dialog.showModal());
+
+        dialog
+            .querySelector("[data-legend-close]")
+            ?.addEventListener("click", () => dialog.close());
+
+        // Klik mimo obsah dopadne přímo na <dialog> (tvoří i plochu za obsahem),
+        // klik na potomka uvnitř se sem díky bublání nedostane s jiným cílem.
+        dialog.addEventListener("click", (event) => {
+            if (event.target === dialog) dialog.close();
+        });
+    }
+
+    document.addEventListener("astro:page-load", initIconLegendDialog);
 </script>

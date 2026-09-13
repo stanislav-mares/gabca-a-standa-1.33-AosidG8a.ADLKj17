@@ -1,22 +1,47 @@
 ---
 import type { GuestIconData } from "./HouseColumn.astro";
+import IconExplanation from "./IconExplanation.astro";
 
 interface Props extends GuestIconData {
     /** Řídí velikost ikony — nastavuje `font-size` na kořenovém `<span>`, ze
      *  kterého si čtverec (`w-[1em] h-[1em]`) i vnitřní otazník/číslo berou
      *  svůj `em`, takže rostou proporčně spolu z jednoho místa. */
     class?: string;
+    /** Název domu — u typu "pokoj" dovolí tooltipu dohledat přesné umístění
+     *  a koupelnu jen pro tenhle konkrétní pokoj (čísla se mezi domy opakují). */
+    house?: string;
+    /** Vypne tooltip bublinu — použije se v legendě popupu, kde je vysvětlivka
+     *  už vypsáná vedle ikony jako text, takže tooltip by byl matoucí. */
+    tooltip?: boolean;
 }
 
-const { type, number, class: className = "text-[1.3em]" } = Astro.props;
+const { type, number, house, class: className = "text-[1.3em]", tooltip = true } = Astro.props;
+
+// Plochý text pro `aria-label` — bublina s `IconExplanation` (u „pokoj“ i
+// tabulka) je vizuální/`aria-hidden`, takže čtečka obrazovky potřebuje
+// samostatný jednořádkový popisek.
+const ariaLabels: Record<GuestIconData["type"], string> = {
+    postel: house ? `Postel – ${house}` : "Postel – Farní dvůr / Chata Liebich",
+    karimatka: "Karimatka / matrace – Farní dvůr – s sebou: karimatku, polštář, deku",
+    stan: "Vlastní stan / karavan",
+    pokoj: "Číslo pokoje – umístění a koupelna se liší podle čísla, viz bublina",
+};
 ---
 
 {/* Sada čtyř drobných liniových ikon vedle jména hosta — sdílí styl s šipkou
-    v BackButtonu (tenká linka, currentColor, bez výplně). */}
+    v BackButtonu (tenká linka, currentColor, bez výplně). Stejně jako
+    u GuestNote se bublina s vysvětlivkou zobrazí na hover (desktop) i po
+    kliknutí (mobil — přes fokus díky `tabindex`). */}
 <span
-    class:list={["inline-flex items-center justify-center shrink-0 w-[1em] h-[1em] align-[-0.15em]", className]}
-    aria-hidden="true"
+    class:list={[
+        "inline-flex w-[1em] h-[1em] shrink-0 items-center justify-center align-[-0.15em] outline-none",
+        tooltip && "group relative",
+        className,
+    ]}
+    tabindex={tooltip ? "0" : undefined}
+    aria-label={tooltip ? ariaLabels[type] : undefined}
 >
+    <span class:list={["flex items-center justify-center w-full h-full", tooltip && "cursor-help"]} aria-hidden="true">
     {
         type === "postel" && (
             <svg
@@ -66,6 +91,17 @@ const { type, number, class: className = "text-[1.3em]" } = Astro.props;
         type === "pokoj" && (
             <span class="flex items-center justify-center w-full h-full rounded-[0.15em] border-2 border-current bg-ink text-white text-[0.75em] leading-none font-body">
                 {number ?? "?"}
+            </span>
+        )
+    }
+    </span>
+    {
+        tooltip && (
+            <span
+                aria-hidden="true"
+                class="pointer-events-none absolute bottom-full left-0 lg:left-1/2 z-10 mb-tight w-max max-w-80 lg:-translate-x-1/2 scale-95 rounded-md bg-ink px-tight py-1 text-left text-sm text-surface opacity-0 transition-[opacity,transform] duration-150 group-hover:scale-100 group-hover:opacity-100 group-focus:scale-100 group-focus:opacity-100"
+            >
+                <IconExplanation type={type} number={number} house={house} />
             </span>
         )
     }
