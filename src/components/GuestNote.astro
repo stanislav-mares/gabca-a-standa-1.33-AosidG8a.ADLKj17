@@ -4,9 +4,12 @@ interface Props {
     /** Řídí velikost stejně jako u `GuestIcon` — poznámka má vedle jména
      *  vypadat stejně velká jako ostatní ikonky. */
     class?: string;
+    /** Vypne tooltip bublinu — použije se v legendě popupu, kde je vysvětlivka
+     *  už vypsáná vedle ikony jako text, takže tooltip by byl matoucí. */
+    tooltip?: boolean;
 }
 
-const { note, class: className = "text-[1.3em]" } = Astro.props;
+const { note, class: className = "text-[1.3em]", tooltip = true } = Astro.props;
 ---
 
 {/* Ikonka poznámky vedle hosta — bublina se ukazuje čistě přes CSS
@@ -18,22 +21,26 @@ const { note, class: className = "text-[1.3em]" } = Astro.props;
         "group relative inline-flex w-[1em] h-[1em] shrink-0 items-center justify-center align-[-0.15em] outline-none",
         className,
     ]}
-    tabindex="0"
-    aria-label={note}
+    tabindex={tooltip ? "0" : undefined}
+    aria-label={tooltip ? note : undefined}
 >
     {/* Kolečko je vyloženě menší než celý álokovaný box (který dává článku
         stejnou šířku jako ostatní ikonky pro zarovnání) — vizuálně tak
         vypadá menší, ale nerozhodí sloupec ikon. */}
     <span
-        class="flex w-[0.8em] h-[0.8em] items-center justify-center rounded-full border-2 border-current cursor-help"
+        class:list={["flex w-[0.8em] h-[0.8em] items-center justify-center rounded-full border-2 border-current", tooltip && "cursor-help"]}
         aria-hidden="true"
     >
         <span class="font-body text-[0.55em] italic leading-none">i</span>
     </span>
-    <span
-        aria-hidden="true"
-        class="pointer-events-none absolute bottom-full left-1/2 z-40 mb-tight w-max max-w-56 -translate-x-1/2 scale-95 rounded-md bg-ink px-tight py-1 text-left text-sm text-surface opacity-0 transition-[opacity,transform] duration-150 group-hover:scale-100 group-hover:opacity-100 group-focus:scale-100 group-focus:opacity-100"
-    >
-        {note}
-    </span>
+    {
+      tooltip && (
+      <span
+          aria-hidden="true"
+          class="pointer-events-none absolute bottom-full left-1/2 z-40 mb-tight w-max max-w-56 -translate-x-1/2 scale-95 rounded-md bg-ink px-tight py-1 text-left text-sm text-surface opacity-0 transition-[opacity,transform] duration-150 group-hover:scale-100 group-hover:opacity-100 group-focus:scale-100 group-focus:opacity-100"
+      >
+          {note}
+      </span>
+    )
+    }
 </span>
