@@ -37,7 +37,7 @@ const { note, class: className = "text-[1.3em]", tooltip = true } = Astro.props;
       tooltip && (
       <span
           aria-hidden="true"
-          class="pointer-events-none absolute bottom-full left-1/2 z-40 mb-tight w-max max-w-56 -translate-x-1/2 scale-95 rounded-md bg-ink px-tight py-1 text-left text-sm text-surface opacity-0 transition-[opacity,transform] duration-150 group-hover:scale-100 group-hover:opacity-100 group-focus:scale-100 group-focus:opacity-100"
+          class="pointer-events-none absolute bottom-full left-0 z-40 mb-tight w-max max-w-80 scale-95 rounded-md bg-ink px-tight py-1 text-left text-sm text-surface opacity-0 transition-[opacity,transform] duration-150 group-hover:scale-100 group-hover:opacity-100 group-focus:scale-100 group-focus:opacity-100"
       >
           {note}
       </span>
