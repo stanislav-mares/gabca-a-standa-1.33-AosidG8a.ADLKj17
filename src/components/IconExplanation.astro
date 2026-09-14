@@ -17,8 +17,8 @@ const { type, number, house } = Astro.props;
 // Liebich), proto se hledá podle dvojice dům+číslo, ne jen podle čísla.
 const roomRanges: { house: string; from: number; to: number; location: string; bathroom: string }[] = [
     { house: "Farní dvůr", from: 1, to: 6, location: "Farní dvůr – hlavní budova", bathroom: "vlastní" },
-    { house: "Farní dvůr", from: 7, to: 9, location: "Farní dvůr – stodola", bathroom: "sdílená" },
-    { house: "Farní dvůr", from: 10, to: 11, location: "Farní dvůr – stodola", bathroom: "sdílená" },
+    { house: "Farní dvůr", from: 7, to: 9, location: "Farní dvůr – stodola", bathroom: "sdílená v přízemí" },
+    { house: "Farní dvůr", from: 10, to: 11, location: "Farní dvůr – stodola", bathroom: "sdílená v 1. patře" },
     { house: "Chata Liebich", from: 1, to: 4, location: "Chata Liebich", bathroom: "sdílená" },
 ];
 
@@ -65,12 +65,12 @@ const roomInfo =
                         <tr class="border-b border-current/10">
                             <td class="pr-tight py-1 whitespace-nowrap">7–9</td>
                             <td class="pr-tight py-1">Farní dvůr – stodola</td>
-                            <td class="py-1">sdílená</td>
+                            <td class="py-1">sdílená v přízemí</td>
                         </tr>
                         <tr class="border-b border-current/10">
                             <td class="pr-tight py-1 whitespace-nowrap">10–11</td>
                             <td class="pr-tight py-1">Farní dvůr – stodola</td>
-                            <td class="py-1">sdílená</td>
+                            <td class="py-1">sdílená v 1. patře</td>
                         </tr>
                         <tr>
                             <td class="pr-tight py-1 whitespace-nowrap">1–4</td>
